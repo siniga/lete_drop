@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="status_accept_btn" type="id"/>
+    <item name="status_process_btn" type="id"/>
+    <item name="status_ready_btn" type="id"/>
+    <item name="status_delivered_btn" type="id"/>
+
+</resources>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:padding="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <SearchView
+            android:id="@+id/search_list_editor"
+            android:queryHint="Tafuta Bidhaa"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/round_corners_with_stroke_primary"
+            >
+        </SearchView>
+
+
+
+        <!-- <EditText
+             android:focusable="auto"
+             android:drawableLeft="@drawable/ic_search_grey_bbb_24dp"
+             android:hint="Tafuta Bidhaa"
+             android:textColor="@android:color/black"
+             android:padding="5dp"
+             android:id="@+id/phone_input"
+             android:layout_width="match_parent"
+             android:layout_height="50dp"
+             android:layout_below="@id/phone_header"
+             android:layout_marginTop="5dp"
+             android:background="@drawable/round_corners_with_stroke_primary" />
+ -->
+
+    </RelativeLayout>
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="15dp"
+        android:text="Bidhaa"
+        android:textColor="@android:color/black"
+        android:textStyle="bold" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:paddingLeft="18dp"
+            android:id="@+id/product_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            android:paddingBottom="60dp" />
+    </RelativeLayout>
+</LinearLayout>

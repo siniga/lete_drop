@@ -1,0 +1,33 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_orders"
+        android:enabled="true"
+        android:checkable="true"
+        android:icon="@drawable/ic_shopping_basket"
+        android:title="Oda zangu"
+        app:showAsAction="always" />
+
+    <item
+        android:checkable="true"
+        android:checked="true"
+        android:id="@+id/action_home"
+        android:enabled="true"
+        android:title="Nyumbani"
+        app:showAsAction="always" />
+
+    <item
+        android:checkable="true"
+        android:id="@+id/action_notificaion"
+        android:enabled="true"
+        android:icon="@drawable/ic_shop_nav"
+        android:title="Usajili"
+        app:showAsAction="always" />
+
+   <!-- <item
+        android:id="@+id/action_cart"
+        android:enabled="true"
+        android:icon="@drawable/ic_person_pink"
+        android:title="cart"
+        app:showAsAction="always" />-->
+</menu>

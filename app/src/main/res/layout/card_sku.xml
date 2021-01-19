@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card"
+    android:layout_width="wrap_content"
+    android:layout_height="40dp"
+    android:layout_marginRight="10dp"
+    android:orientation="vertical">
+
+
+<!--<LinearLayout
+    android:orientation="horizontal"
+    android:id="@+id/border_bottom"
+    android:layout_width="match_parent"
+    android:layout_height="2dp"
+    android:layout_alignParentBottom="true"></LinearLayout>
+    >-->
+
+    <Button
+        android:background="@drawable/round_corners_primary"
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_centerInParent="true"
+        android:textColor="@color/midd_grey"
+        android:textStyle="bold" />
+
+
+</RelativeLayout>

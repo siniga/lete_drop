@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/street_wrapper"
+    android:layout_width="wrap_content"
+    android:layout_height="80dp"
+    android:layout_marginRight="5dp"
+    android:padding="5dp"
+    android:orientation="vertical"
+    >
+
+    <Button
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:background="@drawable/round_corners_with_stroke_grey"
+        android:id="@+id/street_name"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_centerInParent="true"
+        android:textColor="@color/midd_grey"
+        android:textStyle="bold" />
+
+   <!-- <LinearLayout
+        android:id="@+id/border_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_below="@+id/street_name"
+        android:orientation="horizontal" />-->
+<!--
+    <TextView
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:text="mikocheni"
+        android:id="@+id/street_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:id="@+id/border_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_below="@+id/street_name"
+        android:orientation="horizontal" />-->
+
+
+</LinearLayout>

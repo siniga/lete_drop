@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:shimmer="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#f2f2f2"
+    android:padding="15dp">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+    <LinearLayout
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:layout_marginTop="@dimen/padding_10"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="100dp">
+
+        <RelativeLayout
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_marginTop="5dp"
+                android:textStyle="bold"
+                android:text="Unataka kuuza kitu gani?"
+                android:textSize="14sp"
+                android:textColor="@android:color/black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+
+            <LinearLayout
+                android:id="@+id/view_user_account_btn"
+                android:gravity="right"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentRight="true">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_account_circle_primarydark_24dp"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+        </RelativeLayout>
+
+
+        <TextView
+            android:gravity="center_vertical"
+            android:id="@+id/search_items_edittxt"
+            android:layout_marginTop="15dp"
+            android:drawableLeft="@drawable/ic_search_grey_bbb_24dp"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:hint="Tafuta Bidhaa kwa haraka"
+            android:paddingLeft="6dp"
+            android:background="@drawable/round_corners_with_stroke_primary"/>
+
+
+
+    </LinearLayout>
+
+    <TextView
+        android:visibility="gone"
+        android:layout_marginLeft="@dimen/padding_10"
+        android:textStyle="bold"
+        android:layout_marginTop="@dimen/padding_10"
+        android:textColor="@android:color/black"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tafuta kwa kampuni"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/company_list"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="20dp"
+        android:paddingBottom="0dp" />
+
+    </LinearLayout>
+    <TextView
+        android:id="@+id/view_db"
+        android:layout_marginLeft="@dimen/padding_10"
+        android:textStyle="bold"
+        android:layout_marginTop="0dp"
+        android:textColor="@android:color/black"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tafuta kwa aina ya bidhaa"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/category_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            android:paddingBottom="50dp" />
+
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmer_view_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginTop="0dp"
+            android:background="@android:color/white"
+            android:orientation="vertical">
+
+            <!-- Adding 7 rows of placeholders -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <include layout="@layout/data_placeholder_cateogory_layout" />
+
+                <include layout="@layout/data_placeholder_cateogory_layout" />
+
+                <include layout="@layout/data_placeholder_cateogory_layout" />
+
+                <include layout="@layout/data_placeholder_cateogory_layout" />
+
+                <include layout="@layout/data_placeholder_cateogory_layout" />
+
+                <include layout="@layout/data_placeholder_cateogory_layout" />
+
+                <include layout="@layout/data_placeholder_cateogory_layout" />
+            </LinearLayout>
+
+        </com.facebook.shimmer.ShimmerFrameLayout>
+
+    </RelativeLayout>
+</LinearLayout>

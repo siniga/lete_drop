@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card"
+    android:layout_width="100dp"
+    android:layout_height="60dp"
+    android:layout_marginRight="10dp"
+    android:orientation="vertical">
+
+
+    <Button
+        android:background="@drawable/round_corners_primary"
+        android:id="@+id/time"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_centerInParent="true"
+        android:textColor="@color/midd_grey"
+        android:textStyle="bold" />
+
+
+</RelativeLayout>

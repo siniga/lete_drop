@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Lete Drop</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_main"></string>
+    <string name="title_activity_order"></string>
+    <string name="title_activity_location"></string>
+    <string name="mapbox_access_token">pk.eyJ1IjoicGV0ZXJraGFtaXMiLCJhIjoiY2tjcWsyaGZyMGFzYzJ1bXg3dmc2MjRpMSJ9.NR3BCrNmFOGvLy8gZYLZPQ</string>
+    <string name="title_activity_main2">Main2Activity</string>
+</resources>

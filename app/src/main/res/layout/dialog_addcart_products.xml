@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="20dp"
+    android:paddingTop="20dp">
+
+    <TextView
+        android:id="@+id/product_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Product Name"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
+
+    <ImageView
+        android:id="@+id/product_img"
+        android:src="@drawable/beefeater"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_centerHorizontal="true" />
+
+    <LinearLayout
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.RecyclerView
+            android:visibility="gone"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:id="@+id/sku_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+
+    <RelativeLayout
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:id="@+id/qnty_view_wrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/quantity_remove"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_alignParentLeft="true"
+                android:background="@drawable/solid_circle_strike_primary"
+                android:maxWidth="10dp"
+                android:text="-"
+                android:textColor="@color/colorPrimary" />
+
+            <LinearLayout
+                android:layout_width="80dp"
+                android:layout_height="30dp"
+                android:layout_centerInParent="true"
+                android:background="@android:color/white"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/quantity"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:text="1"
+                    android:textAlignment="center"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/quantity_add"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/solid_circle_strike_primary"
+                android:text="+"
+                android:textColor="@color/colorPrimary" />
+
+            <!--<me.himanshusoni.quantityview.QuantityView xmlns:app="http://schemas.android.com/apk/res-auto"-->
+            <!--android:id="@+id/quantity_view"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="10dp"-->
+            <!--app:qv_quantity="0"-->
+            <!--app:qv_removeButtonBackground="@color/colorPrimary"-->
+            <!--app:qv_removeButtonTextColor="@android:color/white"-->
+            <!--app:qv_addButtonTextColor="@android:color/white"-->
+            <!--app:qv_addButtonBackground="@color/colorPrimary"/>-->
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+    <LinearLayout
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp">
+
+        <Button
+            android:layout_weight="1"
+            android:background="@color/colorAccent"
+            android:id="@+id/button_cancel"
+            android:layout_width="1px"
+            android:layout_height="40dp"
+            android:text="Cancel"
+            android:textColor="@android:color/white" />
+
+        <Button
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1"
+            android:background="@color/colorPrimary"
+            android:id="@+id/button_confirm_sale"
+            android:layout_width="1px"
+            android:layout_height="40dp"
+            android:text="Confirm"
+            android:textColor="@android:color/white" />
+
+    </LinearLayout>
+
+</LinearLayout>

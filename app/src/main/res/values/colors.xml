@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#fbbe02</color>
+    <color name="colorPrimaryDark">#ca9a06</color>
+    <color name="colorAccent">#000000</color>
+    <color name="light_grey">#f2f2f2</color>
+    <color name="light_grey_ddd">#dddddd</color>
+    <color name="midd_grey">#666666</color>
+    <color name="black_transparent">#A6000000</color>
+    <color name="blue_transparent">#C9001689</color>
+    <color name="blue">#001689</color>
+    <color name="white">#FFFFFF</color>
+
+    <color name="status_pending">#666666</color>
+    <color name="status_accept">#009688</color>
+    <color name="status_process">#001689</color>
+    <color name="status_ready">#7B1FA2</color>
+    <color name="status_deliver">#2E7D32</color>
+    <color name="status_cancel">#ffff4444</color>
+</resources>
