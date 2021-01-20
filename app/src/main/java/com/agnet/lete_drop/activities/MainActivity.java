@@ -242,7 +242,6 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
             if (location == null) {
                 return;
             }
-
             _editor.putString("mLATITUDE",""+result.getLastLocation().getLatitude());
             _editor.putString("mLONGITUDE",""+result.getLastLocation().getLongitude());
             _editor.commit();

@@ -21,6 +21,8 @@ import com.agnet.lete_drop.activities.LocationActivity;
 import com.agnet.lete_drop.application.mSingleton;
 import com.agnet.lete_drop.helpers.DatabaseHandler;
 import com.agnet.lete_drop.helpers.FragmentHelper;
+import com.agnet.lete_drop.models.ResponseData;
+import com.agnet.lete_drop.models.User;
 import com.agnet.lete_drop.service.Endpoint;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
@@ -28,6 +30,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,6 +51,7 @@ public class MregistrationFragment extends Fragment {
     private BottomSheetBehavior _bottomSheetBehavior;
     private DatabaseHandler _dbHandler;
     private ProgressBar _progressBar;
+    private Gson _gson;
 
 
     @SuppressLint("RestrictedApi")
@@ -60,6 +64,8 @@ public class MregistrationFragment extends Fragment {
         _dbHandler = new DatabaseHandler(_c);
 
         _progressBar = view.findViewById(R.id.progressBar_cyclic);
+
+        _gson = new Gson();
 
         ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
 
@@ -152,25 +158,24 @@ public class MregistrationFragment extends Fragment {
                     @Override
                     public void onResponse(String response) {
                         _progressBar.setVisibility(View.GONE);
-                        try {
 
-                            JSONObject res = new JSONObject(response);
-                            if (res.getString("code").equals("201")) {
 
-                                JSONObject user = new JSONObject(res.getString("user"));
-                                _dbHandler.createUser(user.getString("phone"), user.getString("name"), "",user.getInt("id"));
+                            ResponseData res = _gson.fromJson(response, ResponseData.class);
+                            User user = res.getUser();
+
+                            if (res.getCode() == 201) {
+
+                             //   JSONObject user = new JSONObject(res.getString("user"));
+                                _dbHandler.createUser(user);
 
 
                                 new FragmentHelper(_c).replace(new CreatePinFragment(), " CreatePinFragment", R.id.fragment_placeholder);
 
-                            } else if (res.getString("code").equals("202")) {
+                            } else if (res.getCode() == 202) {
                                 Toast.makeText(_c, "Namba imeshasajiliwa!", Toast.LENGTH_LONG).show();
                             } else {
                                 Toast.makeText(_c, "Hakikisha umejaza maeneo yote!", Toast.LENGTH_LONG).show();
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
 
                     }
 

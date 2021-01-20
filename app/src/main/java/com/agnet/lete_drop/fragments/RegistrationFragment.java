@@ -127,7 +127,7 @@ public class RegistrationFragment extends Fragment {
                     bottomSheetDialogFragment.setFragmentContext(RegistrationFragment.this);
 
                     //create user if not created
-                    _dbHandler.createUser(phoneNum.getText().toString(),"anonymous", "",0);
+                  //  _dbHandler.createUser(phoneNum.getText().toString(),"anonymous", "",0);
 
 
                 } else {

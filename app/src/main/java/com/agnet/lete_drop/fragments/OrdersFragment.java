@@ -126,12 +126,14 @@ public class OrdersFragment extends Fragment {
         final String phone = _dbHandler.getUserPhone();
         User user = _dbHandler.getUser();
 
+      //  Log.d("ERRORRESPONSE",""+user.getServerId());
+
+
         if (!phone.isEmpty()) {
 
 
-            Endpoint.setUrl("saler/history/"+user.getId());
+            Endpoint.setUrl("saler/history/"+user.getSalerId());
             String url = Endpoint.getUrl();
-
 
             StringRequest postRequest = new StringRequest(Request.Method.GET, url,
                     new Response.Listener<String>() {

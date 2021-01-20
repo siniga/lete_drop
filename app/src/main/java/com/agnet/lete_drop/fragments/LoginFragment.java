@@ -260,17 +260,14 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                         ResponseData res = _gson.fromJson(response, ResponseData.class);
                         User user = res.getUser();
 
-                     //   Log.d("LOGHAPA", response);
-                        if (res.getCode() == 201) {
+                        Log.d("LOGHAPA", response);
+                        if (res.getCode() == 200) {
 
-                            _dbHandler.createUser(user.getPhone(), user.getName(), "", user.getServerId());
+
+                            _dbHandler.createUser(user);
 
                             new FragmentHelper(_c).replace(new HomeFragment(), " HomeFragment", R.id.fragment_placeholder);
 
-
-                        } else if (res.getCode() ==202) {
-
-                            Toast.makeText(_c, "Namba imeshasajiliwa!", Toast.LENGTH_LONG).show();
 
                         } else {
 

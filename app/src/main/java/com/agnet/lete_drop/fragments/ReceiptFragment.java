@@ -199,12 +199,12 @@ public class ReceiptFragment extends Fragment {
         Endpoint.setUrl("order");
         String url = Endpoint.getUrl();
 
-        Log.d("HEHRHHEE", order);
+      //  Log.d("HEHRHHEE", order);
 
         try {
             JsonObjectRequest postRequest = new JsonObjectRequest(url, new JSONObject(order),
                     response -> {
-                        Log.d("HEHRHHEE", response.toString());
+                       // Log.d("HEHRHHEE", response.toString());
                         OrderResponse res = _gson.fromJson(String.valueOf(response), OrderResponse.class);
 
                         _order1 = res.getOrder();

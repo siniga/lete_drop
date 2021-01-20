@@ -281,6 +281,7 @@ public class CreateCustomerFragment extends Fragment implements View.OnClickList
 
         Endpoint.setUrl("customer/new");
         String url = Endpoint.getUrl();
+
         _progressBar.setVisibility(View.VISIBLE);
 
         StringRequest postRequest = new StringRequest(Request.Method.POST, url,
@@ -292,7 +293,6 @@ public class CreateCustomerFragment extends Fragment implements View.OnClickList
                         _progressBar.setVisibility(View.GONE);
                         ResponseData res = _gson.fromJson(response, ResponseData.class);
 
-                        Log.i("LOGHAPA", response + "  " + res.getFlag());
 
                         if (res.getFlag().equals("phone_exist")) {
 
@@ -331,8 +331,8 @@ public class CreateCustomerFragment extends Fragment implements View.OnClickList
             protected Map<String, String> getParams() {
 
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("lng", "0");
-                params.put("lat", "0");
+                params.put("lng", _preferences.getString("mLONGITUDE", null));
+                params.put("lat", _preferences.getString("mLATITUDE", null));
                 params.put("phone", _phone.getText().toString());
                 params.put("name", _name.getText().toString());
                 params.put("type_id", "" + _typeId);
@@ -340,7 +340,7 @@ public class CreateCustomerFragment extends Fragment implements View.OnClickList
                 params.put("vfd_cust_type", "" + _vfdTypeId);
                 params.put("vfd_cust_id", "" + _vfdCustId.getText().toString());
                 params.put("qr_code", _preferences.getString("BARCODE", null));
-                params.put("registered_by", "" + _dbHandler.getUser().getServerId());
+                params.put("registered_by", "" + _dbHandler.getUser().getSalerId());
 
                 return params;
             }

@@ -29,7 +29,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private Context c;
     // All Static variables
     // Database Version
-    private static final int DATABASE_VERSION = 19;
+    private static final int DATABASE_VERSION = 20;
 
     // Database Name
     private static final String DATABASE_NAME = "lete_drop";
@@ -95,6 +95,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_NAME + " TEXT,"
                 + KEY_NUM_PLATE + " INTEGER,"
                 + KEY_PHONE + " TEXT,"
+                + KEY_IMG_URl + " TEXT,"
+                + KEY_SALER_ID + " TEXT,"
                 + KEY_SERVER_ID + " server_id" + ")";
 
         String CREATE_STREET_TABLE = "CREATE TABLE " + TABLE_STREET + "("
@@ -249,15 +251,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     /*******************************************
      Begin user crude
      ********************************************/
-    public void createUser(String phone, String name, String numPlate, int serverId) {
+    public void createUser(User user) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
 
-        values.put(KEY_PHONE, phone);
-        values.put(KEY_NAME, name);
-        values.put(KEY_NUM_PLATE, numPlate);
-        values.put(KEY_SERVER_ID, serverId);
+        values.put(KEY_PHONE, user.getPhone());
+        values.put(KEY_NAME, user.getName());
+        values.put(KEY_IMG_URl, user.getImg());
+        values.put(KEY_SERVER_ID, user.getServerId());
+        values.put(KEY_SALER_ID, user.getSalerId());
 
         //if user table is empty, create user
         //otherwise update user number to indicate that number has been changed
@@ -286,8 +289,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                         cursor.getInt(cursor.getColumnIndex(KEY_ID)),
                         cursor.getString(cursor.getColumnIndex(KEY_PHONE)),
                         cursor.getString(cursor.getColumnIndex(KEY_NAME)),
+                        "",
                         cursor.getInt(cursor.getColumnIndex(KEY_NUM_PLATE)),
-                        cursor.getInt(cursor.getColumnIndex(KEY_SERVER_ID))
+                        cursor.getInt(cursor.getColumnIndex(KEY_SERVER_ID)),
+                        cursor.getInt(cursor.getColumnIndex(KEY_SALER_ID))
                 );
 
             } while (cursor.moveToNext());

@@ -160,7 +160,7 @@ public class CustomerFragment extends Fragment implements View.OnClickListener {
         _shimmer.setVisibility(View.VISIBLE);
         _shimmer.startShimmerAnimation();
 
-        Endpoint.setUrl("customers/"+_dbHandler.getUser().getServerId());
+        Endpoint.setUrl("customers/"+_dbHandler.getUser().getSalerId());
         String url = Endpoint.getUrl();
 
         StringRequest postRequest = new StringRequest(Request.Method.GET, url,
