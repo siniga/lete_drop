@@ -138,7 +138,7 @@ public class OrdersFragment extends Fragment {
                         @Override
                         public void onResponse(String response) {
 
-                         //   Log.d("ERRORRESPONSE", response);
+                            Log.d("ERRORRESPONSE", response);
 
                             _shimmerFrameLayout.stopShimmerAnimation();
                             _shimmerFrameLayout.setVisibility(View.GONE);
