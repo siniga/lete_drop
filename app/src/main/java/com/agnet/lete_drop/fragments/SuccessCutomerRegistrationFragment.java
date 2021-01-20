@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ import com.google.gson.GsonBuilder;
 import java.text.DecimalFormat;
 import java.util.List;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
@@ -66,7 +68,7 @@ public class SuccessCutomerRegistrationFragment extends Fragment {
                 fm.popBackStack();
             }
 
-            new FragmentHelper(_c).replace(new HomeFragment(), "HomeFragment", R.id.fragment_placeholder);
+            new FragmentHelper(_c).replace(new CustomerFragment(), "CustomerFragment", R.id.fragment_placeholder);
 
         });
 
@@ -91,4 +93,6 @@ public class SuccessCutomerRegistrationFragment extends Fragment {
 
 
     }
+
+
 }

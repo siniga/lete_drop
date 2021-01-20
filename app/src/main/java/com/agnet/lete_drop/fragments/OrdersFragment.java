@@ -23,6 +23,7 @@ import com.agnet.lete_drop.helpers.CustomDivider;
 import com.agnet.lete_drop.helpers.DatabaseHandler;
 import com.agnet.lete_drop.models.History;
 import com.agnet.lete_drop.models.ResponseData;
+import com.agnet.lete_drop.models.User;
 import com.agnet.lete_drop.service.Endpoint;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
@@ -123,11 +124,12 @@ public class OrdersFragment extends Fragment {
 
 
         final String phone = _dbHandler.getUserPhone();
+        User user = _dbHandler.getUser();
 
         if (!phone.isEmpty()) {
 
 
-            Endpoint.setUrl("saler/history/26");
+            Endpoint.setUrl("saler/history/"+user.getId());
             String url = Endpoint.getUrl();
 
 

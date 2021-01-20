@@ -126,6 +126,7 @@ public class ReceiptFragment extends Fragment {
 
         //methods
         _cartlist.setHasFixedSize(true);
+
         int totalPrice = _dbHandler.getTotalPrice();
         int totalQnty = _dbHandler.getTotalQnty();
         int total = (totalPrice + 0);
@@ -181,7 +182,7 @@ public class ReceiptFragment extends Fragment {
             _customer = _gson.fromJson(customerJson, Customer.class);
 
 //            _orderNumber.setText(_dbHandler.getOrderNumber());
-            _orderNumber.setText("171");
+            _orderNumber.setText(_dbHandler.getOrderNumber());
             _customerName.setText(_customer.getName());
             _driverName.setText(_dbHandler.getUser().getName());
         }
@@ -198,12 +199,12 @@ public class ReceiptFragment extends Fragment {
         Endpoint.setUrl("order");
         String url = Endpoint.getUrl();
 
-       // Log.d("HEHRHHEE", order);
+        Log.d("HEHRHHEE", order);
 
         try {
             JsonObjectRequest postRequest = new JsonObjectRequest(url, new JSONObject(order),
                     response -> {
-                      //  Log.d("HEHRHHEE", response.toString());
+                        Log.d("HEHRHHEE", response.toString());
                         OrderResponse res = _gson.fromJson(String.valueOf(response), OrderResponse.class);
 
                         _order1 = res.getOrder();
@@ -225,11 +226,14 @@ public class ReceiptFragment extends Fragment {
                                 fm.popBackStack();
                             }
 
-                            try {
+                            _dbHandler.deleteOrderById();
+                            _dbHandler.deleteCartByOrderId();
+
+                          /*  try {
                                 sendVfd();
                             } catch (JSONException e) {
                                 e.printStackTrace();
-                            }
+                            }*/
 
                             new FragmentHelper(getActivity()).replace(new SuccessFragment(), "SuccessFragment", R.id.fragment_placeholder);
                             _progressBar.setVisibility(View.GONE);

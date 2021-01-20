@@ -24,7 +24,9 @@ public class ResponseData {
 
     int code;
 
-    public ResponseData(List streets, List products, List outlets, List categories, List skus, List<History> orders, List<Partner> partners, User user, Customer customer, int code) {
+    String flag;
+
+    public ResponseData(List streets, List products, List outlets, List categories, List skus, List<History> orders, List<Partner> partners, User user, Customer customer, int code, String flag) {
         this.streets = streets;
         this.products = products;
         this.customers = outlets;
@@ -35,6 +37,7 @@ public class ResponseData {
         this.user = user;
         this.customer = customer;
         this.code = code;
+        this.flag = flag;
     }
 
 
@@ -76,5 +79,9 @@ public class ResponseData {
 
     public int getCode() {
         return code;
+    }
+
+    public String getFlag() {
+        return flag;
     }
 }

@@ -296,19 +296,16 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
             switch (item.getItemId()) {
                 case R.id.action_home:
                     item.setChecked(mState);
-                    _toolbarTitle.setText("Nyumbani");
                     new FragmentHelper(MainActivity.this).replace(new HomeFragment(), "HomeFragment", R.id.fragment_placeholder);
 
                     break;
                 case R.id.action_notificaion:
                     item.setChecked(mState);
-                    _toolbarTitle.setText("Taarifa");
                     new FragmentHelper(MainActivity.this).replaceWithbackStack(new CustomerFragment(), " CustomerFragment", R.id.fragment_placeholder);
 
                     break;
                 case R.id.action_orders:
                     item.setChecked(mState);
-                    _toolbarTitle.setText("Oda Zako");
                     new FragmentHelper(MainActivity.this).replaceWithbackStack(new OrdersFragment(), "OrdersFragment", R.id.fragment_placeholder);
 
                     break;

@@ -245,7 +245,9 @@
                 android:layout_marginTop="15dp"
                 android:background="@drawable/round_corners_with_stroke_primary"
                 android:hint="Ingiza namba ya TIN"
-                android:padding="5dp" />
+                android:inputType="number"
+                android:padding="5dp"
+                android:paddingLeft="@dimen/padding_10"/>
 
             <LinearLayout
                 android:layout_width="match_parent"

@@ -29,6 +29,7 @@ import com.agnet.lete_drop.helpers.DatabaseHandler;
 import com.agnet.lete_drop.helpers.FragmentHelper;
 import com.agnet.lete_drop.models.Customer;
 import com.agnet.lete_drop.models.CustomerType;
+import com.agnet.lete_drop.models.ResponseData;
 import com.agnet.lete_drop.service.Endpoint;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
@@ -41,6 +42,7 @@ import com.google.android.gms.samples.vision.barcodereader.BarcodeCapture;
 import com.google.android.gms.samples.vision.barcodereader.BarcodeGraphic;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -58,7 +60,7 @@ import androidx.fragment.app.FragmentManager;
 import xyz.belvi.mobilevisionbarcodescanner.BarcodeFragment;
 import xyz.belvi.mobilevisionbarcodescanner.BarcodeRetriever;
 
-public class CreateCustomerFragment extends Fragment implements View.OnClickListener, BarcodeRetriever, AdapterView.OnItemSelectedListener {
+public class CreateCustomerFragment extends Fragment implements View.OnClickListener, BarcodeRetriever {
 
     private FragmentActivity _c;
     private SharedPreferences _preferences;
@@ -75,11 +77,12 @@ public class CreateCustomerFragment extends Fragment implements View.OnClickList
     private TextView _shopQrCode;
     private Button _addCustomerBtn;
     private Spinner _custTypesSpinner, _vfdCustTypeSpinner;
-    private String _shopType,_vfdType;
+    private String _shopType, _vfdType;
     private int _typeId, _vfdTypeId;
     private List<CustomerType> _customerTypes;
     private List<CustomerType> _vfdCustTypes;
     private EditText _vfdCustId;
+    private Gson _gson;
 
     @SuppressLint("RestrictedApi")
     @Override
@@ -91,6 +94,8 @@ public class CreateCustomerFragment extends Fragment implements View.OnClickList
         _dbHandler = new DatabaseHandler(_c);
         _preferences = _c.getSharedPreferences("SharedData", Context.MODE_PRIVATE);
         _editor = _preferences.edit();
+
+        _gson = new Gson();
 
         _phone = view.findViewById(R.id.phone_input);
         _name = view.findViewById(R.id.name_input);
@@ -111,12 +116,44 @@ public class CreateCustomerFragment extends Fragment implements View.OnClickList
         _barcodeCapture = (BarcodeCapture) getChildFragmentManager().findFragmentById(R.id.barcode);
         _barcodeCapture.setRetrieval(this);
 
+
         _navigation.setVisibility(View.GONE);
         _btnHome.setVisibility(View.GONE);
         _openCartBtm.setVisibility(View.GONE);
         _addCustomerBtn.setOnClickListener(this);
-        _custTypesSpinner.setOnItemSelectedListener(this);
-        _vfdCustTypeSpinner.setOnItemSelectedListener(this);
+        _custTypesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+                _shopType = adapterView.getItemAtPosition(position).toString();
+                _typeId = _customerTypes.get(position).getId();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        _vfdCustTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+                if (position != 0) {
+                    _vfdCustId.setText("NIL");
+                    _vfdCustId.setVisibility(View.GONE);
+                } else {
+                    _vfdCustId.setVisibility(View.VISIBLE);
+                }
+                _vfdType = adapterView.getItemAtPosition(position).toString();
+                _vfdTypeId = _vfdCustTypes.get(position).getId();
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
 
         getCustomerType();
         getVfdCustomerType();
@@ -152,7 +189,6 @@ public class CreateCustomerFragment extends Fragment implements View.OnClickList
         });
 
         _barcodeCapture.stopScanning();
-
     }
 
     @Override
@@ -172,32 +208,6 @@ public class CreateCustomerFragment extends Fragment implements View.OnClickList
 
     @Override
     public void onPermissionRequestDenied() {
-
-    }
-
-
-    @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int position, long lid) {
-        switch (view.getId()) {
-            case R.id.cust_types_spinner:
-                _shopType = adapterView.getItemAtPosition(position).toString();
-                _typeId = _customerTypes.get(position).getId();
-                break;
-            case R.id.vfd_cust_type_spinner:
-                _vfdType = adapterView.getItemAtPosition(position).toString();
-                _vfdTypeId =    _vfdCustTypes.get(position).getId();
-
-                Toast.makeText(_c, ""+_vfdTypeId+" "+_vfdType, Toast.LENGTH_SHORT).show();
-
-                break;
-        }
-
-
-
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
 
     }
 
@@ -271,26 +281,32 @@ public class CreateCustomerFragment extends Fragment implements View.OnClickList
 
         Endpoint.setUrl("customer/new");
         String url = Endpoint.getUrl();
+        _progressBar.setVisibility(View.VISIBLE);
 
         StringRequest postRequest = new StringRequest(Request.Method.POST, url,
                 new com.android.volley.Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.i("LOGHAPA", response);
 
-                        _progressBar.setVisibility(View.VISIBLE);
 
-                        if (response.equals("1")) {
-                            Toast.makeText(_c, "Namba imeshasajiliwa", Toast.LENGTH_LONG).show();
+                        _progressBar.setVisibility(View.GONE);
+                        ResponseData res = _gson.fromJson(response, ResponseData.class);
+
+                        Log.i("LOGHAPA", response + "  " + res.getFlag());
+
+                        if (res.getFlag().equals("phone_exist")) {
+
+                            Toast.makeText(_c, "Namba ya simu imeshasajiliwa", Toast.LENGTH_LONG).show();
+
+                        } else if (res.getFlag().equals("qr_exist")) {
+
+                            Toast.makeText(_c, "QR code imeshasajiliwa", Toast.LENGTH_LONG).show();
+
                         } else {
-                            Toast.makeText(_c, "Mteja amesajiliwa", Toast.LENGTH_LONG).show();
-
                             //delete qr code from shared preference
                             _editor.remove("BARCODE");
                             new FragmentHelper(_c).replace(new SuccessCutomerRegistrationFragment(), "SuccessCutomerRegistrationFragment", R.id.fragment_placeholder);
                         }
-
-
                     }
                 },
                 new com.android.volley.Response.ErrorListener() {
@@ -313,6 +329,7 @@ public class CreateCustomerFragment extends Fragment implements View.OnClickList
         ) {
             @Override
             protected Map<String, String> getParams() {
+
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("lng", "0");
                 params.put("lat", "0");
@@ -320,8 +337,8 @@ public class CreateCustomerFragment extends Fragment implements View.OnClickList
                 params.put("name", _name.getText().toString());
                 params.put("type_id", "" + _typeId);
                 params.put("pin", "0000");
-                params.put("vfd_cust_type", "" + 1);
-                params.put("vfd_cust_id", "");
+                params.put("vfd_cust_type", "" + _vfdTypeId);
+                params.put("vfd_cust_id", "" + _vfdCustId.getText().toString());
                 params.put("qr_code", _preferences.getString("BARCODE", null));
                 params.put("registered_by", "" + _dbHandler.getUser().getServerId());
 
