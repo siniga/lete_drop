@@ -40,6 +40,7 @@ import com.agnet.lete_drop.models.Order;
 import com.agnet.lete_drop.models.OrderResponse;
 import com.agnet.lete_drop.models.Receipt;
 import com.agnet.lete_drop.models.ResponseData;
+import com.agnet.lete_drop.models.Sms;
 import com.agnet.lete_drop.models.Vfd;
 import com.agnet.lete_drop.service.Endpoint;
 import com.android.volley.AuthFailureError;
@@ -122,7 +123,7 @@ public class ReceiptFragment extends Fragment {
         _receiptWrapper = view.findViewById(R.id.receipt_wrapper);
         _confirmOrderBtn = view.findViewById(R.id.button_confirm_order);
         _cancelOrderBtn = view.findViewById(R.id.button_cancel);
-        _progressBar  = view.findViewById(R.id.progress_bar);
+        _progressBar = view.findViewById(R.id.progress_bar);
 
         //methods
         _cartlist.setHasFixedSize(true);
@@ -146,6 +147,11 @@ public class ReceiptFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 uploadOrder();
+                try {
+                    sendSMS();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -199,12 +205,12 @@ public class ReceiptFragment extends Fragment {
         Endpoint.setUrl("order");
         String url = Endpoint.getUrl();
 
-      //  Log.d("HEHRHHEE", order);
+        //  Log.d("HEHRHHEE", order);
 
         try {
             JsonObjectRequest postRequest = new JsonObjectRequest(url, new JSONObject(order),
                     response -> {
-                       // Log.d("HEHRHHEE", response.toString());
+                        // Log.d("HEHRHHEE", response.toString());
                         OrderResponse res = _gson.fromJson(String.valueOf(response), OrderResponse.class);
 
                         _order1 = res.getOrder();
@@ -279,7 +285,7 @@ public class ReceiptFragment extends Fragment {
         List<InvoiceDetail> invoiceDetails = new ArrayList<>();
 
         for (Cart cart : cartList) {
-            invoiceDetails.add(new InvoiceDetail(cart.getName(), ""+cart.getQuantity(), "1", "" + cart.getTotalPrice()));
+            invoiceDetails.add(new InvoiceDetail(cart.getName(), "" + cart.getQuantity(), "1", "" + cart.getTotalPrice()));
 
         }
 
@@ -294,11 +300,10 @@ public class ReceiptFragment extends Fragment {
         );
 
 
-
         Vfd vfd = new Vfd(invoiceList);
         Gson gson = new GsonBuilder().create();
 
-      //  Log.d("LOGHAPAPOA", gson.toJson(vfd));
+        //  Log.d("LOGHAPAPOA", gson.toJson(vfd));
 
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
@@ -313,7 +318,7 @@ public class ReceiptFragment extends Fragment {
 
                         Log.d("LOGHAPAPOA", "" + response);
 
-                     //   Toast.makeText(_c, "haifiki right", Toast.LENGTH_SHORT).show();
+                        //   Toast.makeText(_c, "haifiki right", Toast.LENGTH_SHORT).show();
 
                         //delete order after a successful submit
                         _dbHandler.deleteOrderById();
@@ -341,6 +346,59 @@ public class ReceiptFragment extends Fragment {
         };
 
         mSingleton.getInstance(_c).addToRequestQueue(jsonObjReq);
+    }
+
+
+    public void sendSMS() throws JSONException {
+        String url = "https://messaging-service.co.tz/api/sms/v1/text/single";
+
+        String sms = "RoutePro\n CUSTNAME Khamis peter CUSTID 123455666\n RECEIPTNO 150\n DATE 2021 - 01 - 15\n VERCODE FEDAC0150\n TOTAL TZS 23999 \n TAX TZS 18999";
+        Sms txtMsg = new Sms("NEXTSMS", "255768632087", sms);
+        String smsAuth = getResources().getString(R.string.sms_auth);
+
+
+        Log.d("HERSTRING", _gson.toJson(txtMsg));
+
+
+
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
+                url, new JSONObject(_gson.toJson(txtMsg)),
+                new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d(TAG, response.toString());
+
+                        //Receipt res = _gson.fromJson(String.valueOf(response), Receipt.class);
+
+                        Log.d("LOGHAPAPOA", "" + response);
+
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+            }
+        }) {
+
+            /**
+             * Passing some request headers
+             * */
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Basic Um91dGVQcm86emV5MTIzMzIxUVE=");
+                headers.put("Content-Type", "application/json");
+                headers.put("Accept", "application/json");
+                return headers;
+            }
+
+
+        };
+
+        mSingleton.getInstance(_c).addToRequestQueue(jsonObjReq);
+
     }
 
 }

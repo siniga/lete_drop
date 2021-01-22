@@ -6,4 +6,18 @@
     <string name="title_activity_location"></string>
     <string name="mapbox_access_token">pk.eyJ1IjoicGV0ZXJraGFtaXMiLCJhIjoiY2tjcWsyaGZyMGFzYzJ1bXg3dmc2MjRpMSJ9.NR3BCrNmFOGvLy8gZYLZPQ</string>
     <string name="title_activity_main2">Main2Activity</string>
+    <string name="sms">
+         RoutePro
+         Cust id 123455666
+         Cust Name Khamis peter
+         RNO 150
+         RDATE 2021 - 01 - 15
+         VERIFICATION CODE FEDAC0150
+         --
+         Total TZS 23999
+        Tax TZS 18999
+    </string>
+    <string name="sms_auth">
+        Basic Um91dGVQcm86emV5MTIzMzIxUVE=
+    </string>
 </resources>
