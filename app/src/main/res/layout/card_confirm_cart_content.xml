@@ -16,9 +16,11 @@
         android:layout_weight="1"
         android:gravity="center"
         android:text="1"
+        android:textSize="11sp"
         android:textColor="@android:color/black" />
 
     <TextView
+        android:textSize="11sp"
         android:id="@+id/product_name"
         android:layout_width="1dp"
         android:layout_height="wrap_content"
@@ -35,9 +37,11 @@
         android:layout_weight="1"
         android:gravity="center"
         android:text="Bottle"
+        android:textSize="11sp"
         android:textColor="@android:color/black" />
 
     <TextView
+        android:textSize="11sp"
         android:id="@+id/price"
         android:layout_width="1dp"
         android:layout_height="wrap_content"

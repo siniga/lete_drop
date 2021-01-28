@@ -9,8 +9,7 @@
     android:orientation="vertical"
     android:padding="15dp"
     app:behavior_hideable="true"
-    app:behavior_peekHeight="0dp"
-    app:layout_behavior="@string/bottom_sheet_behavior">
+    app:behavior_peekHeight="0dp">
 
 
     <LinearLayout

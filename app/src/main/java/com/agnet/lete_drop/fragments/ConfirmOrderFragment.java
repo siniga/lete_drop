@@ -158,7 +158,7 @@ public class ConfirmOrderFragment extends Fragment implements View.OnClickListen
     public void onClick(View view) {
        switch (view.getId()){
            case R.id.button_confirm_order:
-               uploadOrder();
+//               uploadOrder();
            break;
        }
     }
@@ -191,7 +191,7 @@ public class ConfirmOrderFragment extends Fragment implements View.OnClickListen
         _dbHandler.createOrder(orders);
     }
 
-    private void uploadOrder() {
+    /*private void uploadOrder() {
 
         final String order = _dbHandler.checkoutOrders();
         final String phone = _preferences.getString("CLOSEST_DRIVER_PHONE", null);
@@ -245,10 +245,10 @@ public class ConfirmOrderFragment extends Fragment implements View.OnClickListen
                                 // Toast.makeText(getContext(), ""+res.getOrderId(), Toast.LENGTH_SHORT).show();
 
                                 //redirect back to home activity
-                                /*Intent intent = new Intent(getActivity(), MainActivity.class);
+                                *//*Intent intent = new Intent(getActivity(), MainActivity.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                                startActivity( intent);*/
+                                startActivity( intent);*//*
 
 
                             } else {
@@ -279,5 +279,5 @@ public class ConfirmOrderFragment extends Fragment implements View.OnClickListen
             e.printStackTrace();
         }
     }
-
+*/
 }

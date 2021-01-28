@@ -2,17 +2,21 @@ package com.agnet.lete_drop.models;
 
 import com.google.gson.annotations.SerializedName;
 
-public  class Receipt {
+public class Receipt {
+    private int id, orderId;
     private String status;
-
-    @SerializedName("vfdinvoicenum")
-    private int invoiceNum;
 
     @SerializedName("rctvnum")
     private String verificationUrl;
 
     @SerializedName("rctvcode")
-    private String receiptCode;
+    private String verificationCode;
+
+    @SerializedName("znumber")
+    private String zNumber;
+
+    @SerializedName("vfdinvoicenum")
+    private String vfdInvoiceNum;
 
     @SerializedName("idate")
     private String date;
@@ -20,38 +24,76 @@ public  class Receipt {
     @SerializedName("itime")
     private String time;
 
-    public Receipt(String status, String verificationUrl, String receiptCode, int invoiceNum, String date, String time) {
+    @SerializedName("qrpath")
+    private String qrCodePath;
+
+    @SerializedName("qrcode_uri")
+    private String qrCodeImg;
+
+
+    public Receipt(int id, String status, String verificationUrl, String verificationCode,
+                   String zNumber, String vfdInvoiceNum, String date, String time, String qrCodePath,
+                   String qrCodeImg, int orderId
+    ) {
+        this.id = id;
         this.status = status;
-        this.invoiceNum = invoiceNum;
         this.verificationUrl = verificationUrl;
-        this.receiptCode = receiptCode;
+        this.verificationCode = verificationCode;
+        this.zNumber = zNumber;
+        this.vfdInvoiceNum = vfdInvoiceNum;
         this.date = date;
         this.time = time;
+        this.qrCodePath = qrCodePath;
+        this.qrCodeImg = qrCodeImg;
+        this.orderId = orderId;
+
+    }
+
+
+    public int getId() {
+        return id;
+    }
+
+    public int getOrderId() {
+        return orderId;
     }
 
     public String getDate() {
         return date;
     }
 
-    public String getTime() {
-        return time;
+    public String getQrCodeImg() {
+        return qrCodeImg;
+    }
+
+    public String getQrCodePath() {
+        return qrCodePath;
     }
 
     public String getStatus() {
         return status;
     }
 
-    public int getInvoiceNum() {
-        return invoiceNum;
+    public String getTime() {
+        return time;
     }
 
-    public String getReceiptCode() {
-        return receiptCode;
+    public String getVerificationCode() {
+        return verificationCode;
     }
 
     public String getVerificationUrl() {
         return verificationUrl;
     }
+
+    public String getVfdInvoiceNum() {
+        return vfdInvoiceNum;
+    }
+
+    public String getzNumber() {
+        return zNumber;
+    }
+
 }
 
 

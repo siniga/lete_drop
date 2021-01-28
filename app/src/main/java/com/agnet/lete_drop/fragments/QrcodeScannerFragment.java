@@ -195,7 +195,7 @@ public class QrcodeScannerFragment extends BarcodeFragment implements BarcodeRet
                         ResponseData res = _gson.fromJson(response, ResponseData.class);
                         _customer = res.getCustomer();
 
-                        Log.d("HEERHEHEHE",  response);
+                       // Log.d("HEERHEHEHE",  response);
 
                         if(res.getCode() == 200){
 
@@ -268,6 +268,7 @@ public class QrcodeScannerFragment extends BarcodeFragment implements BarcodeRet
           new FragmentHelper(_c).replace(new ReceiptFragment(),"ReceiptFragment", R.id.fragment_placeholder);
 
     }
+
 
 
 

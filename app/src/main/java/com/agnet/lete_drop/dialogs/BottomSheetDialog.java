@@ -156,7 +156,6 @@ public class BottomSheetDialog extends BottomSheetDialogFragment {
             public void onClick(View v) {
                 _progressBar.setVisibility(View.VISIBLE);
 
-                uploadOrder();
 /*
                 Intent intent = new Intent(getContext(), AndroidDatabaseManager.class);
                 getActivity().startActivity(intent);*/
@@ -206,92 +205,6 @@ public class BottomSheetDialog extends BottomSheetDialogFragment {
         _dbHandler.createOrder(orders);
     }
 
-    private void uploadOrder() {
-
-        final String order = _dbHandler.checkoutOrders();
-        final String phone = _preferences.getString("CLOSEST_DRIVER_PHONE", null);
-
-        Endpoint.setUrl("order?driver_phone=" + phone);
-        String url = Endpoint.getUrl();
-
-        //   Log.d("HEHRHHEE", order);
-        try {
-            JsonObjectRequest postRequest = new JsonObjectRequest(url, new JSONObject(order),
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            //   Log.d("HEHRHHEE", response.toString());
-                            OrderResponse res = _gson.fromJson(String.valueOf(response), OrderResponse.class);
-
-                            History order = res.getOrder();
-
-                            if (res.getCode() == 201) {
-                                // Log.d("ODADDA", "hehe"+order.getOrderNo() +" id"+order.getId());
-
-                                //update order with an id returned from server
-                                _dbHandler.updateOrder(order.getId());
-
-                                //delete order after a successful submit
-                                _dbHandler.deleteOrderById();
-                                _dbHandler.deleteCartByOrderId();
-
-                                //reset quantity count on cart
-                                ((MainActivity) getActivity()).setCartQnty(0);
-
-                                //   Toast.makeText(getContext(), "Oda yako imekamilika!", Toast.LENGTH_LONG).show();
-                                _dialog.dismiss();
-
-                                _editor.putString("NEW_ORDER_NO", order.getOrderNo());
-                                _editor.putInt("NEW_ORDER_ID", order.getId());
-                                _editor.putInt("NEW_ORDER_STATUS", order.getStatus());
-                                _editor.commit();
-
-                                //remove all the fragment traces so that user can start another order afresh from category/home fragment
-                                FragmentManager fm = getActivity().getSupportFragmentManager();
-                                for (int i = 0; i < fm.getBackStackEntryCount(); ++i) {
-                                    fm.popBackStack();
-                                }
-
-                                new FragmentHelper(getActivity()).replace(new SuccessFragment(), "SuccessFragment", R.id.fragment_placeholder);
-
-
-                                // Toast.makeText(getContext(), ""+res.getOrderId(), Toast.LENGTH_SHORT).show();
-
-                                //redirect back to home activity
-                                /*Intent intent = new Intent(getActivity(), MainActivity.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                                startActivity( intent);*/
-
-
-                            } else {
-                                Toast.makeText(getContext(), "Mtandao unasumbu, Jaribu tena!", Toast.LENGTH_LONG).show();
-                            }
-                            _progressBar.setVisibility(View.GONE);
-                        }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    VolleyLog.e("Error: ", error.networkResponse);
-                    NetworkResponse response = error.networkResponse;
-                    Toast.makeText(getContext(), "Kuna tatizo, hakikisha mtandao upo sawa alafu jaribu tena!", Toast.LENGTH_LONG).show();
-                    AppManager.onErrorResponse(error, getContext());
-                    _progressBar.setVisibility(View.GONE);
-
-                    if (response != null && response.data != null) {
-                        String errorString = new String(response.data);
-                        Log.i("log error", errorString);
-                    }
-                }
-            });
-
-            postRequest.setRetryPolicy(new DefaultRetryPolicy(8000, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-
-            mSingleton.getInstance(getContext()).addToRequestQueue(postRequest);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
 
 
 }

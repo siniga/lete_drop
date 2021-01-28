@@ -1,16 +1,14 @@
 package com.agnet.lete_drop.fragments;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.hardware.Camera;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -39,7 +37,6 @@ import com.agnet.lete_drop.models.InvoiceDetail;
 import com.agnet.lete_drop.models.Order;
 import com.agnet.lete_drop.models.OrderResponse;
 import com.agnet.lete_drop.models.Receipt;
-import com.agnet.lete_drop.models.ResponseData;
 import com.agnet.lete_drop.models.Sms;
 import com.agnet.lete_drop.models.Vfd;
 import com.agnet.lete_drop.service.Endpoint;
@@ -51,10 +48,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.google.android.gms.samples.vision.barcodereader.BarcodeCapture;
-import com.google.android.gms.samples.vision.barcodereader.BarcodeGraphic;
-import com.google.android.gms.vision.barcode.Barcode;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -67,13 +61,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import xyz.belvi.mobilevisionbarcodescanner.BarcodeFragment;
-import xyz.belvi.mobilevisionbarcodescanner.BarcodeRetriever;
-
 import static com.android.volley.VolleyLog.TAG;
 
 
-public class ReceiptFragment extends Fragment {
+public class TraReceiptFragment extends Fragment {
 
     private FragmentActivity _c;
     private SharedPreferences _preferences;
@@ -93,13 +84,14 @@ public class ReceiptFragment extends Fragment {
     private Button _cancelOrderBtn;
     private History _order1;
     private LinearLayout _progressBar;
+    private WebView _webView;
 
 
     @SuppressLint("RestrictedApi")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_receipt, container, false);
+        View view = inflater.inflate(R.layout.fragment_tra_receipt, container, false);
         _c = getActivity();
 
         //initialize
@@ -125,6 +117,8 @@ public class ReceiptFragment extends Fragment {
         _confirmOrderBtn = view.findViewById(R.id.button_confirm_order);
         _cancelOrderBtn = view.findViewById(R.id.button_cancel);
         _progressBar = view.findViewById(R.id.progress_bar);
+        _webView = view.findViewById(R.id.webview);
+        _webView.loadUrl("https://virtual.tra.go.tz//efdmsRctVerify//FEDAC0174");
 
         //methods
         _cartlist.setHasFixedSize(true);
@@ -147,12 +141,12 @@ public class ReceiptFragment extends Fragment {
         _confirmOrderBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                uploadOrder();
-                try {
-                    sendSMS();
+                //uploadOrder();
+                /*try {
+                  //  sendSMS();
                 } catch (JSONException e) {
                     e.printStackTrace();
-                }
+                }*/
             }
         });
 
@@ -264,8 +258,8 @@ public class ReceiptFragment extends Fragment {
     public void sendSMS() throws JSONException {
         String url = "https://messaging-service.co.tz/api/sms/v1/text/single";
 
-        String sms = "RoutePro\nCUSTNAME Tinashe Motsi CUSTID 123455666\n RECEIPTNO 150\n DATE 2021 - 01 - 15\n VERCODE FEDAC0150\n TOTAL TZS 23999 \n TAX TZS 18999";
-        Sms txtMsg = new Sms("NEXTSMS", "255758131368", sms);
+        String sms = "RoutePro\n CUSTNAME Khamis peter CUSTID 123455666\n RECEIPTNO 150\n DATE 2021 - 01 - 15\n VERCODE FEDAC0150\n TOTAL TZS 23999 \n TAX TZS 18999";
+        Sms txtMsg = new Sms("NEXTSMS", "255768632087", sms);
         String smsAuth = getResources().getString(R.string.sms_auth);
 
 
@@ -322,77 +316,6 @@ public class ReceiptFragment extends Fragment {
 
     }
 
-    private void uploadOrder() {
 
-        final String order = _dbHandler.checkoutOrders();
-//        orderMap.put("products", gson.toJson(checkoutCart()));
-
-
-
-        _progressBar.setVisibility(View.VISIBLE);
-
-        Endpoint.setUrl("order");
-        String url = Endpoint.getUrl();
-
-        try {
-            JsonObjectRequest postRequest = new JsonObjectRequest(url, new JSONObject(order),
-                    response -> {
-
-                        OrderResponse res = _gson.fromJson(String.valueOf(response), OrderResponse.class);
-                        _order1 = res.getOrder();
-
-                        if (res.getCode() == 201) {
-
-                            //reset quantity count on cart
-                            ((MainActivity) getActivity()).setCartQnty(0);
-
-
-                            _editor.putString("NEW_ORDER_NO", _order1.getOrderNo());
-                            _editor.putInt("NEW_ORDER_ID", _order1.getId());
-                            _editor.putInt("NEW_ORDER_STATUS", _order1.getStatus());
-                            _editor.commit();
-
-                            //remove all the fragment traces so that user can start another order afresh from category/home fragment
-                            FragmentManager fm = getActivity().getSupportFragmentManager();
-                            for (int i = 0; i < fm.getBackStackEntryCount(); ++i) {
-                                fm.popBackStack();
-                            }
-
-                            //uploadReceipt();
-
-                            _dbHandler.deleteOrderById();
-                            _dbHandler.deleteCartByOrderId();
-
-
-                            new FragmentHelper(getActivity()).replace(new SuccessFragment(), "SuccessFragment", R.id.fragment_placeholder);
-                            _progressBar.setVisibility(View.GONE);
-
-                        } else {
-                            Toast.makeText(_c, "Mtandao unasumbu, Jaribu tena!", Toast.LENGTH_LONG).show();
-                        }
-
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    VolleyLog.e("Error: ", error.networkResponse);
-                    NetworkResponse response = error.networkResponse;
-                    Toast.makeText(_c, "Kuna tatizo, hakikisha mtandao upo sawa alafu jaribu tena!", Toast.LENGTH_LONG).show();
-                    AppManager.onErrorResponse(error, getContext());
-
-                    _progressBar.setVisibility(View.GONE);
-                    if (response != null && response.data != null) {
-                        String errorString = new String(response.data);
-                        Log.i("log error", errorString);
-                    }
-                }
-            });
-
-            postRequest.setRetryPolicy(new DefaultRetryPolicy(8000, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-            mSingleton.getInstance(getContext()).addToRequestQueue(postRequest);
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
 
 }

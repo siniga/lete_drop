@@ -845,7 +845,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         }
 
-       // database.close();
+        // database.close();
 
         return cartList;
     }
@@ -878,7 +878,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         }
 
-       // database.close();
+        // database.close();
 
         //Use GSON to serialize Array List to JSON
         return gson.toJson(orderMap);
