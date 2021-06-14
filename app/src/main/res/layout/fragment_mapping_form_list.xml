@@ -85,7 +85,7 @@
             android:layout_marginTop="0dp"
             android:background="@android:color/white"
             android:orientation="vertical"
-            android:visibility="gone">
+            >
 
             <!-- Adding 7 rows of placeholders -->
             <LinearLayout

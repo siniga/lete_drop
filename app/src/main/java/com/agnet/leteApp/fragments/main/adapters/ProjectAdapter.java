@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.agnet.leteApp.R;
 import com.agnet.leteApp.fragments.main.mapping.MappingFormListFragment;
 import com.agnet.leteApp.fragments.main.merchandise.MerchandiseFormFragment;
+import com.agnet.leteApp.fragments.main.sales.ProductsFragment;
 import com.agnet.leteApp.helpers.FragmentHelper;
 import com.agnet.leteApp.models.Project;
 import com.agnet.leteApp.service.Endpoint;
@@ -89,7 +90,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
                     }else if(currentProject.getType().equals("Merchandise")){
                         new FragmentHelper(c).replaceWithbackStack(new MerchandiseFormFragment(), "MerchandiseFragment", R.id.fragment_placeholder);
                     }else{
-                        Toast.makeText(c, "Sales", Toast.LENGTH_SHORT).show();
+                        new FragmentHelper(c).replaceWithbackStack(new ProductsFragment(), "ProductsFragment", R.id.fragment_placeholder);
                     }
 
                 }

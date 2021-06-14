@@ -1,4 +1,4 @@
-package com.agnet.leteApp.fragments.main;
+package com.agnet.leteApp.fragments.main.sales;
 
 
 import android.annotation.SuppressLint;
@@ -10,7 +10,6 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,22 +17,25 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.agnet.leteApp.R;
 import com.agnet.leteApp.application.mSingleton;
 import com.agnet.leteApp.fragments.auth.LoginFragment;
+import com.agnet.leteApp.fragments.main.adapters.CategoryAdapter;
+import com.agnet.leteApp.fragments.main.adapters.ProductsAdapter;
 import com.agnet.leteApp.fragments.main.adapters.ProjectAdapter;
 import com.agnet.leteApp.fragments.main.adapters.ProjectTypeAdapter;
 import com.agnet.leteApp.helpers.FragmentHelper;
+import com.agnet.leteApp.models.Category;
 import com.agnet.leteApp.models.ProjectType;
 import com.agnet.leteApp.models.ResponseData;
 import com.agnet.leteApp.models.User;
 import com.agnet.leteApp.service.Endpoint;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
-import com.android.volley.Response;
 import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
@@ -45,11 +47,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ProjectFragment extends Fragment {
+public class ProductsFragment extends Fragment {
 
     private FragmentActivity _c;
-    private RecyclerView _projectTypeList, _projectList;
-    private LinearLayoutManager _projectTypeLayoutManager, _projectLayoutManager;
+    private RecyclerView _productsList, _categorytList;
+    private LinearLayoutManager _productsLayoutManager, _categoryLayoutManager;
     private String Token;
     private SharedPreferences.Editor _editor;
     private SharedPreferences _preferences;
@@ -62,7 +64,7 @@ public class ProjectFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_project, container, false);
+        View view = inflater.inflate(R.layout.fragment_products, container, false);
         _c = getActivity();
 
         _preferences = getActivity().getSharedPreferences("SharedData", Context.MODE_PRIVATE);
@@ -70,57 +72,36 @@ public class ProjectFragment extends Fragment {
         _gson = new Gson();
 
         TextView username = view.findViewById(R.id.user_name);
-        _projectTypeList = view.findViewById(R.id.project_type_list);
-        _projectList = view.findViewById(R.id.project_list);
+        _categorytList= view.findViewById(R.id.category_list);
+        _productsList= view.findViewById(R.id.product_list);
         _shimmerLoader = view.findViewById(R.id.shimmer_view_container);
         LinearLayout userAcc = view.findViewById(R.id.view_user_account_btn);
-
-       /*
-
-        LinearLayout salesBtn = view.findViewById(R.id.sales_btn);
-        ImageView userAcc = view.findViewById(R.id.user_account);
-        LinearLayout merchandiSe = view.findViewById(R.id.merchandise_btn);*/
 
 
         try {
             _user = _gson.fromJson(_preferences.getString("User", null), User.class);
             Token = _preferences.getString("TOKEN", null);
-            username.setText(_user.getName());
+            String projectName = _preferences.getString("PROJECT_NAME", null);
+            username.setText(projectName);
 
         } catch (NullPointerException e) {
 
         }
 
-        _projectTypeLayoutManager = new LinearLayoutManager(_c, RecyclerView.HORIZONTAL, false);
-        _projectTypeList.setLayoutManager(_projectTypeLayoutManager);
+        _categoryLayoutManager= new LinearLayoutManager(_c, RecyclerView.HORIZONTAL, false);
+        _categorytList.setLayoutManager(_categoryLayoutManager);
 
-        ProjectTypeAdapter typeAdapter = new ProjectTypeAdapter(_c, getProjectTypes(), this);
-        _projectTypeList.setAdapter(typeAdapter);
 
-        _projectLayoutManager = new LinearLayoutManager(_c, RecyclerView.VERTICAL, false);
-        _projectList.setLayoutManager(_projectLayoutManager);
+        _productsLayoutManager = new GridLayoutManager(_c, 2);
+        _productsList.setLayoutManager(_productsLayoutManager);
 
-        userAcc.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                _editor.remove("TOKEN");
-                _editor.commit();
-                new FragmentHelper(_c).replaceWithAnimSlideFromRight(new LoginFragment(), "LoginFragment", R.id.fragment_placeholder);
 
-            }
-        });
+
+        getCategories();
 
         return view;
     }
 
-    private List<ProjectType> getProjectTypes() {
-        List<ProjectType> list = new ArrayList<>();
-        list.add(new ProjectType(1, "Mapping", "ic_type_mapping_grey", "ic_type_mapping_white"));
-        list.add(new ProjectType(2, "Merchandise", "ic_type_merchandise_grey", "ic_type_merchandise_white"));
-        list.add(new ProjectType(3, "Sales", "ic_type_sales_grey", "ic_type_sales_white"));
-        list.add(new ProjectType(4, "Outlets", "ic_type_outlet_grey", "ic_type_outlet_white"));
-        return list;
-    }
 
     @Override
     public void onPause() {
@@ -140,6 +121,8 @@ public class ProjectFragment extends Fragment {
             if (event.getAction() == KeyEvent.ACTION_DOWN) {
                 if (keyCode == KeyEvent.KEYCODE_BACK) {
 
+                    _c.finish();
+                    //Toast.makeText(_c, "Here we a", Toast.LENGTH_SHORT).show();
 
                     return true;
                 }
@@ -148,23 +131,91 @@ public class ProjectFragment extends Fragment {
         });
     }
 
-    public void getPorjects(String type) {
+    public void getCategories() {
+
         _shimmerLoader.setVisibility(View.VISIBLE);
         _shimmerLoader.startShimmerAnimation();
 
-        Endpoint.setUrl("projects/" + type + "/user/" + _user.getId());
+        Endpoint.setUrl("categories/client/3");
+        String url = Endpoint.getUrl();
+
+        StringRequest postRequest = new StringRequest(Request.Method.GET, url,
+                response -> {
+                    ResponseData res = _gson.fromJson(response, ResponseData.class);
+
+
+                    CategoryAdapter productsAdapter = new CategoryAdapter(_c,res.getCategories(), this);
+                    _categorytList.setAdapter(productsAdapter);
+
+                    _shimmerLoader.setVisibility(View.GONE);
+                    _shimmerLoader.stopShimmerAnimation();
+
+                    getProducts();
+                },
+                error -> {
+                    error.printStackTrace();
+
+
+                    _shimmerLoader.setVisibility(View.GONE);
+                    _shimmerLoader.stopShimmerAnimation();
+
+                    NetworkResponse response = error.networkResponse;
+                    String errorMsg = "";
+                    if (response != null && response.data != null) {
+                        String errorString = new String(response.data);
+                        Log.i("log error", errorString);
+                        //TODO: display errors based on the message from the server
+                        Toast.makeText(_c, "Kuna tatizo, angalia mtandao alafu jaribu tena", Toast.LENGTH_SHORT).show();
+                    }
+
+
+                }
+        ) {
+
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Authorization", "Bearer " + "" + Token);
+                return params;
+            }
+        };
+        mSingleton.getInstance(_c).addToRequestQueue(postRequest);
+
+        postRequest.setRetryPolicy(new RetryPolicy() {
+            @Override
+            public int getCurrentTimeout() {
+                return 50000;
+            }
+
+            @Override
+            public int getCurrentRetryCount() {
+                return 50000;
+            }
+
+            @Override
+            public void retry(VolleyError error) throws VolleyError {
+
+            }
+        });
+    }
+
+
+    public void getProducts() {
+
+
+        Endpoint.setUrl("products/category/1");
         String url = Endpoint.getUrl();
 
         StringRequest postRequest = new StringRequest(Request.Method.GET, url,
                 response -> {
 
+
                     ResponseData res = _gson.fromJson(response, ResponseData.class);
 
-                    ProjectAdapter projectAdapter = new ProjectAdapter(_c, res.getProjects());
-                    _projectList.setAdapter(projectAdapter);
+                    ProductsAdapter productsAdapter = new ProductsAdapter(_c,res.getProducts(), this);
+                    _productsList.setAdapter(productsAdapter);
 
-                    _shimmerLoader.setVisibility(View.GONE);
-                    _shimmerLoader.stopShimmerAnimation();
+                    Log.d("RESPONSEHERE", _gson.toJson(res.getProducts()));
 
                 },
                 error -> {

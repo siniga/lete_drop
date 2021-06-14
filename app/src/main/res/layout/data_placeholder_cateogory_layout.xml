@@ -9,21 +9,19 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="130dp"
-        android:layout_marginTop="@dimen/padding_10"
-        android:orientation="horizontal"
-        >
+        android:layout_height="100dp"
+        android:layout_marginTop="0dp"
+        android:orientation="horizontal">
         <View
             android:id="@+id/thumbnail"
             android:layout_width="1px"
-            android:layout_weight="1"
+            android:layout_weight=".4"
             android:layout_height="match_parent"
             android:layout_marginRight="@dimen/activityPadding"
             android:layout_marginTop="@dimen/padding_10"
             android:background="@color/light_grey_ddd"
             />
         <View
-            android:visibility="gone"
             android:id="@+id/thumbnail1"
             android:layout_width="1px"
             android:layout_weight="1"

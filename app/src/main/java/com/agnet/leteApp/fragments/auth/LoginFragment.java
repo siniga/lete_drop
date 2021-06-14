@@ -261,6 +261,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                     @Override
                     public void onErrorResponse(VolleyError error) {
 
+                        Toast.makeText(_c, "Kuna tatizo la mtandao, jaribu tena au wasiliana na wataalamu ", Toast.LENGTH_LONG).show();
                         _progressBar.setVisibility(View.GONE);
                         Log.d("RegistrationFragment", "here" + error.getMessage());
                         NetworkResponse response = error.networkResponse;

@@ -72,7 +72,9 @@ public class MappingQuestionnaireFragment extends Fragment {
     private int _formId;
     private LinearLayout _questionnaireWrapper;
     private List post = new ArrayList();
-    List<Answer> _answers = new ArrayList<>();
+    private List<Answer> _answers = new ArrayList<>();
+    private Button _submitBtn;
+    private LinearLayout _transparentLoader;
 
     @SuppressLint("RestrictedApi")
     @Override
@@ -88,7 +90,9 @@ public class MappingQuestionnaireFragment extends Fragment {
         _questionnaireWrapper = view.findViewById(R.id.questionnaire_main_wrapper);
         TextView formNameTxt = view.findViewById(R.id.form_name);
         TextView startedAtTxt = view.findViewById(R.id.started_at);
-        Button submitBtn = view.findViewById(R.id.submit_btn);
+        _submitBtn = view.findViewById(R.id.submit_btn);
+        _progressBar = view.findViewById(R.id.progress_bar);
+        _transparentLoader = view.findViewById(R.id.transparent_loader);
 
         try {
             _user = _gson.fromJson(_preferences.getString("User", null), User.class);
@@ -104,11 +108,12 @@ public class MappingQuestionnaireFragment extends Fragment {
 
         }
 
-        submitBtn.setOnClickListener(view1 -> {
+        _submitBtn.setOnClickListener(view1 -> {
 
             postFormResults();
-         //   new FragmentHelper(_c).replace(new MappingSuccessFragment(),"MappingSuccessFragment", R.id.fragment_placeholder);
-            Log.d("HEREVOAVA", _gson.toJson(_answers));
+            _submitBtn.setClickable(false);
+            _transparentLoader.setVisibility(View.VISIBLE);
+            _progressBar.setVisibility(View.VISIBLE);
         });
 
         getQuestionnare();
@@ -117,25 +122,25 @@ public class MappingQuestionnaireFragment extends Fragment {
     }
 
     public void createQuestionnaire(List<Quesionnaire> questions) {
-        for (int i = 0; i <= questions.size()-1 ; i++) {
+        for (int i = 0; i <= questions.size() - 1; i++) {
 
             _answers.add(new Answer("", questions.get(i).getId()));
 
             switch (questions.get(i).getTypeId()) {
                 case 1:
-                    addTextBox(questions.get(i),i);
+                    addTextBox(questions.get(i), i);
                     break;
                 case 2:
                     addRadioBox(questions.get(i).getQuestion(), questions.get(i).getOptions(), i);
                     break;
                 case 3:
-                    addSelectBox(questions.get(i).getQuestion(), questions.get(i).getOptions(),i);
+                    addSelectBox(questions.get(i).getQuestion(), questions.get(i).getOptions(), i);
                     break;
                 case 4:
-                    addCheckbox(questions.get(i).getQuestion(), questions.get(i).getOptions(),i);
+                    addCheckbox(questions.get(i).getQuestion(), questions.get(i).getOptions(), i);
                     break;
                 case 5:
-                    addnumericBox(questions.get(i).getQuestion(),i);
+                    addnumericBox(questions.get(i).getQuestion(), i);
                     break;
                 default:
                     break;
@@ -392,6 +397,9 @@ public class MappingQuestionnaireFragment extends Fragment {
         Endpoint.setUrl("form/" + _formId);
         String url = Endpoint.getUrl();
 
+        _transparentLoader.setVisibility(View.VISIBLE);
+        _progressBar.setVisibility(View.VISIBLE);
+
         StringRequest postRequest = new StringRequest(Request.Method.GET, url,
                 response -> {
 
@@ -403,6 +411,9 @@ public class MappingQuestionnaireFragment extends Fragment {
 
                         createQuestionnaire(questions);
 
+                        _transparentLoader.setVisibility(View.GONE);
+                        _progressBar.setVisibility(View.GONE);
+
                     }
 
 
@@ -411,6 +422,9 @@ public class MappingQuestionnaireFragment extends Fragment {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         error.printStackTrace();
+
+                        _transparentLoader.setVisibility(View.GONE);
+                        _progressBar.setVisibility(View.GONE);
 
                         NetworkResponse response = error.networkResponse;
                         String errorMsg = "";
@@ -463,11 +477,24 @@ public class MappingQuestionnaireFragment extends Fragment {
 
 
                     ResponseData res = _gson.fromJson(response, ResponseData.class);
-                    Log.d("HERWWERGO",_gson.toJson(res));
+                    if (res.getCode() == 201) {
+                        new FragmentHelper(_c).replace(new MappingSuccessFragment(), "MappingSuccessFragment", R.id.fragment_placeholder);
+                    } else {
+                        Toast.makeText(_c, "Kuna tatizo la mtandao, jaribu tena", Toast.LENGTH_SHORT).show();
+                    }
+
+                    _submitBtn.setClickable(true);
+
+                    _transparentLoader.setVisibility(View.VISIBLE);
+                    _progressBar.setVisibility(View.VISIBLE);
 
                 },
                 error -> {
                     error.printStackTrace();
+
+                    _submitBtn.setClickable(true);
+                    _transparentLoader.setVisibility(View.VISIBLE);
+                    _progressBar.setVisibility(View.VISIBLE);
 
                     NetworkResponse response = error.networkResponse;
                     String errorMsg = "";
@@ -492,9 +519,11 @@ public class MappingQuestionnaireFragment extends Fragment {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("results",_gson.toJson(_answers));
-                params.put("user_id",""+ _user.getId());
-                params.put("form_id",""+ _formId);
+                params.put("results", _gson.toJson(_answers));
+                params.put("user_id", "" + _user.getId());
+                params.put("form_id", "" + _formId);
+                params.put("lat", _preferences.getString("mLATITUDE", null));
+                params.put("lng", _preferences.getString("mLONGITUDE", null));
                 return params;
             }
         };
@@ -517,7 +546,6 @@ public class MappingQuestionnaireFragment extends Fragment {
             }
         });
     }
-
 
 
 }

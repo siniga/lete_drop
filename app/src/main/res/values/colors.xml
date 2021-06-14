@@ -11,6 +11,7 @@
     <color name="blue">#001689</color>
     <color name="white">#FFFFFF</color>
     <color name="grey_bg_default">#f2f5ff</color>
+    <color name="black_light_transparent">#a1000000</color>
 
     <color name="status_pending">#666666</color>
     <color name="status_accept">#009688</color>

@@ -36,6 +36,7 @@ import com.android.volley.Response;
 import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.gson.Gson;
 
 import java.util.HashMap;
@@ -54,6 +55,7 @@ public class MappingFormListFragment extends Fragment {
     private String _projectName;
     private RecyclerView _formList;
     private LinearLayoutManager _formLayoutManager;
+    private ShimmerFrameLayout _shimmerLoader;
 
 
     @SuppressLint("RestrictedApi")
@@ -69,6 +71,7 @@ public class MappingFormListFragment extends Fragment {
 
         TextView username = view.findViewById(R.id.user_name);
         _formList = view.findViewById(R.id.form_list);
+        _shimmerLoader = view.findViewById(R.id.shimmer_view_container);
 
         try {
             _user = _gson.fromJson(_preferences.getString("User", null), User.class);
@@ -89,6 +92,13 @@ public class MappingFormListFragment extends Fragment {
 
         return view;
     }
+    @Override
+    public void onPause() {
+        super.onPause();
+        _shimmerLoader.setVisibility(View.GONE);
+        _shimmerLoader.stopShimmerAnimation();
+    }
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -128,25 +138,24 @@ public class MappingFormListFragment extends Fragment {
                         _formList.setAdapter(formAdapter);
 
                     }
-
-
+                    _shimmerLoader.setVisibility(View.GONE);
+                    _shimmerLoader.stopShimmerAnimation();
                 },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        error.printStackTrace();
+                error -> {
+                    error.printStackTrace();
+                    _shimmerLoader.setVisibility(View.GONE);
+                    _shimmerLoader.stopShimmerAnimation();
 
-                        NetworkResponse response = error.networkResponse;
-                        String errorMsg = "";
-                        if (response != null && response.data != null) {
-                            String errorString = new String(response.data);
-                            Log.i("log error", errorString);
-                            //TODO: display errors based on the message from the server
-                            Toast.makeText(_c, "Kuna tatizo, angalia mtandao alafu jaribu tena", Toast.LENGTH_SHORT).show();
-                        }
-
-
+                    NetworkResponse response = error.networkResponse;
+                    String errorMsg = "";
+                    if (response != null && response.data != null) {
+                        String errorString = new String(response.data);
+                        Log.i("log error", errorString);
+                        //TODO: display errors based on the message from the server
+                        Toast.makeText(_c, "Kuna tatizo, angalia mtandao alafu jaribu tena", Toast.LENGTH_SHORT).show();
                     }
+
+
                 }
         ) {
 

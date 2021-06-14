@@ -136,7 +136,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
         public LinearLayout mWrapper;
         public TextView mName;
         public ImageView mImg;
-        public LinearLayout mTransparentView;
+
 
 
         public ViewHolder(Context context, View view) {
@@ -144,8 +144,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
 
             mWrapper = view.findViewById(R.id.category_wrapper);
             mName = view.findViewById(R.id.category_name);
-            mImg = view.findViewById(R.id.category_img);
-            mTransparentView = view.findViewById(R.id.transparent_frontview);
+
         }
 
     }
