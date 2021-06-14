@@ -12,18 +12,18 @@
 
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
             android:layout_marginTop="40dp"
-            android:src="@drawable/ic_success_large" />
+            android:src="@drawable/success_msg" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/padding_10"
-            android:text="Umefanikiwa kuuza"
-            android:textColor="@color/colorPrimaryDark"
+            android:text="Umefanikiwa"
+            android:textColor="@color/blue"
             android:textSize="25sp"
             android:textStyle="bold" />
 
@@ -33,28 +33,22 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/padding_10"
-            android:text="Tuma risiti kwa mteja kabla hujaendelea."
-            android:textColor="@android:color/black"
+            android:text="Umefanikiwa kuhifadhi taarifa ya mteja,"
+            android:textColor="@color/midd_grey"
             android:textSize="16sp" />
 
 
-        <View
-            android:id="@+id/success_border_hr"
-            android:layout_marginTop="20dp"
-            android:layout_below="@id/success_sub_hdr"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/light_grey_ddd"/>
-
         <TextView
-            android:id="@+id/order_no_hdr"
-            android:layout_marginTop="10dp"
-            android:textSize="16sp"
-            android:layout_below="@+id/success_border_hr"
-            android:text="Oda namba yako"
-            android:layout_centerInParent="true"
+            android:textAlignment="center"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="endelea kutumia app."
+            android:textColor="@color/midd_grey"
+            android:textSize="16sp" />
+
+
+
 
         <TextView
             android:id="@+id/order_no"
@@ -68,24 +62,25 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
+
         <LinearLayout
-            android:orientation="vertical"
             android:padding="20dp"
-            android:layout_below="@+id/order_no"
-            android:layout_marginTop="30dp"
+            android:layout_alignParentBottom="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <Button
-                android:id="@+id/view_order_btn"
-                android:backgroundTint="@color/colorPrimary"
-                android:text="Tuma risiti"
+                android:id="@+id/success_btn"
                 android:layout_width="match_parent"
-                android:layout_height="50dp" />
-
-
+                android:layout_height="60dp"
+                android:layout_below="@+id/comment_input"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/round_corners_blue"
+                android:text="Endelea"
+                android:textColor="@android:color/white" />
         </LinearLayout>
-
     </LinearLayout>
+
 
 
 

@@ -3,163 +3,152 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
+    android:background="@color/white"
     android:orientation="vertical"
-    android:paddingTop="40dp">
+    android:paddingTop="100dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
-        android:background="@color/blue"
-        android:fontFamily="@font/mryad_pro_boldcond"
+    <LinearLayout
         android:gravity="center"
-        android:paddingLeft="30dp"
-        android:paddingTop="15dp"
-        android:paddingRight="30dp"
-        android:paddingBottom="15dp"
-        android:text="Lete."
-        android:textColor="@color/colorPrimary"
-        android:textSize="40dp"
-        android:textStyle="bold" />
-
-
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/bottom_sheet"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="350dp"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/btm_sheet_login_bg"
-        android:clipToPadding="true"
-        app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+        android:layout_height="wrap_content">
+        <TextView
+            android:background="@color/blue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="50dp"
+            android:fontFamily="@font/mryad_pro_semibold"
+            android:gravity="center"
+            android:paddingLeft="15dp"
+            android:paddingTop="10dp"
+            android:paddingRight="15dp"
+            android:paddingBottom="10dp"
+            android:text="Lete."
+            android:textColor="@color/colorPrimary"
+            android:textSize="30dp"
+            android:textStyle="bold" />
 
 
-        <LinearLayout
+        <androidx.core.widget.NestedScrollView
+            android:layout_marginTop="20dp"
+            android:id="@+id/bottom_sheet"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="15dp">
+            android:clipToPadding="true"
+            app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
 
-            <TextView
-                android:id="@+id/phone_header"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="25dp"
-                android:layout_marginTop="25dp"
-                android:text="Namba ya siri"
-                android:textColor="@android:color/black"
-                android:textSize="19sp"
-                android:textStyle="bold" />
 
             <LinearLayout
-                android:id="@+id/root_otp_layout"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:orientation="horizontal"
-                android:padding="20dp"
-                android:weightSum="4">
+                android:orientation="vertical"
+               >
 
-                <EditText
-                    android:id="@+id/otp_edit_box1"
-                    android:layout_width="0dp"
-                    android:layout_height="50dp"
-                    android:layout_marginRight="20dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/edittext_curve_bg"
-                    android:gravity="center"
-                    android:inputType="numberPassword"
-                    android:maxLength="1"
-                    android:textSize="30sp" />
+                <TextView
+                    android:fontFamily="@font/mryad_pro_regular"
+                    android:id="@+id/phone_header"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Karibu lete app"
+                    android:textColor="@android:color/black"
+                    android:textSize="26sp"
+                    />
 
-                <EditText
-                    android:id="@+id/otp_edit_box2"
-                    android:layout_width="0dp"
-                    android:layout_height="50dp"
-                    android:layout_marginRight="20dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/edittext_curve_bg"
-                    android:gravity="center"
-                    android:inputType="numberPassword"
-                    android:maxLength="1"
-                    android:textSize="30sp" />
+                <TextView
+                    android:visibility="gone"
+                    android:id="@+id/phone_header1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Jaza taarifa zako hapo chini ili kuendelea"
+                    android:textColor="#8a8c94"
+                    android:textSize="18sp" />
 
-                <EditText
-                    android:id="@+id/otp_edit_box3"
-                    android:layout_width="0dp"
-                    android:layout_height="50dp"
-                    android:layout_marginRight="20dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/edittext_curve_bg"
-                    android:gravity="center"
-                    android:inputType="numberPassword"
-                    android:maxLength="1"
-                    android:textSize="30sp" />
+                <LinearLayout
+                    android:id="@+id/root_otp_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="55dp"
+                    android:orientation="vertical"
+                    android:weightSum="4">
 
-                <EditText
-                    android:id="@+id/otp_edit_box4"
-                    android:layout_width="0dp"
-                    android:layout_height="50dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/edittext_curve_bg"
-                    android:gravity="center"
-                    android:inputType="numberPassword"
-                    android:maxLength="1"
-                    android:textSize="30sp" />
+                    <EditText
+                        android:inputType="phone"
+                        android:id="@+id/phone_input"
+                        android:paddingLeft="20dp"
+                        android:hint="Namba ya simu"
+                        android:background="@drawable/round_corners_with_stroke_grey"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"/>
+
+                    <EditText
+                        android:id="@+id/password_input"
+                        android:paddingLeft="20dp"
+                        android:hint="password"
+                        android:inputType="textPassword"
+                        android:padding="10dp"
+                        android:layout_marginTop="35px"
+                        android:background="@drawable/round_corners_with_stroke_grey"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"/>
+
+                </LinearLayout>
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <Button
+                        android:id="@+id/login_btn"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_below="@+id/comment_input"
+                        android:layout_marginTop="30dp"
+                        android:background="@drawable/round_corners_blue"
+                        android:text="Endelea"
+                        android:textColor="@android:color/white" />
+
+                    <TextView
+                        android:id="@+id/signup_hdr"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/login_btn"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="50dp"
+                        android:text="Umejisajili lete?"
+                        android:textColor="#8a8c94"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+
+                    <TextView
+                        android:id="@+id/signup_link"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/login_btn"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="50dp"
+                        android:layout_toRightOf="@+id/signup_hdr"
+                        android:text="Jisajili sasa"
+                        android:textColor="@color/blue"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                </RelativeLayout>
 
 
             </LinearLayout>
 
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+        </androidx.core.widget.NestedScrollView>
 
-                <Button
-                    android:id="@+id/login_btn"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_below="@+id/comment_input"
-                    android:layout_marginTop="30dp"
-                    android:background="@drawable/round_corners_primary"
-                    android:text="Endelea"
-                    android:textColor="@android:color/black" />
-
-                <TextView
-                    android:id="@+id/signup_hdr"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/login_btn"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="50dp"
-                    android:text="Umejisajili lete?"
-                    android:textColor="@android:color/black"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-
-                <TextView
-                    android:id="@+id/signup_link"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/login_btn"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="50dp"
-                    android:layout_toRightOf="@+id/signup_hdr"
-                    android:text="Jisajili"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-            </RelativeLayout>
-
-
-        </LinearLayout>
-
-
-    </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
 
     <ProgressBar
         android:id="@+id/progressBar_cyclic"

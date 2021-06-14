@@ -1,0 +1,47 @@
+<RelativeLayout
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+>
+
+    <LinearLayout
+        android:layout_marginRight="12dp"
+        android:id="@+id/type_wrapper"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="65dp"
+            android:layout_height="60dp"
+            android:background="@drawable/round_corners_with_grey_bg">
+
+            <LinearLayout
+                android:id="@+id/icon_wrapper"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:elevation="7dp"
+                    android:id="@+id/icon"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:scaleType="fitXY"/>
+
+
+            </LinearLayout>
+        </LinearLayout>
+        <TextView
+            android:layout_marginTop="5dp"
+            android:layout_gravity="center"
+            android:text="Merchandise"
+            android:id="@+id/type_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:textSize="11sp"/>
+    </LinearLayout>
+
+</RelativeLayout>
