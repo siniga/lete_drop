@@ -3,6 +3,7 @@ package com.agnet.leteApp.fragments.main.adapters;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,7 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.google.gson.Gson;
 
 import java.util.Collections;
 import java.util.List;
@@ -42,6 +44,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
     private SharedPreferences.Editor editor;
     private SharedPreferences _preferences;
     private SharedPreferences.Editor _editor;
+    private Gson _gson;
 
 
     // Provide a suitable constructor (depends on the kind of dataset)
@@ -49,6 +52,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
         this.projects = projects;
         this.inflator = LayoutInflater.from(c);
         this.c = c;
+        _gson = new Gson();
 
         _preferences = c.getSharedPreferences("SharedData", Context.MODE_PRIVATE);
         _editor = _preferences.edit();

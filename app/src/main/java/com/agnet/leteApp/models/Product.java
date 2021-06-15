@@ -4,10 +4,13 @@ import com.google.gson.annotations.SerializedName;
 
 public class Product {
 
-    int id,skuId;
-    String name,  discount, quantity,price;
+   private int id,skuId;
+    private String name,  discount, quantity;
 
-    @SerializedName("photo")
+    @SerializedName("price")
+    private Double price;
+
+    @SerializedName("img")
     String imgUrl;
 
     @SerializedName("category_id")
@@ -18,7 +21,7 @@ public class Product {
 
     String unit, category, sku;
 
-    public Product(int id, String name, String  price, String unit, String category, String sku, String discount, String qnty, String imgUrl, int categoryId, int skuId, int active) {
+    public Product(int id, String name, Double  price, String unit, String category, String sku, String discount, String qnty, String imgUrl, int categoryId, int skuId, int active) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -40,7 +43,7 @@ public class Product {
         return name;
     }
 
-    public String getPrice() {
+    public Double getPrice() {
         return price;
     }
 

@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,7 +18,6 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.ContextCompat;
 
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -27,27 +25,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.agnet.leteApp.R;
-import com.agnet.leteApp.application.mSingleton;
-import com.agnet.leteApp.fragments.AccountFragment;
-import com.agnet.leteApp.fragments.CartFragment;
-import com.agnet.leteApp.fragments.CustomerFragment;
 import com.agnet.leteApp.fragments.auth.LoginFragment;
-import com.agnet.leteApp.fragments.OrdersFragment;
-import com.agnet.leteApp.fragments.main.HomeFragment;
-import com.agnet.leteApp.helpers.AppManager;
 import com.agnet.leteApp.helpers.DatabaseHandler;
 import com.agnet.leteApp.helpers.FragmentHelper;
 import com.agnet.leteApp.helpers.StatusBarHelper;
-import com.agnet.leteApp.service.Endpoint;
-import com.android.volley.Cache;
-import com.android.volley.NetworkResponse;
-import com.android.volley.ParseError;
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.RetryPolicy;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.HttpHeaderParser;
-import com.android.volley.toolbox.StringRequest;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.LocationRequest;
@@ -58,7 +39,6 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.mapbox.android.core.location.LocationEngine;
 import com.mapbox.android.core.location.LocationEngineCallback;
@@ -68,10 +48,6 @@ import com.mapbox.android.core.location.LocationEngineResult;
 import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
 import java.util.List;
 
@@ -116,28 +92,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
         _cartQntyCount = findViewById(R.id.cart_qnty_count);
         _coordinator = findViewById(R.id.coordinator);
         _toolbarTitle = findViewById(R.id.toolbar_title);
-        _homeBtn = findViewById(R.id.home_btn);
 
-
-        //confirm order bottom sheet
-
-
-        _navigation = findViewById(R.id.bottom_navigation);
-        _navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
-        setHomeIconBottomNav();
-
-
-        _toolbarTitle.setText("Nyumbani");
-
-        //events
-        RelativeLayout openCart = findViewById(R.id.open_cart_wrapper);
-        openCart.setOnClickListener(v -> new FragmentHelper(MainActivity.this).replaceWithAnimSlideFromRight(new CartFragment(), "CartFragment", R.id.fragment_placeholder));
-
-        _homeBtn.setOnClickListener(view -> {
-            new FragmentHelper(MainActivity.this).replace(new HomeFragment(), "HomeFragment", R.id.fragment_placeholder);
-
-        });
 
         //methods
         makeStatusBarTransparent();
@@ -145,21 +100,9 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
         initLocationEngine();
         forceEnableLocation();
 
-        if(_dbHandler.getUserPhone().isEmpty()){
-            new FragmentHelper(this).replace(new LoginFragment(), "LoginFragment", R.id.fragment_placeholder);
-        }else {
-            new FragmentHelper(this).replace(new HomeFragment(), "Homeragment", R.id.fragment_placeholder);
-        }
+        new FragmentHelper(this).replace(new LoginFragment(), "LoginFragment", R.id.fragment_placeholder);
 
 
-    }
-
-    public void setHomeIconBottomNav() {
-        _navigation.getMenu().getItem(1).setChecked(true);
-    }
-
-    private void setHeader(String header) {
-        getSupportActionBar().setTitle(header);
     }
 
 
@@ -176,14 +119,6 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
     @Override
     protected void onResume() {
         super.onResume();
-
-        // Toast.makeText(this, "Resume Activity", Toast.LENGTH_SHORT).show();
-
-        //show qunatity count
-        if (_dbHandler.getTotalQnty() != 0) {
-            int totalQnty = _dbHandler.getTotalQnty();
-            _cartQntyCount.setText("" + getRoughNumber(totalQnty));
-        }
     }
 
     @Override
@@ -200,16 +135,6 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
         int digitGroups = (int) (Math.log10(value) / Math.log10(1000));
         return new DecimalFormat("#,##0.#").format(value / Math.pow(1000, digitGroups)) + "" + units[digitGroups];
 
-    }
-
-    public void setCartQnty(int totalQnty) {
-        _cartQntyCount.setText("" + getRoughNumber(totalQnty));
-    }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
     }
 
 
@@ -282,277 +207,6 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         permissionsManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
-
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            boolean mState = !item.isChecked();
-            switch (item.getItemId()) {
-                case R.id.action_home:
-                    item.setChecked(mState);
-                    new FragmentHelper(MainActivity.this).replace(new HomeFragment(), "HomeFragment", R.id.fragment_placeholder);
-
-                    break;
-                case R.id.action_notificaion:
-                    item.setChecked(mState);
-                    new FragmentHelper(MainActivity.this).replaceWithbackStack(new CustomerFragment(), " CustomerFragment", R.id.fragment_placeholder);
-
-                    break;
-                case R.id.action_orders:
-                    item.setChecked(mState);
-                    new FragmentHelper(MainActivity.this).replaceWithbackStack(new OrdersFragment(), "OrdersFragment", R.id.fragment_placeholder);
-
-                    break;
-            }
-            return false;
-        }
-    };
-
-    public void getPartners() {
-
-        Endpoint.setUrl("mobile/partners");
-        String url = Endpoint.getUrl();
-        StringRequest postRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-
-                        if (!AppManager.isNullOrEmpty(response)) {
-
-                            try {
-                                JSONObject resObj = new JSONObject(response);
-                                String partners = resObj.getString("partners");
-
-                                _editor.putString("PARTNERS", partners);
-                                _editor.commit();
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        error.printStackTrace();
-
-
-                        NetworkResponse response = error.networkResponse;
-                        String errorMsg = "";
-                        if (response != null && response.data != null) {
-                            String errorString = new String(response.data);
-                            Log.i("log error", errorString);
-                            //TODO: display errors based on the message from the server
-                            Toast.makeText(MainActivity.this, "Kuna tatizo, angalia mtandao alafu jaribu tena", Toast.LENGTH_SHORT).show();
-                        }
-
-
-                    }
-                }
-        ) {
-            @Override
-            protected Response<String> parseNetworkResponse(NetworkResponse response) {
-                try {
-                    Cache.Entry cacheEntry = HttpHeaderParser.parseCacheHeaders(response);
-                    if (cacheEntry == null) {
-                        cacheEntry = new Cache.Entry();
-                    }
-                    final long cacheHitButRefreshed = 3 * 60 * 1000; // in 3 minutes cache will be hit, but also refreshed on background
-                    final long cacheExpired = 24 * 60 * 60 * 1000; // in 24 hours this cache entry expires completely
-                    long now = System.currentTimeMillis();
-                    final long softExpire = now + cacheHitButRefreshed;
-                    final long ttl = now + cacheExpired;
-                    cacheEntry.data = response.data;
-                    cacheEntry.softTtl = softExpire;
-                    cacheEntry.ttl = ttl;
-                    String headerValue;
-                    headerValue = response.headers.get("Date");
-                    if (headerValue != null) {
-                        cacheEntry.serverDate = HttpHeaderParser.parseDateAsEpoch(headerValue);
-                    }
-                    headerValue = response.headers.get("Last-Modified");
-                    if (headerValue != null) {
-                        cacheEntry.lastModified = HttpHeaderParser.parseDateAsEpoch(headerValue);
-                    }
-                    cacheEntry.responseHeaders = response.headers;
-                    final String jsonString = new String(response.data,
-                            HttpHeaderParser.parseCharset(response.headers));
-                    return Response.success(jsonString, cacheEntry);
-                } catch (UnsupportedEncodingException e) {
-                    return Response.error(new ParseError(e));
-                }
-            }
-
-            @Override
-            protected void deliverResponse(String response) {
-                super.deliverResponse(String.valueOf(response));
-            }
-
-            @Override
-            public void deliverError(VolleyError error) {
-                super.deliverError(error);
-            }
-
-            @Override
-            protected VolleyError parseNetworkError(VolleyError volleyError) {
-                return super.parseNetworkError(volleyError);
-            }
-        };
-        mSingleton.getInstance(this).addToRequestQueue(postRequest);
-
-        postRequest.setRetryPolicy(new RetryPolicy() {
-            @Override
-            public int getCurrentTimeout() {
-                return 50000;
-            }
-
-            @Override
-            public int getCurrentRetryCount() {
-                return 50000;
-            }
-
-            @Override
-            public void retry(VolleyError error) throws VolleyError {
-
-            }
-        });
-    }
-
-    public void getDrivers() {
-
-        Endpoint.setUrl("salers-location");
-        String url = Endpoint.getUrl();
-        StringRequest postRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-
-                        if (!AppManager.isNullOrEmpty(response)) {
-
-                            try {
-                                JSONObject resObj = new JSONObject(response);
-                                String drivers = resObj.getString("salers");
-
-                                _editor.putString("DRIVERS", drivers);
-                                _editor.commit();
-
-                                Log.d("DRIVERS", drivers);
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        error.printStackTrace();
-
-
-                        NetworkResponse response = error.networkResponse;
-                        String errorMsg = "";
-                        if (response != null && response.data != null) {
-                            String errorString = new String(response.data);
-                            Log.i("log error", errorString);
-                            //TODO: display errors based on the message from the server
-                            Toast.makeText(MainActivity.this, "Kuna tatizo, angalia mtandao alafu jaribu tena", Toast.LENGTH_SHORT).show();
-                        }
-
-
-                    }
-                }
-        ) {
-            @Override
-            protected Response<String> parseNetworkResponse(NetworkResponse response) {
-                try {
-                    Cache.Entry cacheEntry = HttpHeaderParser.parseCacheHeaders(response);
-                    if (cacheEntry == null) {
-                        cacheEntry = new Cache.Entry();
-                    }
-                    final long cacheHitButRefreshed = 3 * 60 * 1000; // in 3 minutes cache will be hit, but also refreshed on background
-                    final long cacheExpired = 24 * 60 * 60 * 1000; // in 24 hours this cache entry expires completely
-                    long now = System.currentTimeMillis();
-                    final long softExpire = now + cacheHitButRefreshed;
-                    final long ttl = now + cacheExpired;
-                    cacheEntry.data = response.data;
-                    cacheEntry.softTtl = softExpire;
-                    cacheEntry.ttl = ttl;
-                    String headerValue;
-                    headerValue = response.headers.get("Date");
-                    if (headerValue != null) {
-                        cacheEntry.serverDate = HttpHeaderParser.parseDateAsEpoch(headerValue);
-                    }
-                    headerValue = response.headers.get("Last-Modified");
-                    if (headerValue != null) {
-                        cacheEntry.lastModified = HttpHeaderParser.parseDateAsEpoch(headerValue);
-                    }
-                    cacheEntry.responseHeaders = response.headers;
-                    final String jsonString = new String(response.data,
-                            HttpHeaderParser.parseCharset(response.headers));
-                    return Response.success(jsonString, cacheEntry);
-                } catch (UnsupportedEncodingException e) {
-                    return Response.error(new ParseError(e));
-                }
-            }
-
-            @Override
-            protected void deliverResponse(String response) {
-                super.deliverResponse(String.valueOf(response));
-            }
-
-            @Override
-            public void deliverError(VolleyError error) {
-                super.deliverError(error);
-            }
-
-            @Override
-            protected VolleyError parseNetworkError(VolleyError volleyError) {
-                return super.parseNetworkError(volleyError);
-            }
-        };
-        mSingleton.getInstance(this).addToRequestQueue(postRequest);
-
-        postRequest.setRetryPolicy(new RetryPolicy() {
-            @Override
-            public int getCurrentTimeout() {
-                return 50000;
-            }
-
-            @Override
-            public int getCurrentRetryCount() {
-                return 50000;
-            }
-
-            @Override
-            public void retry(VolleyError error) throws VolleyError {
-
-            }
-        });
-    }
-
-    public Snackbar showRegistrationErrorSnackBar(View v) {
-        Snackbar snackbar = Snackbar
-                .make(_coordinator, "Sajili jina la duka ili upate huduma bora zaidi!", Snackbar.LENGTH_LONG).setActionTextColor(Color.parseColor("#fbbe02"))
-                .setAction("Sawa", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                      /*  Snackbar snackbar1 = Snackbar.make(view, "Product is deleted!", Snackbar.LENGTH_SHORT);
-                        snackbar1.show();*/
-                        new FragmentHelper(MainActivity.this).replaceWithbackStack(new AccountFragment(), "AccountFragment", R.id.fragment_placeholder);
-
-                    }
-                });
-
-
-        return snackbar;
     }
 
     private void forceEnableLocation() {

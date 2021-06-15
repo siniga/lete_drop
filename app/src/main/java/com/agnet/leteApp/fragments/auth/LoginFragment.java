@@ -10,15 +10,12 @@ import androidx.annotation.NonNull;
 
 import com.agnet.leteApp.R;
 import com.agnet.leteApp.application.mSingleton;
-import com.agnet.leteApp.fragments.MregistrationFragment;
-import com.agnet.leteApp.fragments.main.HomeFragment;
 import com.agnet.leteApp.fragments.main.ProjectFragment;
 import com.agnet.leteApp.helpers.DatabaseHandler;
 import com.agnet.leteApp.helpers.FragmentHelper;
 import com.agnet.leteApp.helpers.StatusBarHelper;
 import com.agnet.leteApp.models.ResponseData;
 import com.agnet.leteApp.models.User;
-import com.agnet.leteApp.service.Endpoint;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -82,9 +79,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         _preferences = getActivity().getSharedPreferences("SharedData", Context.MODE_PRIVATE);
         _editor = _preferences.edit();
 
-        //binding
-        _navigation = _c.findViewById(R.id.bottom_navigation);
-        _btnHome = _c.findViewById(R.id.home_btn);
         _openCartBtm = _c.findViewById(R.id.open_cart_wrapper);
         _signupLink = view.findViewById(R.id.signup_link);
         _btnLogin = view.findViewById(R.id.login_btn);
@@ -99,10 +93,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         //methods
         ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
         new StatusBarHelper(_c).setStatusBarColor(R.color.colorPrimaryDark);
-
-        _navigation.setVisibility(View.GONE);
-        _btnHome.setVisibility(View.GONE);
-        _openCartBtm.setVisibility(View.GONE);
 
         _btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,18 +111,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             }
         });
 
-        try{
-            User user = _gson.fromJson(_preferences.getString("User",null), User.class);
-            String Token = _preferences.getString("TOKEN", null);
-           /* if(!Token.equals(null)){
-                new FragmentHelper(_c).replace(new LoginFragment(), "LoginFragment", R.id.fragment_placeholder);
-            }*/
-
-
-            Log.d("USERSSS", _gson.toJson(user));
-        }catch (NullPointerException e){
-
-        }
 
         return view;
 
@@ -216,9 +194,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
 
         switch (view.getId()) {
-            case R.id.signup_link:
-                new FragmentHelper(_c).replaceWithAnimSlideFromRight(new MregistrationFragment(), "MregistrationFragment", R.id.fragment_placeholder);
-                break;
             case R.id.login_btn:
                 isUserExist();
                 break;

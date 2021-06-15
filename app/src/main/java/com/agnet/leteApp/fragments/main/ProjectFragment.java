@@ -140,7 +140,7 @@ public class ProjectFragment extends Fragment {
             if (event.getAction() == KeyEvent.ACTION_DOWN) {
                 if (keyCode == KeyEvent.KEYCODE_BACK) {
 
-
+                    _c.finish();
                     return true;
                 }
             }

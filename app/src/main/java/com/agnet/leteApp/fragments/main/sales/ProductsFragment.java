@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,14 +24,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.agnet.leteApp.R;
 import com.agnet.leteApp.application.mSingleton;
-import com.agnet.leteApp.fragments.auth.LoginFragment;
+import com.agnet.leteApp.fragments.main.ProjectFragment;
 import com.agnet.leteApp.fragments.main.adapters.CategoryAdapter;
 import com.agnet.leteApp.fragments.main.adapters.ProductsAdapter;
-import com.agnet.leteApp.fragments.main.adapters.ProjectAdapter;
-import com.agnet.leteApp.fragments.main.adapters.ProjectTypeAdapter;
+import com.agnet.leteApp.helpers.DatabaseHandler;
 import com.agnet.leteApp.helpers.FragmentHelper;
 import com.agnet.leteApp.models.Category;
-import com.agnet.leteApp.models.ProjectType;
 import com.agnet.leteApp.models.ResponseData;
 import com.agnet.leteApp.models.User;
 import com.agnet.leteApp.service.Endpoint;
@@ -42,7 +41,6 @@ import com.android.volley.toolbox.StringRequest;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.gson.Gson;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,6 +56,7 @@ public class ProductsFragment extends Fragment {
     private Gson _gson;
     private ShimmerFrameLayout _shimmerLoader;
     private User _user;
+    private DatabaseHandler _dbHandler;
 
 
     @SuppressLint("RestrictedApi")
@@ -70,12 +69,15 @@ public class ProductsFragment extends Fragment {
         _preferences = getActivity().getSharedPreferences("SharedData", Context.MODE_PRIVATE);
         _editor = _preferences.edit();
         _gson = new Gson();
+        _dbHandler = new DatabaseHandler(_c);
 
         TextView username = view.findViewById(R.id.user_name);
         _categorytList= view.findViewById(R.id.category_list);
         _productsList= view.findViewById(R.id.product_list);
         _shimmerLoader = view.findViewById(R.id.shimmer_view_container);
         LinearLayout userAcc = view.findViewById(R.id.view_user_account_btn);
+        TextView totalQnty = view.findViewById(R.id.total_qnty);
+        RelativeLayout openCartBtn = view.findViewById(R.id.open_cart);
 
 
         try {
@@ -83,6 +85,10 @@ public class ProductsFragment extends Fragment {
             Token = _preferences.getString("TOKEN", null);
             String projectName = _preferences.getString("PROJECT_NAME", null);
             username.setText(projectName);
+            int clientId = _preferences.getInt("CLIENT_ID", 0);
+            getCategories(clientId);
+
+            totalQnty.setText(""+_dbHandler.getTotalQnty());
 
         } catch (NullPointerException e) {
 
@@ -91,13 +97,16 @@ public class ProductsFragment extends Fragment {
         _categoryLayoutManager= new LinearLayoutManager(_c, RecyclerView.HORIZONTAL, false);
         _categorytList.setLayoutManager(_categoryLayoutManager);
 
-
         _productsLayoutManager = new GridLayoutManager(_c, 2);
         _productsList.setLayoutManager(_productsLayoutManager);
 
 
-
-        getCategories();
+        openCartBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new FragmentHelper(_c).replaceWithbackStack(new CartFragment(),"CartFragment", R.id.fragment_placeholder);
+            }
+        });
 
         return view;
     }
@@ -121,8 +130,7 @@ public class ProductsFragment extends Fragment {
             if (event.getAction() == KeyEvent.ACTION_DOWN) {
                 if (keyCode == KeyEvent.KEYCODE_BACK) {
 
-                    _c.finish();
-                    //Toast.makeText(_c, "Here we a", Toast.LENGTH_SHORT).show();
+                    new FragmentHelper(_c).replaceWithbackStack(new ProjectFragment(),"ProjectFragment", R.id.fragment_placeholder);
 
                     return true;
                 }
@@ -130,27 +138,29 @@ public class ProductsFragment extends Fragment {
             return false;
         });
     }
+    
 
-    public void getCategories() {
+    public void getCategories(int id) {
 
+        Log.d("CLIENT_ID", ""+id);
         _shimmerLoader.setVisibility(View.VISIBLE);
         _shimmerLoader.startShimmerAnimation();
 
-        Endpoint.setUrl("categories/client/3");
+        Endpoint.setUrl("categories/client/"+id);
         String url = Endpoint.getUrl();
 
         StringRequest postRequest = new StringRequest(Request.Method.GET, url,
                 response -> {
                     ResponseData res = _gson.fromJson(response, ResponseData.class);
-
-
-                    CategoryAdapter productsAdapter = new CategoryAdapter(_c,res.getCategories(), this);
+                    List<Category> categories = res.getCategories();
+                    CategoryAdapter productsAdapter = new CategoryAdapter(_c,categories, this);
                     _categorytList.setAdapter(productsAdapter);
 
                     _shimmerLoader.setVisibility(View.GONE);
                     _shimmerLoader.stopShimmerAnimation();
+                    getProducts(categories.get(0).getId());
 
-                    getProducts();
+
                 },
                 error -> {
                     error.printStackTrace();
@@ -200,10 +210,10 @@ public class ProductsFragment extends Fragment {
     }
 
 
-    public void getProducts() {
+    public void getProducts(int cid) {
 
 
-        Endpoint.setUrl("products/category/1");
+        Endpoint.setUrl("products/category/"+cid);
         String url = Endpoint.getUrl();
 
         StringRequest postRequest = new StringRequest(Request.Method.GET, url,
@@ -215,7 +225,7 @@ public class ProductsFragment extends Fragment {
                     ProductsAdapter productsAdapter = new ProductsAdapter(_c,res.getProducts(), this);
                     _productsList.setAdapter(productsAdapter);
 
-                    Log.d("RESPONSEHERE", _gson.toJson(res.getProducts()));
+                   // Log.d("RESPONSEHERE", _gson.toJson(res.getProducts()));
 
                 },
                 error -> {

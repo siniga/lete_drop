@@ -15,66 +15,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"></FrameLayout>
 
-    <RelativeLayout
-        android:visibility="gone"
-        android:id="@+id/open_cart_wrapper"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
-        android:background="@color/colorPrimary"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp">
-
-        <RelativeLayout
-            android:id="@+id/view_db"
-            android:layout_alignParentLeft="true"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginTop="11dp"
-            android:layout_marginRight="13dp"
-            android:background="@drawable/solid_circle_accent">
-
-            <TextView
-                android:textSize="11sp"
-                android:id="@+id/cart_qnty_count"
-                android:textColor="@android:color/white"
-                android:layout_centerInParent="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0" />
-
-        </RelativeLayout>
-
-
-
-        <RelativeLayout
-            android:id="@+id/open_cart"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_width="160dp"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:layout_centerInParent="true"
-                android:layout_alignParentLeft="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="0dp"
-                android:layout_marginRight="0dp"
-                android:text="Angalia kikapu chako"
-                android:textColor="@android:color/black" />
-
-
-            <ImageView
-                android:layout_centerInParent="true"
-                android:layout_alignParentRight="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_arrow_forward_black_24dp" />
-        </RelativeLayout>
-
-
-
-    </RelativeLayout>
 
 </RelativeLayout>
+

@@ -180,7 +180,6 @@ public class QrcodeScannerFragment extends BarcodeFragment implements BarcodeRet
                             _editor.commit();
 
                         }else {
-                            new FragmentHelper(_c).replace(new ShopNotFoundFragment(),"ShopNotFoundFragment",R.id.fragment_placeholder);
 
                             Toast.makeText(_c, "Duka halipo, lisajili kwanza", Toast.LENGTH_LONG).show();
                         }
@@ -238,9 +237,6 @@ public class QrcodeScannerFragment extends BarcodeFragment implements BarcodeRet
         List<Order> orders = new ArrayList<>();
 //        orders.add(new Order(0, "", deviceDateTime, orderNum, 2, "", _dbHandler.getUser().getSalerId(), customerId,mLat,mLong));
 
-        //create order
-        _dbHandler.createOrder(orders);
-          new FragmentHelper(_c).replace(new ReceiptFragment(),"ReceiptFragment", R.id.fragment_placeholder);
 
     }
 

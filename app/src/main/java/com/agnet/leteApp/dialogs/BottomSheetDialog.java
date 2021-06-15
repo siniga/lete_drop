@@ -183,7 +183,7 @@ public class BottomSheetDialog extends BottomSheetDialogFragment {
         orders.add(new Order(0, "", deviceDateTime, orderNum, 1, "", 0, 1,mLat,mLong));
 
         //create order
-        _dbHandler.createOrder(orders);
+
     }
 
 

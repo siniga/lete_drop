@@ -31,6 +31,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.vision.text.Line;
 
+import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.List;
 
@@ -39,7 +40,7 @@ import java.util.List;
  */
 public class ProjectTypeAdapter extends RecyclerView.Adapter<ProjectTypeAdapter.ViewHolder> {
 
-    private List<ProjectType> types  = Collections.emptyList();
+    private List<ProjectType> types = Collections.emptyList();
     private LayoutInflater inflator;
     private Context c;
     private SharedPreferences preferences;
@@ -47,7 +48,8 @@ public class ProjectTypeAdapter extends RecyclerView.Adapter<ProjectTypeAdapter.
     private SharedPreferences _preferences;
     private SharedPreferences.Editor _editor;
     private ProjectFragment fragment;
-    int selected_position = 0;
+    private int selected_position = 0;
+
 
 
     // Provide a suitable constructor (depends on the kind of dataset)
@@ -83,16 +85,16 @@ public class ProjectTypeAdapter extends RecyclerView.Adapter<ProjectTypeAdapter.
         holder.mName.setText(currentType.getName());
         glide(holder.mIcon, currentType.getIcon());
 
-        if(selected_position == position){
+        if (selected_position == position) {
             holder.mWrapper.setBackgroundResource(R.drawable.round_corners_blue);
             holder.mName.setTextColor(Color.parseColor("#ffffff"));
             holder.mIconWrapper.setBackgroundResource(R.drawable.round_corners_blue);
-            holder.mWrapper.setPadding(5,5,5,5);
+            holder.mWrapper.setPadding(5, 5, 5, 5);
 
             glide(holder.mIcon, currentType.getSelectedIcon()
             );
             fragment.getPorjects(currentType.getName());
-        }else {
+        } else {
             holder.mWrapper.setBackgroundResource(R.drawable.round_corners_white);
             holder.mName.setTextColor(Color.parseColor("#000000"));
             holder.mIconWrapper.setBackgroundResource(R.drawable.round_corners_with_grey_bg);
@@ -115,10 +117,9 @@ public class ProjectTypeAdapter extends RecyclerView.Adapter<ProjectTypeAdapter.
         });
 
 
-
     }
 
-    private void glide(ImageView view, String url){
+    private void glide(ImageView view, String url) {
         Glide.with(c).load(displayImg(view, url))
                 .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
                 .error(R.drawable.ic_place_holder)
@@ -134,6 +135,7 @@ public class ProjectTypeAdapter extends RecyclerView.Adapter<ProjectTypeAdapter.
                     }
                 }).into(view);
     }
+
     private int displayImg(ImageView view, String url) {
         Context context = view.getContext();
         int id = context.getResources().getIdentifier(url, "drawable", context.getPackageName());

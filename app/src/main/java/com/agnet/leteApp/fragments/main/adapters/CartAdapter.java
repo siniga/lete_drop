@@ -1,4 +1,4 @@
-package com.agnet.leteApp.adapters;
+package com.agnet.leteApp.fragments.main.adapters;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -14,15 +14,11 @@ import android.widget.TextView;
 
 import com.agnet.leteApp.R;
 import com.agnet.leteApp.activities.MainActivity;
-import com.agnet.leteApp.fragments.CartFragment;
+import com.agnet.leteApp.fragments.main.sales.CartFragment;
 import com.agnet.leteApp.helpers.DatabaseHandler;
 import com.agnet.leteApp.models.Cart;
-import com.agnet.leteApp.service.Endpoint;
-import com.bumptech.glide.Glide;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -86,22 +82,11 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
         final DecimalFormat formatter = new DecimalFormat("#,###,###");
 
         holder.mName.setText(currentProduct.getName());
-        holder.mPrice.setText("TZS: " + formatter.format(currentProduct.getTotalPrice()));
+        holder.mPrice.setText("TZS:" +formatter.format(currentProduct.getAmount()));
         holder.mQnty.setText("" + currentProduct.getQuantity());
-        holder.mSku.setText(currentProduct.getSku());
-
-        Endpoint.setStorageUrl(currentProduct.getImgUrl());
-        String url = Endpoint.getStorageUrl();
-
-        try {
-            Glide.with(c)
-                    .load(new URL(url))
-                    .into(holder.mImg);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
 
         final int[] count = {currentProduct.getQuantity()};
+
 
         //calculate total price for the product
 
@@ -110,13 +95,13 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             public void onClick(View v) {
                 holder.mQnty.setText("" + ++count[0]);
 
-                int total = (Integer.parseInt(currentProduct.getOriginalPrice()) * count[0]);
-                _dbHandler.updateCart(count[0], total, currentProduct.getServerId());
+                Double total = (currentProduct.getItemPrice() * count[0]);
+              //  _dbHandler.updateCart(count[0], total, currentProduct.getServerId());
 
                 int totalQnty = _dbHandler.getTotalQnty();
-                ((MainActivity) c).setCartQnty(totalQnty);
 
-                holder.mPrice.setText("" + formatter.format(total));
+
+             //   holder.mPrice.setText("" + formatter.format(total));
 
                 ((CartFragment) cartFragment).setTotalCartAmnt(_dbHandler.getTotalPrice());
 
@@ -128,14 +113,13 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             public void onClick(View v) {
                 if (count[0] > 1) {
                     holder.mQnty.setText("" + --count[0]);
-                    int total = (Integer.parseInt(currentProduct.getOriginalPrice()) * count[0]);
+                   // int total = (Integer.parseInt(currentProduct.getOriginalPrice()) * count[0]);
 
-                    _dbHandler.updateCart(count[0], total, currentProduct.getServerId());
+                  //  _dbHandler.updateCart(count[0], total, currentProduct.getServerId());
 
                     int totalQnty = _dbHandler.getTotalQnty();
-                    ((MainActivity) c).setCartQnty(totalQnty);
 
-                    holder.mPrice.setText("" + formatter.format(total));
+//                    holder.mPrice.setText("" + formatter.format(total));
 
                     ((CartFragment) cartFragment).setTotalCartAmnt(_dbHandler.getTotalPrice());
                 }
@@ -154,12 +138,11 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
                                 Snackbar snackbar1 = Snackbar.make(view, "Product is deleted!", Snackbar.LENGTH_SHORT);
                                 snackbar1.show();
 
-                                _dbHandler.deleteCartById(currentProduct.getId());
+                            //    _dbHandler.deleteCartById(currentProduct.getId());
                                 ((CartFragment) cartFragment).setTotalCartAmnt(_dbHandler.getTotalPrice());
                                 removeAt(position);
 
                                 int totalQnty = _dbHandler.getTotalQnty();
-                                ((MainActivity) c).setCartQnty(totalQnty);
 
                             }
                         });

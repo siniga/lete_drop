@@ -2,20 +2,18 @@ package com.agnet.leteApp.models;
 
 public class Cart {
 
-    int id,quantity,totalPrice, serverId, orderId;
-    String name,imgUrl, originalPrice, sku;
+    private int id,quantity, productId;
+    private double amount, itemPrice;
+    private String name;
 
 
-    public Cart(int id, int serverId, int totalPrice, int quantity, String name, String imgUrl, String originalPrice, String sku, int orderId){
+    public Cart(int id,String name, double amount, int productId, int quantity, double itemPrice){
         this.id = id;
-        this.serverId = serverId;
-        this.totalPrice = totalPrice;
+        this.amount = amount;
+        this.productId = productId;
         this.quantity = quantity;
         this.name = name;
-        this.imgUrl = imgUrl;
-        this.originalPrice = originalPrice;
-        this.sku = sku;
-        this.orderId = orderId;
+        this.itemPrice = itemPrice;
 
     }
 
@@ -23,35 +21,23 @@ public class Cart {
         return id;
     }
 
-    public int getServerId() {
-        return serverId;
+    public double getAmount() {
+        return amount;
     }
 
-    public int getTotalPrice() {
-        return totalPrice;
+    public int getProductId() {
+        return productId;
     }
 
     public int getQuantity() {
         return quantity;
     }
 
-    public String getImgUrl() {
-        return imgUrl;
-    }
-
     public String getName() {
         return name;
     }
 
-    public String getOriginalPrice() {
-        return originalPrice;
-    }
-
-    public String getSku() {
-        return sku;
-    }
-
-    public int getOrderId() {
-        return orderId;
+    public double getItemPrice() {
+        return itemPrice;
     }
 }

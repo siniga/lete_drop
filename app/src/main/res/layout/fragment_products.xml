@@ -6,14 +6,15 @@
     android:background="@color/white"
     android:orientation="vertical"
     android:paddingTop="20dp"
-    android:paddingRight="20dp"
-    android:paddingLeft="20dp">
+  >
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <LinearLayout
+            android:paddingRight="20dp"
+            android:paddingLeft="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -36,6 +37,7 @@
                         android:orientation="vertical">
 
                         <TextView
+                            android:visibility="gone"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
@@ -105,6 +107,8 @@
         </LinearLayout>
 
         <LinearLayout
+            android:paddingRight="20dp"
+            android:paddingLeft="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -125,49 +129,92 @@
             android:layout_height="1dp"
             android:background="@color/divider_grey"/>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/product_list"
+        <RelativeLayout
+            android:id="@+id/open_cart"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="20dp"
-            android:paddingBottom="50dp" />
+            android:layout_height="match_parent"
+            android:background="@drawable/round_corners_with_grey_bg"
+            android:paddingLeft="20dp"
+            android:paddingRight="10dp">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/product_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:paddingBottom="50dp" />
+
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/shimmer_view_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginTop="0dp"
+                android:background="@android:color/white"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <!-- Adding 7 rows of placeholders -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <include layout="@layout/data_placeholder_cateogory_layout" />
+
+                    <include layout="@layout/data_placeholder_cateogory_layout" />
+
+                    <include layout="@layout/data_placeholder_cateogory_layout" />
+
+                    <include layout="@layout/data_placeholder_cateogory_layout" />
+
+                    <include layout="@layout/data_placeholder_cateogory_layout" />
+
+                    <include layout="@layout/data_placeholder_cateogory_layout" />
+
+                    <include layout="@layout/data_placeholder_cateogory_layout" />
+                </LinearLayout>
+
+            </com.facebook.shimmer.ShimmerFrameLayout>
+
+        </RelativeLayout>
+
 
     </LinearLayout>
 
-    <com.facebook.shimmer.ShimmerFrameLayout
-        android:visibility="gone"
-        android:id="@+id/shimmer_view_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:layout_marginTop="0dp"
-        android:background="@android:color/white"
-        android:orientation="vertical"
-        >
+<RelativeLayout
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp"
+    android:layout_alignParentBottom="true"
+    android:background="@color/blue"
+    android:layout_width="match_parent"
+    android:layout_height="40dp">
 
-        <!-- Adding 7 rows of placeholders -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+    <ImageView
+        android:layout_centerInParent="true"
+        android:layout_alignParentLeft="true"
+        android:src="@drawable/ic_shopping_bag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:id="@+id/total_qnty"
+        android:layout_marginLeft="30dp"
+        android:layout_centerInParent="true"
+      android:layout_alignParentLeft="true"
+        android:textColor="@color/white"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="22"
+        />
 
-            <include layout="@layout/data_placeholder_cateogory_layout" />
-
-            <include layout="@layout/data_placeholder_cateogory_layout" />
-
-            <include layout="@layout/data_placeholder_cateogory_layout" />
-
-            <include layout="@layout/data_placeholder_cateogory_layout" />
-
-            <include layout="@layout/data_placeholder_cateogory_layout" />
-
-            <include layout="@layout/data_placeholder_cateogory_layout" />
-
-            <include layout="@layout/data_placeholder_cateogory_layout" />
-        </LinearLayout>
-
-    </com.facebook.shimmer.ShimmerFrameLayout>
-
-
+    <TextView
+        android:gravity="center"
+        android:layout_centerInParent="true"
+        android:layout_alignParentRight="true"
+        android:layout_gravity="center_vertical"
+        android:textColor="@android:color/white"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Kikapu chako"/>
+</RelativeLayout>
 </RelativeLayout>
