@@ -3,13 +3,13 @@ package com.agnet.leteApp.models;
 public class Cart {
 
     private int id,quantity, productId;
-    private double amount, itemPrice;
+    private double total_amount, itemPrice;
     private String name;
 
 
     public Cart(int id,String name, double amount, int productId, int quantity, double itemPrice){
         this.id = id;
-        this.amount = amount;
+        this.total_amount = amount;
         this.productId = productId;
         this.quantity = quantity;
         this.name = name;
@@ -22,7 +22,7 @@ public class Cart {
     }
 
     public double getAmount() {
-        return amount;
+        return total_amount;
     }
 
     public int getProductId() {

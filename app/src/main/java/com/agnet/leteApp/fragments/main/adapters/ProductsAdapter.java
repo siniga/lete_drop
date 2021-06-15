@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -87,6 +88,8 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
         holder.mName.setText(currentProduct.getName());
         holder.mSku.setText(currentProduct.getSku());
         holder.mPrice.setText("TZS"+_formatter.format(currentProduct.getPrice()));
+
+        Log.d("HEHEH",_gson.toJson(currentProduct));
 
         holder.mWrapper.setOnClickListener(new View.OnClickListener() {
             @Override

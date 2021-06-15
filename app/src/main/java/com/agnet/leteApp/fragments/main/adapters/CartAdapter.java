@@ -89,23 +89,19 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
 
 
         //calculate total price for the product
+        holder.mIncrementBtn.setOnClickListener((View.OnClickListener) v -> {
+            holder.mQnty.setText("" + ++count[0]);
 
-        holder.mIncrementBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                holder.mQnty.setText("" + ++count[0]);
+            Double total = (currentProduct.getItemPrice() * count[0]);
+            _dbHandler.updateCart(new Cart(0,currentProduct.getName(),total,currentProduct.getProductId(),count[0],currentProduct.getItemPrice()));
 
-                Double total = (currentProduct.getItemPrice() * count[0]);
-              //  _dbHandler.updateCart(count[0], total, currentProduct.getServerId());
-
-                int totalQnty = _dbHandler.getTotalQnty();
+            int totalQnty = _dbHandler.getTotalQnty();
 
 
-             //   holder.mPrice.setText("" + formatter.format(total));
+         //   holder.mPrice.setText("" + formatter.format(total));
 
-                ((CartFragment) cartFragment).setTotalCartAmnt(_dbHandler.getTotalPrice());
+            ((CartFragment) cartFragment).setTotalCartAmnt(_dbHandler.getTotalPrice());
 
-            }
         });
 
         holder.mDecrementBtn.setOnClickListener(new View.OnClickListener() {
@@ -113,13 +109,9 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             public void onClick(View v) {
                 if (count[0] > 1) {
                     holder.mQnty.setText("" + --count[0]);
-                   // int total = (Integer.parseInt(currentProduct.getOriginalPrice()) * count[0]);
+                    Double total = (currentProduct.getItemPrice() * count[0]);
+                    _dbHandler.updateCart(new Cart(0,currentProduct.getName(),total,currentProduct.getProductId(),count[0],currentProduct.getItemPrice()));
 
-                  //  _dbHandler.updateCart(count[0], total, currentProduct.getServerId());
-
-                    int totalQnty = _dbHandler.getTotalQnty();
-
-//                    holder.mPrice.setText("" + formatter.format(total));
 
                     ((CartFragment) cartFragment).setTotalCartAmnt(_dbHandler.getTotalPrice());
                 }

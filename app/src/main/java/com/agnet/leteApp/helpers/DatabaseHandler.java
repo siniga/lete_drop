@@ -332,6 +332,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return total;
     }
 
+    public void deleteCart(){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // on below line we are calling a method to delete our
+        // course and we are comparing it with our course name.
+        db.delete(TABLE_CART, null,null);
+        db.close();
+    }
+
 
 
 

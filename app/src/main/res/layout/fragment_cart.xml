@@ -167,15 +167,23 @@
         </LinearLayout>
 
 
+        <LinearLayout
+            android:id="@+id/transparent_loader"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/black_light_transparent"
+            android:orientation="horizontal"
+            android:visibility="gone" />
+
         <ProgressBar
-            android:visibility="gone"
-            android:layout_centerInParent="true"
-            android:id="@+id/progressBar_cyclic"
+            android:id="@+id/progress_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minWidth="50dp"
-            android:minHeight="50dp"
-            />
+            android:layout_centerInParent="true"
+            android:minWidth="100dp"
+            android:minHeight="100dp"
+            android:theme="@style/AppTheme.WhiteAccent"
+            android:visibility="gone" />
 
     </RelativeLayout>
 
