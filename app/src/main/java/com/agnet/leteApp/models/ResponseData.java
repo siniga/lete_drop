@@ -22,6 +22,8 @@ public class ResponseData {
 
     List<Partner> partners;
 
+    List<Outlet> outlets;
+
     Customer customer;
 
     Outlet outlet;
@@ -41,14 +43,12 @@ public class ResponseData {
     Form form;
 
 
-
-    public ResponseData(List streets, List products, List outlets, List categories, List skus, List<History> orders,
-                          List<Partner> partners, User user, Customer customer,
-                              int code, String flag, Outlet outlet, String token,
-                             Success success,List<Project> projects, List<Form> forms, Form form, List<Quesionnaire> questions) {
+    public ResponseData(List streets, List products, List categories, List skus, List<History> orders,
+                        List<Partner> partners, User user, Customer customer,
+                        int code, String flag, Outlet outlet, String token, Success success, List<Project> projects,
+                        List<Form> forms, Form form, List<Quesionnaire> questions, List<Outlet> outlets) {
         this.streets = streets;
         this.products = products;
-        this.customers = outlets;
         this.categories = categories;
         this.skus = skus;
         this.orders = orders;
@@ -63,6 +63,7 @@ public class ResponseData {
         this.projects = projects;
         this.forms = forms;
         this.form = form;
+        this.outlets = outlets;
 
     }
 
@@ -135,5 +136,9 @@ public class ResponseData {
 
     public Form getForm() {
         return form;
+    }
+
+    public List<Outlet> getOutlets() {
+        return outlets;
     }
 }

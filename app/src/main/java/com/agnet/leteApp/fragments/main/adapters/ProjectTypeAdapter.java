@@ -91,9 +91,7 @@ public class ProjectTypeAdapter extends RecyclerView.Adapter<ProjectTypeAdapter.
             holder.mIconWrapper.setBackgroundResource(R.drawable.round_corners_blue);
             holder.mWrapper.setPadding(5, 5, 5, 5);
 
-            glide(holder.mIcon, currentType.getSelectedIcon()
-            );
-            fragment.getPorjects(currentType.getName());
+            glide(holder.mIcon, currentType.getSelectedIcon());
         } else {
             holder.mWrapper.setBackgroundResource(R.drawable.round_corners_white);
             holder.mName.setTextColor(Color.parseColor("#000000"));
@@ -112,7 +110,18 @@ public class ProjectTypeAdapter extends RecyclerView.Adapter<ProjectTypeAdapter.
                 selected_position = holder.getAdapterPosition();
                 notifyItemChanged(selected_position);
 
-                fragment.getPorjects(currentType.getName());
+                if(position != 3){
+                    //call projects
+                    fragment.getPorjects(currentType.getName());
+                }else {
+                    //call outlets
+                    fragment.getUserOutlets();
+                }
+
+                //store type of the project
+                _editor.putString("SELECTED_PROJECT_TYPE",currentType.getName());
+                _editor.commit();
+
             }
         });
 

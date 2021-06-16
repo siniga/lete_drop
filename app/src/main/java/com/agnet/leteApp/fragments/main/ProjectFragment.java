@@ -24,8 +24,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.agnet.leteApp.R;
 import com.agnet.leteApp.application.mSingleton;
 import com.agnet.leteApp.fragments.auth.LoginFragment;
+import com.agnet.leteApp.fragments.main.adapters.OutletAdapter;
 import com.agnet.leteApp.fragments.main.adapters.ProjectAdapter;
 import com.agnet.leteApp.fragments.main.adapters.ProjectTypeAdapter;
+import com.agnet.leteApp.fragments.main.outlets.NewOutletFragment;
 import com.agnet.leteApp.helpers.FragmentHelper;
 import com.agnet.leteApp.models.ProjectType;
 import com.agnet.leteApp.models.ResponseData;
@@ -48,14 +50,16 @@ import java.util.Map;
 public class ProjectFragment extends Fragment {
 
     private FragmentActivity _c;
-    private RecyclerView _projectTypeList, _projectList;
-    private LinearLayoutManager _projectTypeLayoutManager, _projectLayoutManager;
+    private RecyclerView _projectTypeList, _projectList, _outletList;
+    private LinearLayoutManager _projectTypeLayoutManager, _projectLayoutManager, _outletLayoutManager;
     private String Token;
     private SharedPreferences.Editor _editor;
     private SharedPreferences _preferences;
     private Gson _gson;
     private ShimmerFrameLayout _shimmerLoader;
     private User _user;
+    private  LinearLayout _newOutletBtn;
+    private int _pos;
 
 
     @SuppressLint("RestrictedApi")
@@ -72,7 +76,9 @@ public class ProjectFragment extends Fragment {
         TextView username = view.findViewById(R.id.user_name);
         _projectTypeList = view.findViewById(R.id.project_type_list);
         _projectList = view.findViewById(R.id.project_list);
+        _outletList = view.findViewById(R.id.outlet_list);
         _shimmerLoader = view.findViewById(R.id.shimmer_view_container);
+        _newOutletBtn = view.findViewById(R.id.new_outlet_btn);
         LinearLayout userAcc = view.findViewById(R.id.view_user_account_btn);
 
        /*
@@ -87,6 +93,8 @@ public class ProjectFragment extends Fragment {
             Token = _preferences.getString("TOKEN", null);
             username.setText(_user.getName());
 
+
+
         } catch (NullPointerException e) {
 
         }
@@ -97,8 +105,14 @@ public class ProjectFragment extends Fragment {
         ProjectTypeAdapter typeAdapter = new ProjectTypeAdapter(_c, getProjectTypes(), this);
         _projectTypeList.setAdapter(typeAdapter);
 
+
         _projectLayoutManager = new LinearLayoutManager(_c, RecyclerView.VERTICAL, false);
         _projectList.setLayoutManager(_projectLayoutManager);
+
+
+        _outletLayoutManager = new LinearLayoutManager(_c, RecyclerView.VERTICAL, false);
+        _outletList.setLayoutManager(_outletLayoutManager);
+
 
         userAcc.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,6 +123,16 @@ public class ProjectFragment extends Fragment {
 
             }
         });
+
+        _newOutletBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new FragmentHelper(_c).replaceWithAnimSlideFromRight(new NewOutletFragment(), "NewOutletFragment", R.id.fragment_placeholder);
+
+            }
+        });
+
+        getPorjects("Mapping");
 
         return view;
     }
@@ -149,14 +173,20 @@ public class ProjectFragment extends Fragment {
     }
 
     public void getPorjects(String type) {
+
+
         _shimmerLoader.setVisibility(View.VISIBLE);
         _shimmerLoader.startShimmerAnimation();
+        _newOutletBtn.setVisibility(View.GONE);
 
         Endpoint.setUrl("projects/" + type + "/user/" + _user.getId());
         String url = Endpoint.getUrl();
 
         StringRequest postRequest = new StringRequest(Request.Method.GET, url,
                 response -> {
+
+                    _projectList.setVisibility(View.VISIBLE);
+                    _outletList.setVisibility(View.GONE);
 
                     ResponseData res = _gson.fromJson(response, ResponseData.class);
 
@@ -174,6 +204,78 @@ public class ProjectFragment extends Fragment {
                     _shimmerLoader.setVisibility(View.GONE);
                     _shimmerLoader.stopShimmerAnimation();
 
+                    NetworkResponse response = error.networkResponse;
+                    String errorMsg = "";
+                    if (response != null && response.data != null) {
+                        String errorString = new String(response.data);
+                        Log.i("log error", errorString);
+                        //TODO: display errors based on the message from the server
+                        Toast.makeText(_c, "Kuna tatizo, angalia mtandao alafu jaribu tena", Toast.LENGTH_SHORT).show();
+                    }
+
+
+                }
+        ) {
+
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Authorization", "Bearer " + "" + Token);
+                return params;
+            }
+        };
+        mSingleton.getInstance(_c).addToRequestQueue(postRequest);
+
+        postRequest.setRetryPolicy(new RetryPolicy() {
+            @Override
+            public int getCurrentTimeout() {
+                return 50000;
+            }
+
+            @Override
+            public int getCurrentRetryCount() {
+                return 50000;
+            }
+
+            @Override
+            public void retry(VolleyError error) throws VolleyError {
+
+            }
+        });
+    }
+
+    public void getUserOutlets() {
+
+        _shimmerLoader.setVisibility(View.VISIBLE);
+        _shimmerLoader.startShimmerAnimation();
+        _newOutletBtn.setVisibility(View.VISIBLE);
+
+        Endpoint.setUrl("outlets/user/"+_user.getId());
+        String url = Endpoint.getUrl();
+
+        StringRequest postRequest = new StringRequest(Request.Method.GET, url,
+                response -> {
+                 ResponseData res = _gson.fromJson(response, ResponseData.class);
+
+                    _projectList.setVisibility(View.GONE);
+                    _outletList.setVisibility(View.VISIBLE);
+
+                    if(res.getCode() == 200){
+                        Log.d("RESPONSE_HHERE", _gson.toJson(res.getOutlets()));
+
+                        OutletAdapter outletAdapter = new OutletAdapter(_c, res.getOutlets());
+                        _outletList.setAdapter(outletAdapter);
+                    }
+
+                    _shimmerLoader.setVisibility(View.GONE);
+                    _shimmerLoader.stopShimmerAnimation();
+
+                },
+                error -> {
+                    _shimmerLoader.setVisibility(View.GONE);
+                    _shimmerLoader.stopShimmerAnimation();
+
+                    error.printStackTrace();
                     NetworkResponse response = error.networkResponse;
                     String errorMsg = "";
                     if (response != null && response.data != null) {

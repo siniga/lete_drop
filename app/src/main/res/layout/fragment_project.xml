@@ -121,11 +121,20 @@
         android:background="@color/divider_grey"/>
 
     <RelativeLayout
+        android:paddingBottom="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/project_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="20dp"
+            android:paddingBottom="50dp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/outlet_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
@@ -165,7 +174,34 @@
 
         </com.facebook.shimmer.ShimmerFrameLayout>
 
+        <LinearLayout
+            android:id="@+id/new_outlet_btn"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/solid_circle_blue"
+            android:clickable="true"
+            android:elevation="11dp"
+            android:focusable="true"
+            android:gravity="center"
+            android:padding="10dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_add_white_24dp" />
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_below="@id/new_outlet_btn"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"/>
     </RelativeLayout>
+
+
 
 
 </LinearLayout>
