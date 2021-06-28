@@ -83,7 +83,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         _signupLink = view.findViewById(R.id.signup_link);
         _btnLogin = view.findViewById(R.id.login_btn);
 
-        EditText phoneInput  = view.findViewById(R.id.phone_input);
+        EditText phoneInput = view.findViewById(R.id.phone_input);
         EditText passwordInput = view.findViewById(R.id.password_input);
 
         //events
@@ -97,14 +97,14 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         _btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String phone  = phoneInput.getText().toString();
+                String phone = phoneInput.getText().toString();
                 String password = passwordInput.getText().toString();
                 //new FragmentHelper(_c).replace(new ProjectFragment(), "ProjectFragmen", R.id.fragment_placeholder);
-                if(phone.isEmpty()){
+                if (phone.isEmpty()) {
                     Toast.makeText(_c, "Jaza namba ya simu ili kuendelea!", Toast.LENGTH_LONG).show();
-                } else if(password.isEmpty()){
+                } else if (password.isEmpty()) {
                     Toast.makeText(_c, "Jaza password ili kuendelea!", Toast.LENGTH_SHORT).show();
-                }else {
+                } else {
                     loginUser(phone, password);
                 }
 
@@ -121,11 +121,11 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     public void onResume() {
         super.onResume();
 
-        try{
-            if(!_preferences.getString("TOKEN", null).isEmpty()){
-                new FragmentHelper(_c).replaceWithbackStack(new ProjectFragment(),"ProjectFragment", R.id.fragment_placeholder);
+        try {
+            if (!_preferences.getString("TOKEN", null).isEmpty()) {
+                new FragmentHelper(_c).replaceWithbackStack(new ProjectFragment(), "ProjectFragment", R.id.fragment_placeholder);
             }
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
 
         }
 
@@ -224,10 +224,13 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
                         ResponseData res = _gson.fromJson(response, ResponseData.class);
 
+
                         _editor.putString("TOKEN", res.getToken());
                         _editor.commit();
 
                         getUser(res.getToken());
+
+
                         _progressBar.setVisibility(View.GONE);
                     }
 
@@ -236,15 +239,21 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                     @Override
                     public void onErrorResponse(VolleyError error) {
 
-                        Toast.makeText(_c, "Kuna tatizo la mtandao, jaribu tena au wasiliana na wataalamu ", Toast.LENGTH_LONG).show();
+
                         _progressBar.setVisibility(View.GONE);
-                        Log.d("RegistrationFragment", "here" + error.getMessage());
                         NetworkResponse response = error.networkResponse;
                         String errorMsg = "";
                         if (response != null && response.data != null) {
                             String errorString = new String(response.data);
-                            Log.i("log error", errorString);
+                            ResponseData res = _gson.fromJson(errorString, ResponseData.class);
+                            if (res.getError().equals("Unauthorised")) {
+                                Toast.makeText(_c, "Umeosea namba ya simu au password!", Toast.LENGTH_LONG).show();
+                            }else {
+                                Toast.makeText(_c, "Kuna tatizo la mtandao, jaribu tena au wasiliana na wataalamu ", Toast.LENGTH_LONG).show();
+                            }
+
                         }
+
 
                     }
                 }
@@ -264,7 +273,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     public void getUser(String token) {
 
 
-
         String ROOT_URL = "http://letedeve.aggreyapps.com/api/public/index.php/api/authenticated/user";
 
 
@@ -280,7 +288,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                         _editor.commit();
 
 
-                        new FragmentHelper(_c).replaceWithbackStack(new ProjectFragment(),"ProjectFragment", R.id.fragment_placeholder);
+                        new FragmentHelper(_c).replaceWithbackStack(new ProjectFragment(), "ProjectFragment", R.id.fragment_placeholder);
 //
                         _progressBar.setVisibility(View.GONE);
                     }

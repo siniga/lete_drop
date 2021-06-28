@@ -54,15 +54,8 @@ public class NewOutletFragment extends Fragment {
     private FragmentActivity _c;
     private SharedPreferences _preferences;
     private SharedPreferences.Editor _editor;
-    private DatabaseHandler _dbHandler;
     private EditText _phone, _name;
-    private BottomNavigationView _navigation;
-    private LinearLayout _btnHome;
-    private RelativeLayout _openCartBtm;
-    private Button _updateUserBtn;
     private LinearLayout _progressBar;
-    private BarcodeCapture _barcodeCapture;
-    private LinearLayout _qrcodeScannerWrapper, _barcodeCapturedWrapper;
     private TextView _shopQrCode;
     private LinearLayout _newOuletBtn;
     private Spinner _custTypesSpinner, _vfdCustTypeSpinner;
@@ -82,7 +75,6 @@ public class NewOutletFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_new_outlet, container, false);
         _c = getActivity();
 
-        _dbHandler = new DatabaseHandler(_c);
         _preferences = _c.getSharedPreferences("SharedData", Context.MODE_PRIVATE);
         _editor = _preferences.edit();
 
@@ -90,9 +82,7 @@ public class NewOutletFragment extends Fragment {
 
         _phone = view.findViewById(R.id.phone_input);
         _name = view.findViewById(R.id.name_input);
-        _progressBar = view.findViewById(R.id.progressBar_cyclic);
-        _qrcodeScannerWrapper = view.findViewById(R.id.qr_codescanner_wrapper);
-        _barcodeCapturedWrapper = view.findViewById(R.id.barcode_captured_wrapper);
+        _progressBar = view.findViewById(R.id.progress_bar_wrapper);
         _shopQrCode = view.findViewById(R.id.shop_qr_code);
         _newOuletBtn = view.findViewById(R.id.new_outlet_btn);
         _custTypesSpinner = view.findViewById(R.id.cust_types_spinner);
@@ -143,16 +133,33 @@ public class NewOutletFragment extends Fragment {
         });
 
         _newOuletBtn.setOnClickListener(view1 -> {
-            Toast.makeText(_c, "here", Toast.LENGTH_SHORT).show();
 
-            _editor.putString("PHONE", "+255"+_phone.getText().toString());
-            _editor.putString("NAME",  _name.getText().toString());
-            _editor.putInt("VFD_TYPE",_vfdTypeId);
-            _editor.putString("VFD_ID", _vfdCustId.getText().toString());
-            _editor.putInt("OUTLET_TYPE_ID", _typeId);
-            _editor.commit();
+            String phone = _phone.getText().toString();
+            String name = _name.getText().toString();
+            String vfdId = _vfdCustId.getText().toString();
 
-            new FragmentHelper(_c).replaceWithbackStack(new NewBarcodeFragment(), "NewBarcodeFragment", R.id.fragment_placeholder);
+            if(name.isEmpty()){
+                Toast.makeText(_c, "Ingiza jina la mteja!", Toast.LENGTH_LONG).show();
+            }else if(phone.isEmpty()){
+                Toast.makeText(_c, "Ingiza namba ya simu!", Toast.LENGTH_LONG).show();
+            }else if(_typeId == 0){
+                Toast.makeText(_c, "Chagua aina ya duka", Toast.LENGTH_LONG).show();
+            }else if(vfdId.isEmpty()){
+                Toast.makeText(_c, "Ingiza TIN", Toast.LENGTH_LONG).show();
+            }else {
+
+                _progressBar.setVisibility(View.VISIBLE);
+
+                _editor.putString("PHONE", "+255" + phone);
+                _editor.putString("NAME", name);
+                _editor.putInt("VFD_TYPE", _vfdTypeId);
+                _editor.putString("VFD_ID", vfdId);
+                _editor.putInt("OUTLET_TYPE_ID", _typeId);
+                _editor.commit();
+
+                new FragmentHelper(_c).replaceWithbackStack(new NewBarcodeFragment(), "NewBarcodeFragment", R.id.fragment_placeholder);
+            }
+
 
         });
 
@@ -163,8 +170,15 @@ public class NewOutletFragment extends Fragment {
 
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        _progressBar.setVisibility(View.GONE);
+    }
+
     private void getCustomerType() {
         _customerTypes = new ArrayList<>();
+        _customerTypes.add(new CustomerType(0, "Chagua aina ya duka"));
         _customerTypes.add(new CustomerType(1, "Mini Supermarket"));
         _customerTypes.add(new CustomerType(2, "Bar"));
         _customerTypes.add(new CustomerType(3, "WholeSale"));
@@ -197,65 +211,5 @@ public class NewOutletFragment extends Fragment {
         _vfdCustTypeSpinner.setAdapter(dataAdapter);
     }
 
-
-
-    public void saveOutlet() {
-
-      Endpoint.setUrl("outlet");
-        String url = Endpoint.getUrl();
-
-        _progressBar.setVisibility(View.VISIBLE);
-
-        StringRequest postRequest = new StringRequest(Request.Method.POST, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-
-
-                        _progressBar.setVisibility(View.GONE);
-                      Log.d("RESPONSE_HERE",response);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-
-
-                        NetworkResponse response = error.networkResponse;
-                        String errorMsg = "";
-                        if (response != null && response.data != null) {
-                            String errorString = new String(response.data);
-                            Log.i("log error", errorString);
-
-                            _progressBar.setVisibility(View.GONE);
-                            //TODO: display errors based on the message from the server
-                            Toast.makeText(_c, "Kuna tatizo, angalia mtandao alafu jaribu tena", Toast.LENGTH_LONG).show();
-                        }
-                    }
-                }
-        ) {
-            @Override
-            protected Map<String, String> getParams() {
-
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("lng", _preferences.getString("mLONGITUDE", null));
-                params.put("lat", _preferences.getString("mLATITUDE", null));
-                params.put("phone", "255"+_phone.getText().toString());
-                params.put("name", _name.getText().toString());
-                params.put("type_id", "" + _typeId);
-                params.put("pin", "0000");
-                params.put("vfd_cust_type", "" + _vfdTypeId);
-                params.put("vfd_cust_id", "" + _vfdCustId.getText().toString());
-                params.put("qr_code", _preferences.getString("BARCODE", null));
-                params.put("user_id", "" + _user.getId());
-
-                return params;
-            }
-        };
-        mSingleton.getInstance(_c).addToRequestQueue(postRequest);
-
-        postRequest.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS * 2, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-
-    }
 
 }

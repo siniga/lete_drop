@@ -118,7 +118,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="0dp"
             android:orientation="vertical"
-           >
+            >
 
             <TextView
                 android:id="@+id/scanner_header"
@@ -147,21 +147,6 @@
                 app:gvb_rect_colors="@array/rect_color"
                 app:gvb_touch="false" />
 
-            <TextView
-                android:layout_marginTop="50dp"
-                android:layout_gravity="center"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="--- Au sajili duka ---"/>
-
-            <Button
-                android:id="@+id/register_outlet_btn"
-                android:layout_marginTop="@dimen/padding_10"
-                android:textColor="@color/white"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:text="Sajili dua jipya"
-                android:background="@color/blue"/>
         </LinearLayout>
 
 

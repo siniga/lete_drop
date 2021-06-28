@@ -42,11 +42,13 @@ public class ResponseData {
 
     Form form;
 
+    String error;
+
 
     public ResponseData(List streets, List products, List categories, List skus, List<History> orders,
                         List<Partner> partners, User user, Customer customer,
                         int code, String flag, Outlet outlet, String token, Success success, List<Project> projects,
-                        List<Form> forms, Form form, List<Quesionnaire> questions, List<Outlet> outlets) {
+                        List<Form> forms, Form form, List<Quesionnaire> questions, List<Outlet> outlets, String error) {
         this.streets = streets;
         this.products = products;
         this.categories = categories;
@@ -64,6 +66,7 @@ public class ResponseData {
         this.forms = forms;
         this.form = form;
         this.outlets = outlets;
+        this.error = error;
 
     }
 
@@ -140,5 +143,9 @@ public class ResponseData {
 
     public List<Outlet> getOutlets() {
         return outlets;
+    }
+
+    public String getError() {
+        return error;
     }
 }

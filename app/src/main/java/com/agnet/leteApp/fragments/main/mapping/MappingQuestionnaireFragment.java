@@ -110,10 +110,19 @@ public class MappingQuestionnaireFragment extends Fragment {
 
         _submitBtn.setOnClickListener(view1 -> {
 
+            for (Answer answer : _answers) {
+                if (answer.getAnswer().isEmpty()) {
+                    Toast.makeText(_c, "Ingiza " + answer.getQuestion() + "!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+
+
             postFormResults();
             _submitBtn.setClickable(false);
             _transparentLoader.setVisibility(View.VISIBLE);
             _progressBar.setVisibility(View.VISIBLE);
+
         });
 
         getQuestionnare();
@@ -166,13 +175,13 @@ public class MappingQuestionnaireFragment extends Fragment {
         textbox.setTextSize(14);
         textbox.setPadding(25, 10, 10, 10);
 
-
+        _answers.get(indx).setQuestion(question.getQuestion());
         textbox.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable mEdit) {
                 String text = mEdit.toString();
-
                 _answers.get(indx).setAnswer(text);
+
 
             }
 
@@ -240,7 +249,7 @@ public class MappingQuestionnaireFragment extends Fragment {
             btnWrapper.addView(rdbtn);
 
         }
-
+        _answers.get(indx).setQuestion(question);
         btnWrapper.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
@@ -250,6 +259,7 @@ public class MappingQuestionnaireFragment extends Fragment {
                 String selectedtext = r.getText().toString();
 
                 _answers.get(indx).setAnswer(selectedtext);
+
 
             }
         });
@@ -307,6 +317,8 @@ public class MappingQuestionnaireFragment extends Fragment {
             checkBox.setButtonDrawable(R.drawable.custom_checkbox_colors);
             parent.addView(checkBox);
 
+            _answers.get(indx).setQuestion(question);
+
             checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -333,6 +345,7 @@ public class MappingQuestionnaireFragment extends Fragment {
         textbox.setHint("Ingiza jibu hapa");
         textbox.setTextSize(14);
         textbox.setPadding(25, 10, 10, 10);
+        _answers.get(indx).setQuestion(question);
 
         textbox.addTextChangedListener(new TextWatcher() {
             @Override
@@ -484,7 +497,6 @@ public class MappingQuestionnaireFragment extends Fragment {
                     }
 
                     _submitBtn.setClickable(true);
-
                     _transparentLoader.setVisibility(View.VISIBLE);
                     _progressBar.setVisibility(View.VISIBLE);
 

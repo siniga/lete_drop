@@ -85,28 +85,7 @@ public class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.ViewHolder
         final Outlet currentOutlet = outlets.get(position);
 
         holder.mName.setText(currentOutlet.getName());
-
-        //Get address base on location
-        try{
-            Geocoder geo = new Geocoder(c.getApplicationContext(), Locale.getDefault());
-            List<Address> addresses = geo.getFromLocation(currentOutlet.getLat(),currentOutlet.getLng(), 1);
-            if (addresses.isEmpty()) {
-                holder.mLocation.setText("Waiting for Location");
-            }
-            else {
-                if (addresses.size() > 0) {
-                    holder.mLocation.setText(""+addresses.get(0).getSubAdminArea());
-                 /*   Log.d("LOCALITYIAZION",addresses.get(0).getFeatureName() + " "+addresses.get(0).getLocality() +""+addresses.get(0).getAdminArea()
-                             +""+addresses.get(0).getCountryName());*/
-                    Log.d("LOCALITYIAZION",""+addresses.get(0).getSubThoroughfare()+""+addresses.get(0).getFeatureName());
-
-                }
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        holder.mLocation.setText(currentOutlet.getLocation());
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

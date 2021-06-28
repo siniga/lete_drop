@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
@@ -44,7 +46,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 
 public class MerchandiseFormFragment extends Fragment {
 
@@ -68,6 +72,7 @@ public class MerchandiseFormFragment extends Fragment {
     private ProgressBar _progressBar;
     private String Token;
     private int _clientId;
+    private String _location;
 
 
     @SuppressLint("RestrictedApi")
@@ -177,6 +182,22 @@ public class MerchandiseFormFragment extends Fragment {
 
         _continueBtn.setOnClickListener(view1 -> {
 
+            //Get address base on location
+            try {
+                Geocoder geo = new Geocoder(_c.getApplicationContext(), Locale.getDefault());
+                List<Address> addresses = geo.getFromLocation(Double.parseDouble(_preferences.getString("mLATITUDE", null)), Double.parseDouble(_preferences.getString("mLONGITUDE", null)), 1);
+                if (addresses.isEmpty()) {
+
+                } else {
+                    if (addresses.size() > 0) {
+                        _location = addresses.get(0).getSubAdminArea();
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
             String name = nameInput.getText().toString();
             String phone = phoneInput.getText().toString();
 
@@ -273,12 +294,17 @@ public class MerchandiseFormFragment extends Fragment {
     private void saveOutlet(String name, String phone, int outletTypeId) {
         _progressBar.setVisibility(View.VISIBLE);
 
-        Log.d("CLIENTELE H", "Hey there stranger " + _clientId);
+        Random rand = new Random();
+        int randomQrCode = rand.nextInt((9999 - 100) + 1) + 10;
+
+       // Log.d("CLIENTELE H", "Hey there stranger " + _clientId);
         String ROOT_URL = "http://letedeve.aggreyapps.com/api/public/index.php/api/outlet";
 
         StringRequest postRequest = new StringRequest(Request.Method.POST, ROOT_URL,
                 response -> {
                     ResponseData res = _gson.fromJson(response, ResponseData.class);
+
+                    Log.d("HEREHAPA", response);
 
                     saveImages(res.getOutlet().getId());
 
@@ -310,12 +336,13 @@ public class MerchandiseFormFragment extends Fragment {
                 params.put("phone", phone);
                 params.put("lat", _preferences.getString("mLATITUDE", null));
                 params.put("lng", _preferences.getString("mLONGITUDE", null));
-                params.put("qr_code", "0");
+                params.put("qr_code", ""+randomQrCode);
                 params.put("vfd_cust_type", "6");
                 params.put("vfd_cust_id", "NILL");
                 params.put("user_id", "6");
                 params.put("outlet_type_id", "" + outletTypeId);
                 params.put("client_id", "" + _clientId);
+                params.put("location", "" + _location);
 
                 return params;
             }

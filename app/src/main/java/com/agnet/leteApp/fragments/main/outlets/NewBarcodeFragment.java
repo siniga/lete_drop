@@ -4,6 +4,8 @@ package com.agnet.leteApp.fragments.main.outlets;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.SparseArray;
@@ -29,6 +31,7 @@ import com.agnet.leteApp.fragments.main.mapping.MappingFormListFragment;
 import com.agnet.leteApp.helpers.DatabaseHandler;
 import com.agnet.leteApp.helpers.FragmentHelper;
 import com.agnet.leteApp.models.CustomerType;
+import com.agnet.leteApp.models.ResponseData;
 import com.agnet.leteApp.models.User;
 import com.agnet.leteApp.service.Endpoint;
 import com.android.volley.DefaultRetryPolicy;
@@ -46,11 +49,12 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import xyz.belvi.mobilevisionbarcodescanner.BarcodeRetriever;
 
-public class NewBarcodeFragment extends Fragment  implements BarcodeRetriever {
+public class NewBarcodeFragment extends Fragment implements BarcodeRetriever {
 
     private FragmentActivity _c;
     private SharedPreferences _preferences;
@@ -61,12 +65,14 @@ public class NewBarcodeFragment extends Fragment  implements BarcodeRetriever {
     private String _phone, _name, _vfdId;
     private int _vfdType, _outletTypeId;
     private BarcodeCapture barcodeCapture;
+    private String _lng, _lat;
+    private String _location;
 
     @SuppressLint("RestrictedApi")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_barcode, container, false);
+        View view = inflater.inflate(R.layout.fragment_new_barcode, container, false);
         _c = getActivity();
 
         barcodeCapture = (BarcodeCapture) getChildFragmentManager().findFragmentById(R.id.barcode);
@@ -81,20 +87,37 @@ public class NewBarcodeFragment extends Fragment  implements BarcodeRetriever {
             _user = _gson.fromJson(_preferences.getString("User", null), User.class);
             Token = _preferences.getString("TOKEN", null);
             _phone = _preferences.getString("PHONE", null);
-            _name = _preferences.getString("NAME",  null);
-           _vfdType = _preferences.getInt("VFD_TYPE",0);
+            _name = _preferences.getString("NAME", null);
+            _vfdType = _preferences.getInt("VFD_TYPE", 0);
             _vfdId = _preferences.getString("VFD_ID", null);
             _outletTypeId = _preferences.getInt("OUTLET_TYPE_ID", 0);
+            _lng = _preferences.getString("mLONGITUDE", null);
+            _lat = _preferences.getString("mLATITUDE", null);
 
         } catch (NullPointerException e) {
 
         }
 
+        //Get address base on location
+        try {
+            Geocoder geo = new Geocoder(_c.getApplicationContext(), Locale.getDefault());
+            List<Address> addresses = geo.getFromLocation(Double.parseDouble(_lat), Double.parseDouble(_lng), 1);
+            if (addresses.isEmpty()) {
+
+            } else {
+                if (addresses.size() > 0) {
+                    _location = addresses.get(0).getSubAdminArea();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 
         return view;
 
-}
+    }
+
     @Override
     public void onRetrieved(Barcode barcode) {
         // Log.d(TAG, "Barcode read: " + barcode.displayValue);
@@ -102,14 +125,9 @@ public class NewBarcodeFragment extends Fragment  implements BarcodeRetriever {
             @Override
             public void run() {
                 saveOutlet(barcode.displayValue);
-
-                Log.d("BACKCODEREADER", "Barcode read: " + barcode.displayValue);
-
-                new FragmentHelper(_c).replace(new OutletSuccessFragment()," OutletSuccessFragment", R.id.fragment_placeholder);
             }
         });
 
-        barcodeCapture.stopScanning();
 
     }
 
@@ -135,32 +153,37 @@ public class NewBarcodeFragment extends Fragment  implements BarcodeRetriever {
 
     public void saveOutlet(String qrcode) {
 
-      Endpoint.setUrl("outlet");
+        Endpoint.setUrl("outlet");
         String url = Endpoint.getUrl();
 
         StringRequest postRequest = new StringRequest(Request.Method.POST, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
+                response -> {
+                    ResponseData res = _gson.fromJson(response, ResponseData.class);
+                    if (res.getCode() == 409) {
+                        Toast.makeText(_c, "QR code imeshasajiliwa!", Toast.LENGTH_LONG).show();
+                    } else {
+                        _editor.remove("PHONE");
+                        _editor.remove("NAME");
+                        _editor.remove("VFD_TYPE");
+                        _editor.remove("VFD_ID");
+                        _editor.remove("OUTLET_TYPE_ID");
+                        _editor.commit();
 
-
-                      Log.d("RESPONSE_HERE",response);
+                        barcodeCapture.stopScanning();
+                        new FragmentHelper(_c).replace(new OutletSuccessFragment(), " OutletSuccessFragment", R.id.fragment_placeholder);
                     }
                 },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
+                error -> {
 
 
-                        NetworkResponse response = error.networkResponse;
-                        String errorMsg = "";
-                        if (response != null && response.data != null) {
-                            String errorString = new String(response.data);
-                            Log.i("log error", errorString);
+                    NetworkResponse response = error.networkResponse;
+                    String errorMsg = "";
+                    if (response != null && response.data != null) {
+                        String errorString = new String(response.data);
+                        Log.i("log error", errorString);
 
-                            //TODO: display errors based on the message from the server
-                            Toast.makeText(_c, "Kuna tatizo, angalia mtandao alafu jaribu tena", Toast.LENGTH_LONG).show();
-                        }
+                        //TODO: display errors based on the message from the server
+                        Toast.makeText(_c, "Kuna tatizo, angalia mtandao alafu jaribu tena", Toast.LENGTH_LONG).show();
                     }
                 }
         ) {
@@ -176,15 +199,16 @@ public class NewBarcodeFragment extends Fragment  implements BarcodeRetriever {
             protected Map<String, String> getParams() {
 
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("lng", _preferences.getString("mLONGITUDE", null));
-                params.put("lat", _preferences.getString("mLATITUDE", null));
+                params.put("lng", _lng);
+                params.put("lat", _lat);
                 params.put("phone", _phone);
-                params.put("name",_name);
+                params.put("name", _name);
                 params.put("outlet_type_id", "" + _outletTypeId);
                 params.put("vfd_cust_type", "" + _vfdType);
-                params.put("vfd_cust_id", "" +_vfdId);
+                params.put("vfd_cust_id", "" + _vfdId);
                 params.put("qr_code", qrcode);
                 params.put("user_id", "" + _user.getId());
+                params.put("location",  _location);
 
                 return params;
             }

@@ -1,107 +1,92 @@
 package com.agnet.leteApp.fragments.main.sales;
 
+
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.agnet.leteApp.R;
 import com.agnet.leteApp.application.mSingleton;
-import com.agnet.leteApp.fragments.main.adapters.CartAdapter;
-import com.agnet.leteApp.fragments.main.mapping.MappingSuccessFragment;
-import com.agnet.leteApp.helpers.CustomDivider;
+import com.agnet.leteApp.fragments.main.outlets.NewOutletFragment;
+import com.agnet.leteApp.fragments.main.outlets.OutletSuccessFragment;
 import com.agnet.leteApp.helpers.DatabaseHandler;
 import com.agnet.leteApp.helpers.DateHelper;
 import com.agnet.leteApp.helpers.FragmentHelper;
-import com.agnet.leteApp.models.Cart;
-import com.agnet.leteApp.models.Order;
+import com.agnet.leteApp.models.Outlet;
 import com.agnet.leteApp.models.ResponseData;
 import com.agnet.leteApp.models.User;
 import com.agnet.leteApp.service.Endpoint;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.gms.samples.vision.barcodereader.BarcodeCapture;
+import com.google.android.gms.samples.vision.barcodereader.BarcodeGraphic;
+import com.google.android.gms.vision.barcode.Barcode;
 import com.google.gson.Gson;
 
-import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 
+import xyz.belvi.mobilevisionbarcodescanner.BarcodeRetriever;
 
-public class CartFragment extends Fragment {
+public class OrderBarcodeFragment extends Fragment implements BarcodeRetriever {
 
     private FragmentActivity _c;
-    private RecyclerView _cartlist;
-    private LinearLayoutManager _layoutManager;
-    private DatabaseHandler _dbHandler;
-    private TextView _cartTotalAmnt;
-    private DecimalFormat _formatter;
-    private List<Cart> _products;
-    private LinearLayout _errorMsg;
-    private Button _placeOrderBtn;
-    private AlertDialog _alertDialog;
-    private BottomNavigationView _navigation;
-    private LinearLayout _btnHome;
-    private RelativeLayout _openCartBtm;
-    private SharedPreferences.Editor _editor;
     private SharedPreferences _preferences;
-    private String Token;
-    private User _user;
+    private SharedPreferences.Editor _editor;
     private Gson _gson;
+    private User _user;
+    private String Token;
+    private String _phone, _name, _vfdId;
+    private int _vfdType, _outletTypeId;
+    private BarcodeCapture barcodeCapture;
+    private String _lng, _lat;
+    private String _location;
     private ProgressBar _progressBar;
     private LinearLayout _transparentLoader;
-    private TextView _placeOrderNoQrCodeBtn;
-
+    private DatabaseHandler _dbHandler;
 
     @SuppressLint("RestrictedApi")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_cart, container, false);
+        View view = inflater.inflate(R.layout.fragment_barcode, container, false);
         _c = getActivity();
 
-        //initialize
-        _preferences = getActivity().getSharedPreferences("SharedData", Context.MODE_PRIVATE);
+        barcodeCapture = (BarcodeCapture) getChildFragmentManager().findFragmentById(R.id.barcode);
+        barcodeCapture.setRetrieval(this);
+
+        _preferences = _c.getSharedPreferences("SharedData", Context.MODE_PRIVATE);
         _editor = _preferences.edit();
-        _progressBar = view.findViewById(R.id.progress_bar);
-        _transparentLoader = view.findViewById(R.id.transparent_loader);
         _dbHandler = new DatabaseHandler(_c);
-        _formatter = new DecimalFormat("#,###,###");
         _gson = new Gson();
 
-        //binding
-        _cartTotalAmnt = view.findViewById(R.id.total_cart_amount);
-        _openCartBtm = _c.findViewById(R.id.open_cart_wrapper);
-        _errorMsg = view.findViewById(R.id.error_msg);
-        _cartlist = view.findViewById(R.id.cart_list);
-        _placeOrderBtn = view.findViewById(R.id.place_order_btn);
-        _placeOrderNoQrCodeBtn = view.findViewById(R.id.place_order_no_qrcode);
+        _progressBar = view.findViewById(R.id.progress_bar);
+        _transparentLoader = view.findViewById(R.id.transparent_loader);
+        Button registerOutletBt = view.findViewById(R.id.register_outlet_btn);
 
-        _layoutManager = new LinearLayoutManager(_c, RecyclerView.VERTICAL, false);
-        _cartlist.setLayoutManager(_layoutManager);
-
-        _products = _dbHandler.getCart();
 
         try {
             _user = _gson.fromJson(_preferences.getString("User", null), User.class);
@@ -111,62 +96,119 @@ public class CartFragment extends Fragment {
 
         }
 
-        CartAdapter adapter = new CartAdapter(_c, _products, this);
-        _cartlist.setAdapter(adapter);
+        registerOutletBt.setOnClickListener(view1 -> new FragmentHelper(_c).replace(new NewOutletFragment(), "NewOutletFragment", R.id.fragment_placeholder));
 
-        _placeOrderBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(_products.size() > 0){
-                    _progressBar.setVisibility(View.VISIBLE);
-                    _transparentLoader.setVisibility(View.VISIBLE);
-                    new FragmentHelper(_c).replaceWithbackStack(new OrderBarcodeFragment(), "OrderBarcodeFragment", R.id.fragment_placeholder);
-                    _placeOrderBtn.setClickable(false);
-                }else {
-                    Toast.makeText(_c, "Kikapu hakina bidhaa!", Toast.LENGTH_SHORT).show();
-
-                }
-            }
-        });
-
-        _placeOrderNoQrCodeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(_products.size() > 0) {
-                    saveOrder();
-                    _placeOrderBtn.setClickable(false);
-                }else {
-                    Toast.makeText(_c, "Kikapu hakina bidhaa!", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
         return view;
 
     }
 
-    public void setTotalCartAmnt(int totalCartAmnt) {
-        _cartTotalAmnt.setText("" + _formatter.format(totalCartAmnt));
+    @Override
+    public void onRetrieved(Barcode barcode) {
+        // Log.d(TAG, "Barcode read: " + barcode.displayValue);
+        _c.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+                isQrCodeAvailable(barcode.displayValue);
+
+            }
+        });
+
+
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-
-        int totalPrice = _dbHandler.getTotalPrice();
-        _cartTotalAmnt.setText("" + _formatter.format(totalPrice));
-
+    public void onRetrievedMultiple(Barcode closetToClick, List<BarcodeGraphic> barcode) {
 
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        _progressBar.setVisibility(View.GONE);
-        _transparentLoader.setVisibility(View.GONE);
+    public void onBitmapScanned(SparseArray<Barcode> sparseArray) {
+
     }
 
+    @Override
+    public void onRetrievedFailed(String reason) {
 
-    public void saveOrder() {
+    }
+
+    @Override
+    public void onPermissionRequestDenied() {
+
+    }
+
+    private void isQrCodeAvailable(String qrcode) {
+
+        Endpoint.setUrl("outlet/qrcode/" + qrcode);
+        String url = Endpoint.getUrl();
+
+        StringRequest postRequest = new StringRequest(Request.Method.GET, url,
+                response -> {
+
+                    _transparentLoader.setVisibility(View.GONE);
+                    _progressBar.setVisibility(View.GONE);
+
+                    ResponseData res = _gson.fromJson(response, ResponseData.class);
+                    if (res.getCode() == 409) {
+                        Log.d("HEREHAPA", response);
+                        Outlet outlet = res.getOutlet();
+                        saveOrder(outlet.getId());
+                    } else {
+                        Toast.makeText(_c, "Qr code haipo, sajili qr code", Toast.LENGTH_LONG).show();
+                    }
+                    //
+
+
+                },
+                error -> {
+                    error.printStackTrace();
+
+
+                    _transparentLoader.setVisibility(View.GONE);
+                    _progressBar.setVisibility(View.GONE);
+
+                    NetworkResponse response = error.networkResponse;
+                    String errorMsg = "";
+                    if (response != null && response.data != null) {
+                        String errorString = new String(response.data);
+                        Log.i("log error", errorString);
+                        //TODO: display errors based on the message from the server
+                        Toast.makeText(_c, "Kuna tatizo, angalia mtandao alafu jaribu tena", Toast.LENGTH_SHORT).show();
+                    }
+
+
+                }
+        ) {
+
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Authorization", "Bearer " + "" + Token);
+                return params;
+            }
+
+        };
+        mSingleton.getInstance(_c).addToRequestQueue(postRequest);
+
+        postRequest.setRetryPolicy(new RetryPolicy() {
+            @Override
+            public int getCurrentTimeout() {
+                return 50000;
+            }
+
+            @Override
+            public int getCurrentRetryCount() {
+                return 50000;
+            }
+
+            @Override
+            public void retry(VolleyError error) throws VolleyError {
+
+            }
+        });
+    }
+
+    public void saveOrder(int outletId) {
         _transparentLoader.setVisibility(View.VISIBLE);
         _progressBar.setVisibility(View.VISIBLE);
 
@@ -188,7 +230,6 @@ public class CartFragment extends Fragment {
                         _dbHandler.deleteCart();
                         new FragmentHelper(_c).replace(new SalesSuccessFragment(), "SalesSuccessFragment", R.id.fragment_placeholder);
                     }
-                    _placeOrderBtn.setClickable(true);
 
 
                 },
@@ -198,7 +239,7 @@ public class CartFragment extends Fragment {
 
                     _transparentLoader.setVisibility(View.GONE);
                     _progressBar.setVisibility(View.GONE);
-                    _placeOrderBtn.setClickable(true);
+
                     NetworkResponse response = error.networkResponse;
                     String errorMsg = "";
                     if (response != null && response.data != null) {
@@ -229,7 +270,7 @@ public class CartFragment extends Fragment {
                 params.put("lat", _preferences.getString("mLATITUDE", null));
                 params.put("lng", _preferences.getString("mLONGITUDE", null));
                 params.put("products", _gson.toJson(_dbHandler.getCart()));
-                params.put("outletId", "1");
+                params.put("outletId", "" + outletId);
                 return params;
             }
         };
@@ -252,6 +293,5 @@ public class CartFragment extends Fragment {
             }
         });
     }
-
 
 }
