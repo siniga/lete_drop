@@ -139,7 +139,7 @@ public class OrderBarcodeFragment extends Fragment implements BarcodeRetriever {
 
     private void isQrCodeAvailable(String qrcode) {
 
-        Endpoint.setUrl("outlet/qrcode/" + qrcode);
+        Endpoint.setUrl("outlet/qrcode/"+qrcode);
         String url = Endpoint.getUrl();
 
         StringRequest postRequest = new StringRequest(Request.Method.GET, url,
@@ -150,7 +150,7 @@ public class OrderBarcodeFragment extends Fragment implements BarcodeRetriever {
 
                     ResponseData res = _gson.fromJson(response, ResponseData.class);
                     if (res.getCode() == 409) {
-                        Log.d("HEREHAPA", response);
+                       // Log.d("HEREHAPA", response);
                         Outlet outlet = res.getOutlet();
                         saveOrder(outlet.getId());
                     } else {

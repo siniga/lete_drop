@@ -5,14 +5,15 @@ import com.google.gson.annotations.SerializedName;
 public class ProjectType {
 
     int id;
-    String name, icon, selectedIcon;
+    String name, icon;
+    int stats;
 
 
-    public ProjectType(int id, String name, String icon, String selectedIcon){
+    public ProjectType(int id, String name, String icon, int stats){
        this.id = id;
        this.name =name;
        this.icon = icon;
-       this.selectedIcon = selectedIcon;
+       this.stats = stats;
     }
 
     public int getId() {
@@ -27,7 +28,13 @@ public class ProjectType {
         return icon;
     }
 
-    public String getSelectedIcon() {
-        return selectedIcon;
+
+    @Override
+    public String toString() {
+        return name;
+    }
+
+    public int getStats() {
+        return stats;
     }
 }

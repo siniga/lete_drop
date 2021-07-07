@@ -8,6 +8,10 @@
     <color name="midd_grey">#666666</color>
     <color name="black_transparent">#A6000000</color>
     <color name="blue_transparent">#C9001689</color>
+    <color name="yellow_bg">#FDEFC9</color>
+    <color name="red_bg">#FAD7D8</color>
+    <color name="green_bg">#DEFDF3</color>
+    <color name="blue_bg">#DADFFB</color>
     <color name="blue">#001689</color>
     <color name="white">#FFFFFF</color>
     <color name="grey_bg_default">#f2f5ff</color>
@@ -19,4 +23,5 @@
     <color name="status_ready">#7B1FA2</color>
     <color name="status_deliver">#2E7D32</color>
     <color name="status_cancel">#ffff4444</color>
+    <color name="grey_aeacac">#AEACAC</color>
 </resources>

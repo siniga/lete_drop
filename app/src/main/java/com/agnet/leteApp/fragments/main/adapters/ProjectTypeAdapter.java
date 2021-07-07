@@ -47,17 +47,15 @@ public class ProjectTypeAdapter extends RecyclerView.Adapter<ProjectTypeAdapter.
     private SharedPreferences.Editor editor;
     private SharedPreferences _preferences;
     private SharedPreferences.Editor _editor;
-    private ProjectFragment fragment;
     private int selected_position = 0;
 
 
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public ProjectTypeAdapter(Context c, List<ProjectType> types, ProjectFragment fragment) {
+    public ProjectTypeAdapter(Context c, List<ProjectType> types) {
         this.types = types;
         this.inflator = LayoutInflater.from(c);
         this.c = c;
-        this.fragment = fragment;
 
         _preferences = c.getSharedPreferences("SharedData", Context.MODE_PRIVATE);
         _editor = _preferences.edit();
@@ -83,13 +81,16 @@ public class ProjectTypeAdapter extends RecyclerView.Adapter<ProjectTypeAdapter.
         //get a position of a current saleItem
         final ProjectType currentType = types.get(position);
         holder.mName.setText(currentType.getName());
+        holder.mStats.setText(""+currentType.getStats());
         glide(holder.mIcon, currentType.getIcon());
 
-        if (selected_position == position) {
+       /* if (selected_position == position) {
             holder.mWrapper.setBackgroundResource(R.drawable.round_corners_blue);
             holder.mName.setTextColor(Color.parseColor("#ffffff"));
             holder.mIconWrapper.setBackgroundResource(R.drawable.round_corners_blue);
             holder.mWrapper.setPadding(5, 5, 5, 5);
+
+//            fragment.setProjectType(currentType.getName());
 
             glide(holder.mIcon, currentType.getSelectedIcon());
         } else {
@@ -98,25 +99,37 @@ public class ProjectTypeAdapter extends RecyclerView.Adapter<ProjectTypeAdapter.
             holder.mIconWrapper.setBackgroundResource(R.drawable.round_corners_with_grey_bg);
 //            holder.mWrapper.setPadding(10,10,10,10);
             glide(holder.mIcon, currentType.getIcon());
-        }
+        }*/
 
         holder.mWrapper.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (holder.getAdapterPosition() == RecyclerView.NO_POSITION) return;
+                new FragmentHelper(c).replace(new ProjectFragment(),"ProjectFragment", R.id.fragment_placeholder);
+              //  if (holder.getAdapterPosition() == RecyclerView.NO_POSITION) return;
 
                 // Updating old as well as new positions
-                notifyItemChanged(selected_position);
+             /*   notifyItemChanged(selected_position);
                 selected_position = holder.getAdapterPosition();
-                notifyItemChanged(selected_position);
+                notifyItemChanged(selected_position);*/
 
-                if(position != 3){
+                //set type
+//                fragment.setProjectType(currentType.getName());
+
+             /*   if(position != 3){
                     //call projects
-                    fragment.getPorjects(currentType.getName());
+                    //convert locally swahili names for types to english
+                    if(currentType.getName() == "Mauzo"){
+                        fragment.getPorjects("Sales");
+                    }else if(currentType.getName() == "Uwepo"){
+                        fragment.getPorjects("Mapping");
+                    }else {
+                        fragment.getPorjects("Merchandise");
+                    }
+
                 }else {
                     //call outlets
                     fragment.getUserOutlets();
-                }
+                }*/
 
                 //store type of the project
                 _editor.putString("SELECTED_PROJECT_TYPE",currentType.getName());
@@ -124,8 +137,6 @@ public class ProjectTypeAdapter extends RecyclerView.Adapter<ProjectTypeAdapter.
 
             }
         });
-
-
     }
 
     private void glide(ImageView view, String url) {
@@ -156,6 +167,7 @@ public class ProjectTypeAdapter extends RecyclerView.Adapter<ProjectTypeAdapter.
         public LinearLayout mWrapper, mIconWrapper;
         public TextView mName;
         public ImageView mIcon;
+        public TextView mStats;
 
 
         public ViewHolder(Context context, View view) {
@@ -165,6 +177,7 @@ public class ProjectTypeAdapter extends RecyclerView.Adapter<ProjectTypeAdapter.
             mName = view.findViewById(R.id.type_name);
             mIcon = view.findViewById(R.id.icon);
             mIconWrapper = view.findViewById(R.id.icon_wrapper);
+            mStats = view.findViewById(R.id.stats);
         }
 
     }

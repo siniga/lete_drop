@@ -81,7 +81,7 @@ public class AddCartFragment extends Fragment {
         _c = getActivity();
 
         _preferences = getActivity().getSharedPreferences("SharedData", Context.MODE_PRIVATE);
-        _formatter = new DecimalFormat("#,###,###");
+        _formatter =  new DecimalFormat("#,###,##0.00");
         _dbHandler = new DatabaseHandler(_c);
         _editor = _preferences.edit();
         _gson = new Gson();
@@ -150,6 +150,8 @@ public class AddCartFragment extends Fragment {
         addToCartBtn.setOnClickListener(view1 -> {
             int Qnty =Integer.parseInt(quantity.getText().toString());
             Double amount  = Qnty * _product.getPrice();
+
+            Log.d("HEHEHu", ""+amount);
 
             if(_dbHandler.isColumnAvailable("carts","product_id",""+_product.getId())){
                 _dbHandler.updateCart(new Cart(0,_product.getName(), amount,_product.getId(),Qnty,_product.getPrice()));

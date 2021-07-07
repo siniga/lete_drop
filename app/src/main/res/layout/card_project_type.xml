@@ -1,20 +1,21 @@
 <RelativeLayout
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="110dp"
+    android:layout_height="110dp"
+    android:paddingRight="14dp"
+    android:paddingBottom="10dp"
 >
-
     <LinearLayout
-        android:layout_marginRight="12dp"
+        android:background="@drawable/round_corners_white"
         android:id="@+id/type_wrapper"
         android:orientation="vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
         <LinearLayout
-            android:layout_width="65dp"
-            android:layout_height="60dp"
-            android:background="@drawable/round_corners_with_grey_bg">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+           >
 
             <LinearLayout
                 android:id="@+id/icon_wrapper"
@@ -24,24 +25,38 @@
                 android:orientation="vertical">
 
                 <ImageView
+                    android:src="@drawable/ic_sales_delivery_truck"
                     android:elevation="7dp"
                     android:id="@+id/icon"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:layout_width="23dp"
+                    android:layout_height="23dp"
                     android:scaleType="fitXY"/>
+
+                <TextView
+                    android:fontFamily="@font/mryad_pro_regular"
+                    android:layout_marginTop="7dp"
+                    android:layout_gravity="center"
+                    android:text="Merchandise"
+                    android:id="@+id/type_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/black"
+                    android:textSize="13sp"/>
+
+                <TextView
+                    android:visibility="gone"
+                    android:id="@+id/stats"
+                    android:layout_marginTop="0dp"
+                    android:layout_gravity="center"
+                    android:text="Tzs: 10k"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#919090"
+                    android:textSize="9sp"/>
 
 
             </LinearLayout>
         </LinearLayout>
-        <TextView
-            android:layout_marginTop="5dp"
-            android:layout_gravity="center"
-            android:text="Merchandise"
-            android:id="@+id/type_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
-            android:textSize="11sp"/>
     </LinearLayout>
 
 </RelativeLayout>

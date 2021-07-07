@@ -7,6 +7,8 @@ import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
@@ -37,6 +39,7 @@ import com.agnet.leteApp.R;
 import com.agnet.leteApp.application.mSingleton;
 import com.agnet.leteApp.fragments.main.SuccessFragment;
 import com.agnet.leteApp.fragments.main.adapters.FormAdapter;
+import com.agnet.leteApp.helpers.DateHelper;
 import com.agnet.leteApp.helpers.FragmentHelper;
 import com.agnet.leteApp.models.Answer;
 import com.agnet.leteApp.models.Form;
@@ -58,6 +61,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class MappingQuestionnaireFragment extends Fragment {
@@ -75,6 +79,7 @@ public class MappingQuestionnaireFragment extends Fragment {
     private List<Answer> _answers = new ArrayList<>();
     private Button _submitBtn;
     private LinearLayout _transparentLoader;
+    private String _timeStarted;
 
     @SuppressLint("RestrictedApi")
     @Override
@@ -99,10 +104,10 @@ public class MappingQuestionnaireFragment extends Fragment {
             Token = _preferences.getString("TOKEN", null);
             _formId = _preferences.getInt("FORM_ID", 0);
             String formName = _preferences.getString("FORM_NAME", null);
-            String timeStarted = _preferences.getString("TIME_STARTED", null);
+            _timeStarted = _preferences.getString("TIME_STARTED", null);
 
             formNameTxt.setText(formName);
-            startedAtTxt.setText(timeStarted);
+            startedAtTxt.setText(_timeStarted);
 
         } catch (NullPointerException e) {
 
@@ -117,8 +122,8 @@ public class MappingQuestionnaireFragment extends Fragment {
                 }
             }
 
-
             postFormResults();
+
             _submitBtn.setClickable(false);
             _transparentLoader.setVisibility(View.VISIBLE);
             _progressBar.setVisibility(View.VISIBLE);
@@ -151,12 +156,29 @@ public class MappingQuestionnaireFragment extends Fragment {
                 case 5:
                     addnumericBox(questions.get(i).getQuestion(), i);
                     break;
+                case 8:
+                    addLongitude(questions.get(i).getQuestion(), i);
+                    break;
+                case 9:
+                    addLatitude(questions.get(i).getQuestion(), i);
+                    break;
+                case 10:
+                    addStartTime(questions.get(i).getQuestion(), i);
+                    break;
+                case 11:
+                    addCompleteTime(questions.get(i).getQuestion(), i);
+                    break;
+                case 12:
+                    addLocation(questions.get(i).getQuestion(), i);
+                    break;
+                case 13:
+                    addPostedBy(questions.get(i).getQuestion(), i);
+                    break;
                 default:
                     break;
             }
         }
     }
-
 
     public void addTextBox(Quesionnaire question, int indx) {
         LinearLayout parent = createControlParent();
@@ -275,7 +297,7 @@ public class MappingQuestionnaireFragment extends Fragment {
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 110
         );
-        params.setMargins(0, 30, 0, 0);
+        params.setMargins(0, 30, 0, 10);
 
         Spinner spinner = new Spinner(_c);
         ArrayAdapter optionAdapter = new ArrayAdapter(_c, android.R.layout.simple_spinner_dropdown_item, options);
@@ -367,6 +389,54 @@ public class MappingQuestionnaireFragment extends Fragment {
         parent.addView(textbox);
 
 
+    }
+
+
+    private void addLatitude(String question, int i) {
+        _answers.get(i).setQuestion(question);
+        _answers.get(i).setAnswer(_preferences.getString("mLONGITUDE", null));
+    }
+
+    private void addLongitude(String question, int i) {
+        _answers.get(i).setQuestion(question);
+        _answers.get(i).setAnswer(_preferences.getString("mLATITUDE", null));
+    }
+
+    private void addStartTime(String question, int i) {
+        _answers.get(i).setQuestion(question);
+        _answers.get(i).setAnswer(DateHelper.getCurrentDate()+" "+_timeStarted);
+    }
+    private void addCompleteTime(String question, int i) {
+        _answers.get(i).setQuestion(question);
+        _answers.get(i).setAnswer(DateHelper.getCurrentDate()+" "+DateHelper.getCurrentTime());
+    }
+
+
+    private void addLocation(String question, int i) {
+
+        //Get address base on location
+        try {
+            Geocoder geo = new Geocoder(_c.getApplicationContext(), Locale.getDefault());
+            List<Address> addresses = geo.getFromLocation(Double.parseDouble(_preferences.getString("mLATITUDE", null)), Double.parseDouble( _preferences.getString("mLONGITUDE", null)), 1);
+            if (addresses.isEmpty()) {
+
+            } else {
+                if (addresses.size() > 0) {
+
+                    _answers.get(i).setQuestion(question);
+                    _answers.get(i).setAnswer(addresses.get(0).getSubAdminArea());
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+    private void addPostedBy(String question, int i) {
+        _answers.get(i).setQuestion(question);
+        _answers.get(i).setAnswer(_user.getName());
     }
 
 

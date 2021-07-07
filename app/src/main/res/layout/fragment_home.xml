@@ -1,119 +1,467 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/tools"
     xmlns:shimmer="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/grey_bg_default"
     android:orientation="vertical"
-    android:background="#f2f2f2"
-    android:padding="15dp">
+    app:ignore="NamespaceTypo">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
 
-    <LinearLayout
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
-        android:layout_marginTop="@dimen/padding_10"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="100dp">
-
-        <RelativeLayout
-            android:layout_marginTop="5dp"
+        <LinearLayout
+            android:background="@drawable/round_corners_white"
+            android:paddingLeft="20dp"
+            android:paddingTop="20dp"
+            android:paddingRight="20dp"
+            android:paddingBottom="20dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <TextView
-                android:layout_marginTop="5dp"
-                android:textStyle="bold"
-                android:text="Unataka kuuza kitu gani?"
-                android:textSize="14sp"
-                android:textColor="@android:color/black"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                />
+            android:layout_height="170dp"
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:id="@+id/view_user_account_btn"
-                android:gravity="right"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_alignParentRight="true">
-                <ImageView
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp">
+
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_account_circle_primarydark_24dp"
-                    android:textColor="@android:color/black"
-                    android:textSize="14sp" />
-            </LinearLayout>
+                    android:orientation="vertical">
 
-        </RelativeLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="Karibu,"
+                        android:textStyle="bold" />
 
+                    <TextView
+                        android:id="@+id/user_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Halima Hsan,"
+                        android:textColor="@android:color/black"
+                        android:textSize="19sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/view_user_account_btn"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_alignParentRight="true"
+                    android:gravity="right">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/ic_account_circle_blue_24dp"
+                        android:textColor="@android:color/black"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+            </RelativeLayout>
+
+
+            <TextView
+                android:id="@+id/search_project"
+                android:layout_width="match_parent"
+                android:layout_height="43dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/round_corners_with_grey_bg"
+                android:drawableLeft="@drawable/ic_search_grey_bbb_24dp"
+                android:gravity="center_vertical"
+                android:hint="Tafuta mradi kwa haraka"
+                android:paddingLeft="6dp" />
+
+
+        </LinearLayout>
 
         <TextView
-            android:gravity="center_vertical"
-            android:id="@+id/search_items_edittxt"
-            android:layout_marginTop="15dp"
-            android:drawableLeft="@drawable/ic_search_grey_bbb_24dp"
+            android:paddingLeft="20dp"
+            android:paddingTop="20dp"
+            android:paddingRight="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Aina ya project"
+            android:textColor="@android:color/black"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:id="@+id/project_type_list"
             android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:hint="Tafuta Bidhaa kwa haraka"
-            android:paddingLeft="6dp"
-            android:background="@drawable/round_corners_with_stroke_primary"/>
-
-
+            android:layout_height="wrap_content"
+            android:layout_marginTop="13dp"
+            android:paddingBottom="0dp" />
 
     </LinearLayout>
 
     <TextView
-        android:visibility="gone"
-        android:layout_marginLeft="@dimen/padding_10"
-        android:textStyle="bold"
-        android:layout_marginTop="@dimen/padding_10"
-        android:textColor="@android:color/black"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:id="@+id/user_stats"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Tafuta kwa kampuni"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/company_list"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
         android:layout_marginTop="20dp"
-        android:paddingBottom="0dp" />
-
-    </LinearLayout>
-    <TextView
-        android:id="@+id/view_db"
-        android:layout_marginLeft="@dimen/padding_10"
-        android:textStyle="bold"
-        android:layout_marginTop="0dp"
+        android:text="Taarifa zako"
         android:textColor="@android:color/black"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Tafuta kwa aina ya bidhaa"/>
+        android:textSize="14sp"
+        android:textStyle="bold" />
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="10dp">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/category_list"
+        android:layout_height="match_parent">
+        <ScrollView
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="0dp"
-            android:paddingBottom="50dp" />
+            android:layout_height="match_parent">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/round_corners_white"
+                    android:orientation="horizontal"
+                    android:padding="10dp">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:minHeight="50dp"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/round_corners_white"
+                            android:elevation="1dp"
+                            android:padding="5dp">
+
+                            <com.mikhaellopez.circularprogressbar.CircularProgressBar
+                                android:id="@+id/circular_bar_sales"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                app:cpb_background_progressbar_color="#ffffff"
+                                app:cpb_background_progressbar_width="6dp"
+                                app:cpb_progress="20"
+                                app:cpb_progress_direction="to_right"
+                                app:cpb_progress_max="30"
+                                app:cpb_progressbar_color="#3f51b5"
+                                app:cpb_progressbar_width="6dp"
+                                app:cpb_round_border="false" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:fontFamily="@font/mryad_pro_regular"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/padding_10"
+                            android:text="Pesa za mauzo"
+                            android:textColor="@android:color/black"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_marginRight="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginTop="16dp"
+                        android:gravity="right"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/revenue"
+                            android:fontFamily="@font/mryad_pro_regular"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="100k"
+                            android:textColor="#001689"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/revenue_target"
+                            android:fontFamily="@font/mryad_pro_regular"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:text="Malengo 230k"
+                            android:textColor="#777676"
+                            android:textSize="10sp" />
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/round_corners_white"
+                    android:orientation="horizontal"
+                    android:padding="10dp">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:minHeight="50dp"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/round_corners_white"
+                            android:elevation="1dp"
+                            android:padding="5dp">
+
+                            <com.mikhaellopez.circularprogressbar.CircularProgressBar
+                                android:id="@+id/circular_bar_mapping"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                app:cpb_background_progressbar_color="#ffffff"
+                                app:cpb_background_progressbar_width="6dp"
+                                app:cpb_progress="20"
+                                app:cpb_progress_direction="to_right"
+                                app:cpb_progress_max="30"
+                                app:cpb_progressbar_color="#ffb400"
+                                app:cpb_progressbar_width="6dp"
+                                app:cpb_round_border="false" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:fontFamily="@font/mryad_pro_regular"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/padding_10"
+                            android:text="Maduka uliokusanya data"
+                            android:textColor="@android:color/black"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_marginRight="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginTop="16dp"
+                        android:gravity="right"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/mapping_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="3"
+                            android:textColor="#ffb400"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/mapping_target"
+                            android:fontFamily="@font/mryad_pro_regular"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:text="Malengo 35"
+                            android:textColor="#777676"
+                            android:textSize="10sp" />
+
+                    </LinearLayout>
+
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/round_corners_white"
+                    android:orientation="horizontal"
+                    android:padding="10dp">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:minHeight="50dp"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/round_corners_white"
+                            android:elevation="1dp"
+                            android:padding="5dp">
+
+                            <com.mikhaellopez.circularprogressbar.CircularProgressBar
+                                android:id="@+id/circular_bar_merchandise"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                app:cpb_background_progressbar_color="#ffffff"
+                                app:cpb_background_progressbar_width="6dp"
+                                app:cpb_progress="20"
+                                app:cpb_progress_direction="to_right"
+                                app:cpb_progress_max="30"
+                                app:cpb_progressbar_color="#34b0c3"
+                                app:cpb_progressbar_width="6dp"
+                                app:cpb_round_border="false" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:fontFamily="@font/mryad_pro_regular"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/padding_10"
+                            android:text="Maduka ulioweka vipeperushi"
+                            android:textColor="@android:color/black"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_marginRight="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginTop="16dp"
+                        android:gravity="right"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/merchandise_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="3"
+                            android:textColor="#34b0c3"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/merchandise_target"
+                            android:fontFamily="@font/mryad_pro_regular"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:text="Malengo 40"
+                            android:textColor="#777676"
+                            android:textSize="10sp" />
+
+                    </LinearLayout>
+
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/round_corners_white"
+                    android:orientation="horizontal"
+                    android:padding="10dp">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:minHeight="50dp"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/round_corners_white"
+                            android:elevation="1dp"
+                            android:padding="5dp">
+
+                            <com.mikhaellopez.circularprogressbar.CircularProgressBar
+                                android:id="@+id/circular_bar_outlets"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                app:cpb_background_progressbar_color="#ffffff"
+                                app:cpb_background_progressbar_width="6dp"
+                                app:cpb_progress="20"
+                                app:cpb_progress_direction="to_right"
+                                app:cpb_progress_max="30"
+                                app:cpb_progressbar_color="#ed1c24"
+                                app:cpb_progressbar_width="6dp"
+                                app:cpb_round_border="false" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:fontFamily="@font/mryad_pro_regular"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/padding_10"
+                            android:text="Maduka yako"
+                            android:textColor="@android:color/black"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_marginRight="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginTop="16dp"
+                        android:gravity="right"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/outlet_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textColor="#ed1c24"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/outlet_target"
+                            android:fontFamily="@font/mryad_pro_regular"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:text="Malengo 30"
+                            android:textColor="#777676"
+                            android:textSize="10sp" />
+
+                    </LinearLayout>
+
+
+                </RelativeLayout>
+            </LinearLayout>
+        </ScrollView>
         <com.facebook.shimmer.ShimmerFrameLayout
             android:id="@+id/shimmer_view_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:layout_marginTop="0dp"
-            android:background="@android:color/white"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/round_corners_with_grey_bg"
             android:orientation="vertical">
 
             <!-- Adding 7 rows of placeholders -->
@@ -122,22 +470,22 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <include layout="@layout/data_placeholder_cateogory_layout" />
+                <include layout="@layout/placeholder_home_stats" />
 
-                <include layout="@layout/data_placeholder_cateogory_layout" />
+                <include layout="@layout/placeholder_home_stats" />
 
-                <include layout="@layout/data_placeholder_cateogory_layout" />
+                <include layout="@layout/placeholder_home_stats" />
 
-                <include layout="@layout/data_placeholder_cateogory_layout" />
+                <include layout="@layout/placeholder_home_stats" />
 
-                <include layout="@layout/data_placeholder_cateogory_layout" />
 
-                <include layout="@layout/data_placeholder_cateogory_layout" />
-
-                <include layout="@layout/data_placeholder_cateogory_layout" />
             </LinearLayout>
 
         </com.facebook.shimmer.ShimmerFrameLayout>
 
     </RelativeLayout>
+
+
+
+
 </LinearLayout>

@@ -246,10 +246,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 cart.add(new Cart(
                         cursor.getInt(cursor.getColumnIndex(KEY_ID)),
                         cursor.getString(cursor.getColumnIndex(KEY_NAME)),
-                        cursor.getInt(cursor.getColumnIndex(KEY_TOTAL_PRICE)),
+                        cursor.getDouble(cursor.getColumnIndex(KEY_TOTAL_PRICE)),
                         cursor.getInt(cursor.getColumnIndex(KEY_PRODUCT_ID)),
                         cursor.getInt(cursor.getColumnIndex(KEY_QUANTITY)),
-                        cursor.getInt(cursor.getColumnIndex(KEY_ITEM_PRICE))
+                        cursor.getDouble(cursor.getColumnIndex(KEY_ITEM_PRICE))
                 ));
             } while (cursor.moveToNext());
         }

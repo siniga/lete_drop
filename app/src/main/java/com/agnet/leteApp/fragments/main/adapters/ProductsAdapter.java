@@ -59,7 +59,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
         this.c = c;
         this.fragment = fragment;
 
-        _formatter = new DecimalFormat("#,###,###");
+        _formatter = new DecimalFormat("#,###,##0.00");
         _gson = new Gson();
 
         _preferences = c.getSharedPreferences("SharedData", Context.MODE_PRIVATE);
@@ -89,7 +89,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
         holder.mSku.setText(currentProduct.getSku());
         holder.mPrice.setText("TZS"+_formatter.format(currentProduct.getPrice()));
 
-        Log.d("HEHEH",_gson.toJson(currentProduct));
+        Log.d("HEHEH",_gson.toJson(_formatter.format(currentProduct.getPrice())));
 
         holder.mWrapper.setOnClickListener(new View.OnClickListener() {
             @Override

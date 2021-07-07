@@ -212,7 +212,6 @@ public class ProductsFragment extends Fragment {
 
     public void getProducts(int cid) {
 
-
         Endpoint.setUrl("products/category/"+cid);
         String url = Endpoint.getUrl();
 
@@ -225,7 +224,7 @@ public class ProductsFragment extends Fragment {
                     ProductsAdapter productsAdapter = new ProductsAdapter(_c,res.getProducts(), this);
                     _productsList.setAdapter(productsAdapter);
 
-                   // Log.d("RESPONSEHERE", _gson.toJson(res.getProducts()));
+                    Log.d("RESPONSEHERE", _gson.toJson(res.getProducts().get(0).getPrice()));
 
                 },
                 error -> {

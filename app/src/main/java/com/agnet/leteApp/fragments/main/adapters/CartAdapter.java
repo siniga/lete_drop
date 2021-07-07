@@ -3,6 +3,7 @@ package com.agnet.leteApp.fragments.main.adapters;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,7 +80,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
         //get a position of a current saleItem
         final Cart currentProduct = products.get(position);
 
-        final DecimalFormat formatter = new DecimalFormat("#,###,###");
+        final DecimalFormat formatter =  new DecimalFormat("#,###,##0.00");
 
         holder.mName.setText(currentProduct.getName());
         holder.mPrice.setText("TZS:" +formatter.format(currentProduct.getAmount()));
@@ -96,9 +97,6 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             _dbHandler.updateCart(new Cart(0,currentProduct.getName(),total,currentProduct.getProductId(),count[0],currentProduct.getItemPrice()));
 
             int totalQnty = _dbHandler.getTotalQnty();
-
-
-         //   holder.mPrice.setText("" + formatter.format(total));
 
             ((CartFragment) cartFragment).setTotalCartAmnt(_dbHandler.getTotalPrice());
 

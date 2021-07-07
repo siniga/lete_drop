@@ -3,6 +3,7 @@ package com.agnet.leteApp.fragments.main;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,6 +29,7 @@ import com.agnet.leteApp.fragments.main.adapters.OutletAdapter;
 import com.agnet.leteApp.fragments.main.adapters.ProjectAdapter;
 import com.agnet.leteApp.fragments.main.adapters.ProjectTypeAdapter;
 import com.agnet.leteApp.fragments.main.outlets.NewOutletFragment;
+import com.agnet.leteApp.helpers.AndroidDatabaseManager;
 import com.agnet.leteApp.helpers.FragmentHelper;
 import com.agnet.leteApp.models.ProjectType;
 import com.agnet.leteApp.models.ResponseData;
@@ -50,7 +52,7 @@ import java.util.Map;
 public class ProjectFragment extends Fragment {
 
     private FragmentActivity _c;
-    private RecyclerView _projectTypeList, _projectList, _outletList;
+    private RecyclerView _projectList, _outletList;
     private LinearLayoutManager _projectTypeLayoutManager, _projectLayoutManager, _outletLayoutManager;
     private String Token;
     private SharedPreferences.Editor _editor;
@@ -60,6 +62,9 @@ public class ProjectFragment extends Fragment {
     private User _user;
     private  LinearLayout _newOutletBtn;
     private int _pos;
+    private LinearLayout _infoMsg;
+    private TextView _infoMsgTxt;
+    private TextView _searchProjectInput;
 
 
     @SuppressLint("RestrictedApi")
@@ -74,19 +79,14 @@ public class ProjectFragment extends Fragment {
         _gson = new Gson();
 
         TextView username = view.findViewById(R.id.user_name);
-        _projectTypeList = view.findViewById(R.id.project_type_list);
         _projectList = view.findViewById(R.id.project_list);
         _outletList = view.findViewById(R.id.outlet_list);
         _shimmerLoader = view.findViewById(R.id.shimmer_view_container);
         _newOutletBtn = view.findViewById(R.id.new_outlet_btn);
         LinearLayout userAcc = view.findViewById(R.id.view_user_account_btn);
-
-       /*
-
-        LinearLayout salesBtn = view.findViewById(R.id.sales_btn);
-        ImageView userAcc = view.findViewById(R.id.user_account);
-        LinearLayout merchandiSe = view.findViewById(R.id.merchandise_btn);*/
-
+        _infoMsg = view.findViewById(R.id.info_msg);
+        _infoMsgTxt = view.findViewById(R.id.info_msg_txt);
+        _searchProjectInput = view.findViewById(R.id.search_project);
 
         try {
             _user = _gson.fromJson(_preferences.getString("User", null), User.class);
@@ -99,12 +99,6 @@ public class ProjectFragment extends Fragment {
 
         }
 
-        _projectTypeLayoutManager = new LinearLayoutManager(_c, RecyclerView.HORIZONTAL, false);
-        _projectTypeList.setLayoutManager(_projectTypeLayoutManager);
-
-        ProjectTypeAdapter typeAdapter = new ProjectTypeAdapter(_c, getProjectTypes(), this);
-        _projectTypeList.setAdapter(typeAdapter);
-
 
         _projectLayoutManager = new LinearLayoutManager(_c, RecyclerView.VERTICAL, false);
         _projectList.setLayoutManager(_projectLayoutManager);
@@ -114,36 +108,29 @@ public class ProjectFragment extends Fragment {
         _outletList.setLayoutManager(_outletLayoutManager);
 
 
-        userAcc.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                _editor.remove("TOKEN");
-                _editor.commit();
-                new FragmentHelper(_c).replaceWithAnimSlideFromRight(new LoginFragment(), "LoginFragment", R.id.fragment_placeholder);
-
-            }
+        username.setOnClickListener(view13 -> {
+            Intent intent = new Intent(_c, AndroidDatabaseManager.class);
+            _c.startActivity(intent);
         });
 
-        _newOutletBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new FragmentHelper(_c).replaceWithAnimSlideFromRight(new NewOutletFragment(), "NewOutletFragment", R.id.fragment_placeholder);
+        userAcc.setOnClickListener(view1 -> {
+            _editor.remove("TOKEN");
+            _editor.commit();
 
-            }
+            new FragmentHelper(_c).replaceWithAnimSlideFromRight(new LoginFragment(), "LoginFragment", R.id.fragment_placeholder);
+
+
         });
 
-        getPorjects("Mapping");
+        _searchProjectInput.setOnClickListener(view1 -> {
+            Toast.makeText(_c, "Coming soon!", Toast.LENGTH_SHORT).show();
+        });
+
+        _newOutletBtn.setOnClickListener(view12 -> new FragmentHelper(_c).replaceWithAnimSlideFromRight(new NewOutletFragment(), "NewOutletFragment", R.id.fragment_placeholder));
+
+        getPorjects("Sales");
 
         return view;
-    }
-
-    private List<ProjectType> getProjectTypes() {
-        List<ProjectType> list = new ArrayList<>();
-        list.add(new ProjectType(1, "Mapping", "ic_type_mapping_grey", "ic_type_mapping_white"));
-        list.add(new ProjectType(2, "Merchandise", "ic_type_merchandise_grey", "ic_type_merchandise_white"));
-        list.add(new ProjectType(3, "Sales", "ic_type_sales_grey", "ic_type_sales_white"));
-        list.add(new ProjectType(4, "Outlets", "ic_type_outlet_grey", "ic_type_outlet_white"));
-        return list;
     }
 
     @Override
@@ -171,27 +158,45 @@ public class ProjectFragment extends Fragment {
             return false;
         });
     }
+    private List<ProjectType> getProjectTypes() {
+        List<ProjectType> list = new ArrayList<>();
+        list.add(new ProjectType(1, "Mauzo", "ic_type_sales_grey", 0));
+        list.add(new ProjectType(2, "Uwepo", "ic_type_mapping_grey", 0));
+        list.add(new ProjectType(3, "Vipeperushi", "ic_type_merchandise_grey", 0));
+        list.add(new ProjectType(4, "Maduka", "ic_type_outlet_grey", 0));
+        return list;
+    }
 
+/*    public void setProjectType(String type){
+         _infoMsgTxt.setText("Huna mradi wa "+type+ " kwa sasa.");
+    }*/
     public void getPorjects(String type) {
-
 
         _shimmerLoader.setVisibility(View.VISIBLE);
         _shimmerLoader.startShimmerAnimation();
         _newOutletBtn.setVisibility(View.GONE);
 
-        Endpoint.setUrl("projects/" + type + "/user/" + _user.getId());
+        Endpoint.setUrl("projects/" + type + "/user/" +_user.getId());
         String url = Endpoint.getUrl();
 
         StringRequest postRequest = new StringRequest(Request.Method.GET, url,
                 response -> {
 
-                    _projectList.setVisibility(View.VISIBLE);
+                    ResponseData res = _gson.fromJson(response, ResponseData.class);
                     _outletList.setVisibility(View.GONE);
 
-                    ResponseData res = _gson.fromJson(response, ResponseData.class);
+                   // Log.d("HEREHERESANA", _gson.toJson(res.getProjects()));
 
-                    ProjectAdapter projectAdapter = new ProjectAdapter(_c, res.getProjects());
-                    _projectList.setAdapter(projectAdapter);
+                    if(res.getProjects().size() == 0){
+                       _infoMsg.setVisibility(View.VISIBLE);
+                        _projectList.setVisibility(View.GONE);
+                    }else {
+                        _infoMsg.setVisibility(View.GONE);
+                        _projectList.setVisibility(View.VISIBLE);
+
+                        ProjectAdapter projectAdapter = new ProjectAdapter(_c, res.getProjects());
+                        _projectList.setAdapter(projectAdapter);
+                    }
 
                     _shimmerLoader.setVisibility(View.GONE);
                     _shimmerLoader.stopShimmerAnimation();
@@ -261,12 +266,16 @@ public class ProjectFragment extends Fragment {
                     _outletList.setVisibility(View.VISIBLE);
 
                     if(res.getCode() == 200){
-                        Log.d("RESPONSE_HHERE", _gson.toJson(res.getOutlets()));
+                        if(res.getOutlets().size() == 0){
+                            _infoMsg.setVisibility(View.VISIBLE);
+                        }else {
+                            OutletAdapter outletAdapter = new OutletAdapter(_c, res.getOutlets());
+                            _outletList.setAdapter(outletAdapter);
+                            _infoMsg.setVisibility(View.GONE);
 
-                        OutletAdapter outletAdapter = new OutletAdapter(_c, res.getOutlets());
-                        _outletList.setAdapter(outletAdapter);
+                        }
+
                     }
-
                     _shimmerLoader.setVisibility(View.GONE);
                     _shimmerLoader.stopShimmerAnimation();
 

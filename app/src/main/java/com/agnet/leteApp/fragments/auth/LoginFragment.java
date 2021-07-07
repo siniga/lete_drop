@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 
 import com.agnet.leteApp.R;
 import com.agnet.leteApp.application.mSingleton;
+import com.agnet.leteApp.fragments.main.HomeFragment;
 import com.agnet.leteApp.fragments.main.ProjectFragment;
 import com.agnet.leteApp.helpers.DatabaseHandler;
 import com.agnet.leteApp.helpers.FragmentHelper;
@@ -123,7 +124,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
         try {
             if (!_preferences.getString("TOKEN", null).isEmpty()) {
-                new FragmentHelper(_c).replaceWithbackStack(new ProjectFragment(), "ProjectFragment", R.id.fragment_placeholder);
+                new FragmentHelper(_c).replaceWithbackStack(new HomeFragment(), "HomeFragment", R.id.fragment_placeholder);
             }
         } catch (NullPointerException e) {
 
@@ -218,44 +219,37 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
 
         StringRequest postRequest = new StringRequest(Request.Method.POST, ROOT_URL,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
+                response -> {
 
-                        ResponseData res = _gson.fromJson(response, ResponseData.class);
+                    ResponseData res = _gson.fromJson(response, ResponseData.class);
 
 
-                        _editor.putString("TOKEN", res.getToken());
-                        _editor.commit();
+                    _editor.putString("TOKEN", res.getToken());
+                    _editor.commit();
 
-                        getUser(res.getToken());
+                    getUser(res.getToken());
 
 
-                        _progressBar.setVisibility(View.GONE);
-                    }
-
+                    _progressBar.setVisibility(View.GONE);
                 },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
+                error -> {
 
 
-                        _progressBar.setVisibility(View.GONE);
-                        NetworkResponse response = error.networkResponse;
-                        String errorMsg = "";
-                        if (response != null && response.data != null) {
-                            String errorString = new String(response.data);
-                            ResponseData res = _gson.fromJson(errorString, ResponseData.class);
-                            if (res.getError().equals("Unauthorised")) {
-                                Toast.makeText(_c, "Umeosea namba ya simu au password!", Toast.LENGTH_LONG).show();
-                            }else {
-                                Toast.makeText(_c, "Kuna tatizo la mtandao, jaribu tena au wasiliana na wataalamu ", Toast.LENGTH_LONG).show();
-                            }
-
+                    _progressBar.setVisibility(View.GONE);
+                    NetworkResponse response = error.networkResponse;
+                    String errorMsg = "";
+                    if (response != null && response.data != null) {
+                        String errorString = new String(response.data);
+                        ResponseData res = _gson.fromJson(errorString, ResponseData.class);
+                        if (res.getError().equals("Unauthorised")) {
+                            Toast.makeText(_c, "Umeosea namba ya simu au password!", Toast.LENGTH_LONG).show();
+                        }else {
+                            Toast.makeText(_c, "Kuna tatizo la mtandao, jaribu tena au wasiliana na wataalamu ", Toast.LENGTH_LONG).show();
                         }
 
-
                     }
+
+
                 }
         ) {
             @Override
@@ -288,7 +282,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                         _editor.commit();
 
 
-                        new FragmentHelper(_c).replaceWithbackStack(new ProjectFragment(), "ProjectFragment", R.id.fragment_placeholder);
+                        new FragmentHelper(_c).replaceWithbackStack(new HomeFragment(), "HomeFragment", R.id.fragment_placeholder);
 //
                         _progressBar.setVisibility(View.GONE);
                     }

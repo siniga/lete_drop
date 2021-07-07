@@ -87,7 +87,7 @@ public class CartFragment extends Fragment {
         _progressBar = view.findViewById(R.id.progress_bar);
         _transparentLoader = view.findViewById(R.id.transparent_loader);
         _dbHandler = new DatabaseHandler(_c);
-        _formatter = new DecimalFormat("#,###,###");
+        _formatter =  new DecimalFormat("#,###,##0.00");
         _gson = new Gson();
 
         //binding
@@ -181,16 +181,15 @@ public class CartFragment extends Fragment {
 
                     _transparentLoader.setVisibility(View.GONE);
                     _progressBar.setVisibility(View.GONE);
-                    //Log.d("CARTPRODUCT", response);
+
                     ResponseData res = _gson.fromJson(response, ResponseData.class);
 
                     if (res.getCode() == 201) {
                         _dbHandler.deleteCart();
                         new FragmentHelper(_c).replace(new SalesSuccessFragment(), "SalesSuccessFragment", R.id.fragment_placeholder);
                     }
+
                     _placeOrderBtn.setClickable(true);
-
-
                 },
                 error -> {
                     error.printStackTrace();
@@ -230,6 +229,7 @@ public class CartFragment extends Fragment {
                 params.put("lng", _preferences.getString("mLONGITUDE", null));
                 params.put("products", _gson.toJson(_dbHandler.getCart()));
                 params.put("outletId", "1");
+                params.put("projectId", ""+_preferences.getInt("PROJECT_ID",0));
                 return params;
             }
         };
