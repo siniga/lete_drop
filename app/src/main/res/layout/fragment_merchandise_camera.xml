@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:shimmer="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    app:ignore="NamespaceTypo"
+   >
+    <RelativeLayout
+        android:id="@+id/toolbar"
+        android:background="@color/white"
+        android:paddingTop="0dp"
+        android:paddingRight="20dp"
+        android:paddingLeft="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="60dp">
+
+        <ImageView
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_arrow_back_black_24dp"/>
+
+        <TextView
+            android:textStyle="bold"
+            android:textColor="@color/blue"
+            android:fontFamily="@font/mryad_pro_regular"
+            android:textSize="18sp"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Chukua picha tano za duka"/>
+
+    </RelativeLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_marginTop="20dp"
+        android:layout_below="@id/toolbar"
+        android:id="@+id/merchandise_img_list"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:paddingBottom="0dp" />
+    <com.otaliastudios.cameraview.CameraView
+        android:layout_centerInParent="true"
+        android:layout_marginTop="20dp"
+        android:id="@+id/camera"
+        android:keepScreenOn="true"
+        android:layout_width="match_parent"
+        android:layout_height="300dp" />
+
+    <RelativeLayout
+        android:layout_below="@id/camera"
+        android:layout_centerInParent="true"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="@drawable/ripple_effect"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/solid_circle_camera"
+        android:id="@+id/capture_btn"
+        android:layout_width="95dp"
+        android:layout_height="95dp"
+       />
+
+
+
+
+</RelativeLayout>

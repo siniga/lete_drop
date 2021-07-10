@@ -21,7 +21,7 @@
             android:paddingRight="20dp"
             android:paddingBottom="20dp"
             android:layout_width="match_parent"
-            android:layout_height="170dp"
+            android:layout_height="100dp"
             android:orientation="vertical">
 
             <RelativeLayout
@@ -35,6 +35,7 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:fontFamily="@font/mryad_pro_regular"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
@@ -42,6 +43,7 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:fontFamily="@font/mryad_pro_regular"
                         android:id="@+id/user_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -71,22 +73,26 @@
             </RelativeLayout>
 
 
-            <TextView
-                android:id="@+id/search_project"
-                android:layout_width="match_parent"
-                android:layout_height="43dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginRight="10dp"
-                android:background="@drawable/round_corners_with_grey_bg"
-                android:drawableLeft="@drawable/ic_search_grey_bbb_24dp"
-                android:gravity="center_vertical"
-                android:hint="Tafuta mradi kwa haraka"
-                android:paddingLeft="6dp" />
+
 
 
         </LinearLayout>
 
         <TextView
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="33dp"
+            android:fontFamily="@font/mryad_pro_regular"
+            android:id="@+id/search_project"
+            android:layout_width="match_parent"
+            android:layout_height="43dp"
+            android:background="@drawable/round_corners_with_grey_bg"
+            android:drawableLeft="@drawable/ic_search_grey_bbb_24dp"
+            android:gravity="center_vertical"
+            android:hint="Tafuta mradi kwa haraka" />
+
+        <TextView
+            android:fontFamily="@font/mryad_pro_regular"
             android:paddingLeft="20dp"
             android:paddingTop="20dp"
             android:paddingRight="20dp"
@@ -111,6 +117,7 @@
     </LinearLayout>
 
     <TextView
+        android:fontFamily="@font/mryad_pro_regular"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
         android:id="@+id/user_stats"

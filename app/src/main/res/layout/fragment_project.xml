@@ -3,93 +3,250 @@
     xmlns:shimmer="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:orientation="vertical"
-    android:paddingTop="20dp"
-    android:paddingRight="20dp"
-    android:paddingLeft="20dp">
+    android:background="@color/grey_bg_default"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <RelativeLayout
+        android:background="@color/white"
+        android:paddingTop="0dp"
+        android:paddingRight="20dp"
+        android:paddingLeft="20dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="60dp">
 
+        <ImageView
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_arrow_back_black_24dp"/>
 
+        <Button
+            android:id="@+id/project_type"
+            android:textAllCaps="false"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:textColor="#001689"
+            android:background="@drawable/round_corners_with_blue_bg"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:text="Miradi ya mauzo"/>
+    </RelativeLayout>
+    <LinearLayout
+        android:visibility="gone"
+        android:layout_gravity="center"
+        android:minWidth="320dp"
+        android:layout_marginTop="30dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="130dp"
-            android:layout_marginTop="@dimen/padding_10"
-            android:orientation="vertical">
-
-            <RelativeLayout
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="15dp"
+            android:background="@drawable/round_corners_white"
+            android:id="@+id/type_wrapper"
+            android:orientation="vertical"
+            android:layout_weight="0.7"
+            android:layout_width="1dp"
+            android:layout_height="100dp">
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp">
+                android:layout_height="match_parent"
+                >
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:id="@+id/icon_wrapper"
+                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:orientation="vertical">
 
                     <TextView
+                        android:textSize="30sp"
+                        android:fontFamily="@font/mryad_pro_regular"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:text="Karibu,"
-                        android:textStyle="bold" />
+                        android:text="19"/>
 
                     <TextView
-                        android:id="@+id/user_name"
+                        android:fontFamily="@font/mryad_pro_regular"
+                        android:layout_marginTop="7dp"
+                        android:layout_gravity="center"
+                        android:text="Maduka uliowauzia"
+                        android:id="@+id/type_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Halima Hsan,"
                         android:textColor="@android:color/black"
-                        android:textSize="19sp"
-                        android:textStyle="bold" />
+                        android:textSize="13sp"/>
+
+                    <TextView
+                        android:visibility="gone"
+                        android:id="@+id/stats"
+                        android:layout_marginTop="0dp"
+                        android:layout_gravity="center"
+                        android:text="Tzs: 10k"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#919090"
+                        android:textSize="9sp"/>
+
 
                 </LinearLayout>
-
-
-                <LinearLayout
-                    android:id="@+id/view_user_account_btn"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_alignParentRight="true"
-                    android:gravity="right">
-
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:src="@drawable/ic_account_circle_blue_24dp"
-                        android:textColor="@android:color/black"
-                        android:textSize="14sp" />
-                </LinearLayout>
-
-            </RelativeLayout>
-
-
-            <TextView
-                android:id="@+id/search_project"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginTop="15dp"
-                android:background="@drawable/round_corners_with_stroke_primary"
-                android:drawableLeft="@drawable/ic_search_grey_bbb_24dp"
-                android:gravity="center_vertical"
-                android:hint="Tafuta mradi"
-                android:paddingLeft="6dp" />
-
-
+            </LinearLayout>
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_marginRight="20dp"
+            android:background="@drawable/round_corners_white"
+            android:orientation="vertical"
+            android:layout_weight="0.7"
+            android:layout_width="1dp"
+            android:layout_height="100dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                >
+
+                <LinearLayout
+                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:textSize="30sp"
+                        android:fontFamily="@font/mryad_pro_regular"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="30"/>
+
+                    <TextView
+                        android:fontFamily="@font/mryad_pro_regular"
+                        android:layout_marginTop="7dp"
+                        android:layout_gravity="center"
+                        android:text="Bidhaa ulizouza"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@android:color/black"
+                        android:textSize="13sp"/>
+
+
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
+        android:visibility="gone"
+        android:layout_gravity="center"
+        android:minWidth="320dp"
+        android:layout_marginTop="15dp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="15dp"
+            android:background="@drawable/round_corners_white"
+            android:orientation="vertical"
+            android:layout_weight="0.7"
+            android:layout_width="1dp"
+            android:layout_height="100dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                >
+
+                <LinearLayout
+                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:textSize="30sp"
+                        android:fontFamily="@font/mryad_pro_regular"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="140k"/>
+
+                    <TextView
+                        android:fontFamily="@font/mryad_pro_regular"
+                        android:layout_marginTop="7dp"
+                        android:layout_gravity="center"
+                        android:text="Mauzo yako"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@android:color/black"
+                        android:textSize="13sp"/>
+
+                    <TextView
+                        android:visibility="gone"
+                        android:layout_marginTop="0dp"
+                        android:layout_gravity="center"
+                        android:text="Tzs: 10k"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#919090"
+                        android:textSize="9sp"/>
+
+
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginRight="20dp"
+            android:background="@drawable/round_corners_white"
+            android:orientation="vertical"
+            android:layout_weight="0.7"
+            android:layout_width="1dp"
+            android:layout_height="100dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                >
+
+                <LinearLayout
+                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:textSize="30sp"
+                        android:fontFamily="@font/mryad_pro_regular"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="330k"/>
+
+                    <TextView
+                        android:fontFamily="@font/mryad_pro_regular"
+                        android:layout_marginTop="7dp"
+                        android:layout_gravity="center"
+                        android:text="Malengo ya mauzo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@android:color/black"
+                        android:textSize="13sp"/>
+
+
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:paddingTop="20dp"
+        android:paddingRight="15dp"
+        android:paddingLeft="15dp"
+        android:paddingBottom="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
 
         <TextView
+            android:visibility="gone"
+            android:fontFamily="@font/mryad_pro_regular"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Chagua Mradi"
@@ -97,23 +254,15 @@
             android:textSize="16sp"
             android:textStyle="bold" />
 
-    </LinearLayout>
-
-    <RelativeLayout
-        android:paddingBottom="16dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/project_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="0dp"
             android:paddingBottom="50dp" />
 
         <androidx.recyclerview.widget.RecyclerView
+            android:visibility="gone"
             android:id="@+id/outlet_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -122,6 +271,7 @@
             android:paddingBottom="50dp" />
 
         <LinearLayout
+            android:visibility="gone"
             android:layout_below="@id/new_outlet_btn"
             android:layout_width="match_parent"
             android:layout_height="60dp"/>
@@ -142,6 +292,7 @@
         </LinearLayout>
 
         <com.facebook.shimmer.ShimmerFrameLayout
+            android:visibility="gone"
             android:id="@+id/shimmer_view_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -157,24 +308,33 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <include layout="@layout/data_placeholder_cateogory_layout" />
+                <include layout="@layout/placeholder_home_stats" />
 
-                <include layout="@layout/data_placeholder_cateogory_layout" />
+                <include layout="@layout/placeholder_home_stats" />
 
-                <include layout="@layout/data_placeholder_cateogory_layout" />
+                <include layout="@layout/placeholder_home_stats" />
 
-                <include layout="@layout/data_placeholder_cateogory_layout" />
+                <include layout="@layout/placeholder_home_stats" />
 
-                <include layout="@layout/data_placeholder_cateogory_layout" />
+                <include layout="@layout/placeholder_home_stats" />
 
-                <include layout="@layout/data_placeholder_cateogory_layout" />
+                <include layout="@layout/placeholder_home_stats" />
 
-                <include layout="@layout/data_placeholder_cateogory_layout" />
+                <include layout="@layout/placeholder_home_stats" />
+
+                <include layout="@layout/placeholder_home_stats" />
+
+                <include layout="@layout/placeholder_home_stats" />
+
+
+
+
             </LinearLayout>
 
         </com.facebook.shimmer.ShimmerFrameLayout>
 
         <LinearLayout
+            android:visibility="gone"
             android:id="@+id/new_outlet_btn"
             android:layout_width="60dp"
             android:layout_height="60dp"

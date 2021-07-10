@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -27,6 +29,7 @@ import com.agnet.leteApp.R;
 import com.agnet.leteApp.application.mSingleton;
 import com.agnet.leteApp.fragments.main.adapters.ProjectAdapter;
 import com.agnet.leteApp.fragments.main.adapters.ProjectTypeAdapter;
+import com.agnet.leteApp.helpers.DateHelper;
 import com.agnet.leteApp.helpers.FragmentHelper;
 import com.agnet.leteApp.models.CustomerType;
 import com.agnet.leteApp.models.Project;
@@ -90,17 +93,11 @@ public class HomeFragment extends Fragment {
         _merchandiseTarget = view.findViewById(R.id.merchandise_target);
         _outletCount = view.findViewById(R.id.outlet_count);
         _outletTarget = view.findViewById(R.id.outlet_target);
-
         _shimmer = view.findViewById(R.id.shimmer_view_container);
-
-
-
         _circularSales = view.findViewById(R.id.circular_bar_sales);
       _circularMapping = view.findViewById(R.id.circular_bar_mapping);
        _circularMerchandise = view.findViewById(R.id.circular_bar_merchandise);
        _circularOutlets  = view.findViewById(R.id.circular_bar_outlets);
-
-
 
         try {
             _user = _gson.fromJson(_preferences.getString("User", null), User.class);
@@ -116,7 +113,6 @@ public class HomeFragment extends Fragment {
         _projectTypeLayoutManager = new GridLayoutManager(_c, 3);
         _projectTypeList.setLayoutManager(_projectTypeLayoutManager);
 
-
         ProjectTypeAdapter typeAdapter = new ProjectTypeAdapter(_c, getProjectTypes());
         _projectTypeList.setAdapter(typeAdapter);
 
@@ -124,6 +120,26 @@ public class HomeFragment extends Fragment {
         getAgentStats();
 
         return view;
+    }
+
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        getView().setFocusableInTouchMode(true);
+        getView().requestFocus();
+
+        getView().setOnKeyListener((v, keyCode, event) -> {
+            if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                if (keyCode == KeyEvent.KEYCODE_BACK) {
+
+                    _c.finish();
+                    return true;
+                }
+            }
+            return false;
+        });
     }
 
     @Override
@@ -197,7 +213,10 @@ public class HomeFragment extends Fragment {
     }
 
     private void getAgentStats(){
-        Endpoint.setUrl("agent/"+_user.getId()+"/stats?start=2021-07-07&end=2021-07-07");
+        String start  = DateHelper.getCurrentDate();
+        String end = DateHelper.getCurrentDate();
+
+        Endpoint.setUrl("agent/"+_user.getId()+"/stats?start="+start+"&end="+end);
         String url = Endpoint.getUrl();
 
 
@@ -208,7 +227,7 @@ public class HomeFragment extends Fragment {
                 response -> {
 
                     ResponseData res = _gson.fromJson(response, ResponseData.class);
-                     Log.d("HEREHERESANA", _gson.toJson(res));
+//                     Log.d("HEREHERESANA", _gson.toJson(res));
 
                      if(res.getCode() == 200){
                          Stat stat =  res.getStats();
@@ -225,7 +244,12 @@ public class HomeFragment extends Fragment {
                          setupCircularBar(_circularMapping, stat.getMappingCount(), stat.getMappingTarget(), "#ffb400", "#ffffff");
                          setupCircularBar(_circularMerchandise, +stat.getMerchandiseCount(), stat.getMerchandiseTarget(),"#34b0c3","#ffffff");
                          setupCircularBar(_circularOutlets, stat.getOutletCount(), stat.getOutletTarget(),"#ed1c24","#ffffff");
+
+                         _editor.putString("STAT",_gson.toJson(stat));
+                         _editor.commit();
                      }
+
+
 
 
                     _shimmer.setVisibility(View.GONE);

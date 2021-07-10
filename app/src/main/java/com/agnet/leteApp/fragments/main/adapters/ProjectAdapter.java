@@ -16,11 +16,14 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.agnet.leteApp.R;
+import com.agnet.leteApp.fragments.main.ProjectFragment;
 import com.agnet.leteApp.fragments.main.mapping.MappingFormListFragment;
 import com.agnet.leteApp.fragments.main.merchandise.MerchandiseFormFragment;
 import com.agnet.leteApp.fragments.main.sales.ProductsFragment;
 import com.agnet.leteApp.helpers.FragmentHelper;
 import com.agnet.leteApp.models.Project;
+import com.agnet.leteApp.models.ResponseData;
+import com.agnet.leteApp.models.Stat;
 import com.agnet.leteApp.service.Endpoint;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -28,6 +31,7 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.google.gson.Gson;
+import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
 import java.util.Collections;
 import java.util.List;
@@ -45,13 +49,15 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
     private SharedPreferences _preferences;
     private SharedPreferences.Editor _editor;
     private Gson _gson;
+    private ProjectFragment fragment;
 
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public ProjectAdapter(Context c, List<Project> projects) {
+    public ProjectAdapter(Context c, List<Project> projects, ProjectFragment fragment) {
         this.projects = projects;
         this.inflator = LayoutInflater.from(c);
         this.c = c;
+        this.fragment = fragment;
         _gson = new Gson();
 
         _preferences = c.getSharedPreferences("SharedData", Context.MODE_PRIVATE);
@@ -82,6 +88,19 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
         holder.mClientName.setText(currentProject.getClient());
         holder.mProjectType.setText(currentProject.getType());
 
+
+        switch (currentProject.getType()){
+            case "Sales": fragment.setupCircularBar(holder.mCircularBar, currentProject.getRevenue(),currentProject.getRevenueTarget(), "#001689", "#f2f2f2");
+                holder.mRevenueFormatted.setText(""+currentProject.getFormattedRevenue());
+                break;
+            case "Mapping": fragment.setupCircularBar(holder.mCircularBar, currentProject.getMapping(),currentProject.getTarget(), "#ffb400", "#f2f2f2");
+                holder.mRevenueFormatted.setText(""+currentProject.getMapping());
+                break;
+            case "Merchandise": fragment.setupCircularBar(holder.mCircularBar,currentProject.getMerchandise(), currentProject.getTarget(), "#34b0c3", "#f2f2f2");
+                holder.mRevenueFormatted.setText(""+currentProject.getMerchandise());
+               break;
+        }
+
         holder.mWrapper.setOnClickListener(view -> {
                     _editor.putInt("CLIENT_ID", currentProject.getClientId());
                     _editor.putString("CLIENT", currentProject.getClient());
@@ -106,6 +125,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
         String url = Endpoint.getStorageUrl();
 
         Glide.with(c).load(url)
+                .circleCrop()
                 .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
                 .error(R.drawable.ic_place_holder)
                 .listener(new RequestListener<Drawable>() {
@@ -133,6 +153,8 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
         public TextView mName;
         public ImageView mImg;
         public TextView mClientName, mProjectType;
+        private CircularProgressBar mCircularBar;
+        private TextView mRevenueFormatted;
 
 
         public ViewHolder(Context context, View view) {
@@ -143,6 +165,8 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
             mImg = view.findViewById(R.id.project_img);
             mClientName = view.findViewById(R.id.client_name);
             mProjectType = view.findViewById(R.id.project_type);
+            mCircularBar = view.findViewById(R.id.circular_bar);
+            mRevenueFormatted = view.findViewById(R.id.revenue_formatted);
         }
 
     }

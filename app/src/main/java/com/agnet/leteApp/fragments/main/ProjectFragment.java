@@ -5,12 +5,14 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -43,6 +45,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.gson.Gson;
+import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,6 +68,8 @@ public class ProjectFragment extends Fragment {
     private LinearLayout _infoMsg;
     private TextView _infoMsgTxt;
     private TextView _searchProjectInput;
+    private String _projectType;
+    private Button _typeName;
 
 
     @SuppressLint("RestrictedApi")
@@ -78,37 +83,38 @@ public class ProjectFragment extends Fragment {
         _editor = _preferences.edit();
         _gson = new Gson();
 
-        TextView username = view.findViewById(R.id.user_name);
+//        TextView username = view.findViewById(R.id.user_name);
         _projectList = view.findViewById(R.id.project_list);
-        _outletList = view.findViewById(R.id.outlet_list);
+//        _outletList = view.findViewById(R.id.outlet_list);
         _shimmerLoader = view.findViewById(R.id.shimmer_view_container);
-        _newOutletBtn = view.findViewById(R.id.new_outlet_btn);
-        LinearLayout userAcc = view.findViewById(R.id.view_user_account_btn);
+//        _newOutletBtn = view.findViewById(R.id.new_outlet_btn);
+//        LinearLayout userAcc = view.findViewById(R.id.view_user_account_btn);
         _infoMsg = view.findViewById(R.id.info_msg);
         _infoMsgTxt = view.findViewById(R.id.info_msg_txt);
-        _searchProjectInput = view.findViewById(R.id.search_project);
+        _typeName = view.findViewById(R.id.project_type);
+//        _searchProjectInput = view.findViewById(R.id.search_project);
 
         try {
             _user = _gson.fromJson(_preferences.getString("User", null), User.class);
             Token = _preferences.getString("TOKEN", null);
-            username.setText(_user.getName());
+            _projectType = _preferences.getString("SELECTED_PROJECT_TYPE",null);
 
-
+            _typeName.setText("Miradi yako ya "+_projectType);
+//            username.setText(_user.getName());
 
         } catch (NullPointerException e) {
 
         }
 
-
         _projectLayoutManager = new LinearLayoutManager(_c, RecyclerView.VERTICAL, false);
         _projectList.setLayoutManager(_projectLayoutManager);
 
 
-        _outletLayoutManager = new LinearLayoutManager(_c, RecyclerView.VERTICAL, false);
+       /* _outletLayoutManager = new LinearLayoutManager(_c, RecyclerView.VERTICAL, false);
         _outletList.setLayoutManager(_outletLayoutManager);
+*/
 
-
-        username.setOnClickListener(view13 -> {
+    /*    username.setOnClickListener(view13 -> {
             Intent intent = new Intent(_c, AndroidDatabaseManager.class);
             _c.startActivity(intent);
         });
@@ -124,11 +130,30 @@ public class ProjectFragment extends Fragment {
 
         _searchProjectInput.setOnClickListener(view1 -> {
             Toast.makeText(_c, "Coming soon!", Toast.LENGTH_SHORT).show();
-        });
+        });*/
+/*
 
         _newOutletBtn.setOnClickListener(view12 -> new FragmentHelper(_c).replaceWithAnimSlideFromRight(new NewOutletFragment(), "NewOutletFragment", R.id.fragment_placeholder));
+*/
+        List<ProjectType> list = new ArrayList<>();
+        list.add(new ProjectType(1, "Mauzo", "ic_truck", 100));
+        list.add(new ProjectType(2, "Uwepo", "ic_mapping", 12));
+        list.add(new ProjectType(3, "Vipeperushi", "ic_merchandise", 10));
+        list.add(new ProjectType(4, "Maduka", "ic_outlets", 0));
+        list.add(new ProjectType(4, "Risiti", "ic_receipts", 0));
+        list.add(new ProjectType(4, "Pata ujumbe", "ic_notifications", 0));
 
-        getPorjects("Sales");
+        switch (_projectType){
+            case "Mauzo":     getPorjects("Sales");
+            break;
+            case "Uwepo": getPorjects("Mapping");
+            break;
+            case "Vipeperushi": getPorjects("Merchandise");
+            break;
+            default: _projectList.setVisibility(View.GONE);
+            break;
+        }
+
 
         return view;
     }
@@ -151,12 +176,46 @@ public class ProjectFragment extends Fragment {
             if (event.getAction() == KeyEvent.ACTION_DOWN) {
                 if (keyCode == KeyEvent.KEYCODE_BACK) {
 
-                    _c.finish();
+                    new FragmentHelper(_c).replace(new HomeFragment(),"HomeFragment", R.id.fragment_placeholder);
                     return true;
                 }
             }
             return false;
         });
+    }
+
+    public void setupCircularBar(CircularProgressBar bar, float progress, float max, String progressColor, String bgColor) {
+
+// Set Progress
+//        _circularProgressBar.setProgress(65f);
+// or with animation
+        bar.setProgressWithAnimation(progress, Long.valueOf(1000)); // =1s
+
+// Set Progress Max
+        bar.setProgressMax(max);
+
+// Set ProgressBar Color
+        bar.setProgressBarColor(Color.parseColor(progressColor));
+// or with gradient
+       /* _circularProgressBar.setProgressBarColorStart(Color.GRAY);
+        _circularProgressBar.setProgressBarColorEnd(Color.parseColor("#001689"));
+        _circularProgressBar.setProgressBarColorDirection(CircularProgressBar.GradientDirection.TOP_TO_BOTTOM);*/
+
+// Set background ProgressBar Color
+        bar.setBackgroundProgressBarColor(Color.parseColor(bgColor));
+// or with gradient
+      /*  _circularProgressBar.setBackgroundProgressBarColorStart(Color.WHITE);
+        _circularProgressBar.setBackgroundProgressBarColorEnd(Color.parseColor("#001689"));
+        _circularProgressBar.setBackgroundProgressBarColorDirection(CircularProgressBar.GradientDirection.TOP_TO_BOTTOM);*/
+
+// Set Width
+        bar.setProgressBarWidth(3f); // in DP
+        bar.setBackgroundProgressBarWidth(2f); // in DP
+
+// Other
+        bar.setRoundBorder(true);
+//       _circularProgressBar.setStartAngle(180f);
+        bar.setProgressDirection(CircularProgressBar.ProgressDirection.TO_RIGHT);
     }
     private List<ProjectType> getProjectTypes() {
         List<ProjectType> list = new ArrayList<>();
@@ -174,7 +233,7 @@ public class ProjectFragment extends Fragment {
 
         _shimmerLoader.setVisibility(View.VISIBLE);
         _shimmerLoader.startShimmerAnimation();
-        _newOutletBtn.setVisibility(View.GONE);
+        //_newOutletBtn.setVisibility(View.GONE);
 
         Endpoint.setUrl("projects/" + type + "/user/" +_user.getId());
         String url = Endpoint.getUrl();
@@ -183,9 +242,9 @@ public class ProjectFragment extends Fragment {
                 response -> {
 
                     ResponseData res = _gson.fromJson(response, ResponseData.class);
-                    _outletList.setVisibility(View.GONE);
+                  //  _outletList.setVisibility(View.GONE);
 
-                   // Log.d("HEREHERESANA", _gson.toJson(res.getProjects()));
+                    Log.d("HEREHERESANA", _gson.toJson(res.getProjects()));
 
                     if(res.getProjects().size() == 0){
                        _infoMsg.setVisibility(View.VISIBLE);
@@ -194,7 +253,7 @@ public class ProjectFragment extends Fragment {
                         _infoMsg.setVisibility(View.GONE);
                         _projectList.setVisibility(View.VISIBLE);
 
-                        ProjectAdapter projectAdapter = new ProjectAdapter(_c, res.getProjects());
+                        ProjectAdapter projectAdapter = new ProjectAdapter(_c, res.getProjects(), this);
                         _projectList.setAdapter(projectAdapter);
                     }
 
