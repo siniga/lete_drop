@@ -19,6 +19,8 @@ import androidx.core.content.ContextCompat;
 
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -80,29 +82,40 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");
 
-
         //initialize
         _preferences = getSharedPreferences("SharedData", Context.MODE_PRIVATE);
         _editor = _preferences.edit();
         _dbHandler = new DatabaseHandler(this);
         _gson = new Gson();
 
-
         //binding
         _cartQntyCount = findViewById(R.id.cart_qnty_count);
         _coordinator = findViewById(R.id.coordinator);
         _toolbarTitle = findViewById(R.id.toolbar_title);
 
-
         //methods
         makeStatusBarTransparent();
-        new StatusBarHelper(this).setStatusBarColor(R.color.white);
+        new StatusBarHelper(this).setStatusBarColor(R.color.blue_transparent);
         initLocationEngine();
         forceEnableLocation();
 
         new FragmentHelper(this).replace(new LoginFragment(), "LoginFragment", R.id.fragment_placeholder);
 
 
+    }
+
+    @SuppressLint("NewApi")
+    private void changeStatusBarColor(){
+        Window window = this.getWindow();
+
+        // clear FLAG_TRANSLUCENT_STATUS flag:
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+        // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+
+        // finally change the color
+        window.setStatusBarColor(ContextCompat.getColor(this,R.color.blue_transparent));
     }
 
 
@@ -199,14 +212,19 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
             initLocationEngine();
         } else {
             Toast.makeText(this, "Location permission is not granted", Toast.LENGTH_LONG).show();
-            finish();
+         //   finish();
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
-        permissionsManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        try{
+            permissionsManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }catch (NullPointerException e){
+
+        }
+
     }
 
     private void forceEnableLocation() {
@@ -286,7 +304,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         } else {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-            getWindow().setStatusBarColor(ContextCompat.getColor(MainActivity.this, R.color.black_transparent));
+            getWindow().setStatusBarColor(ContextCompat.getColor(MainActivity.this, R.color.blue_transparent));
         }
     }
 

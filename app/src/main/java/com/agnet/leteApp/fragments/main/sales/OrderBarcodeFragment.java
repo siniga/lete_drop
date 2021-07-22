@@ -4,8 +4,6 @@ package com.agnet.leteApp.fragments.main.sales;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.location.Address;
-import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.SparseArray;
@@ -15,16 +13,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-
 import com.agnet.leteApp.R;
 import com.agnet.leteApp.application.mSingleton;
 import com.agnet.leteApp.fragments.main.outlets.NewOutletFragment;
-import com.agnet.leteApp.fragments.main.outlets.OutletSuccessFragment;
 import com.agnet.leteApp.helpers.DatabaseHandler;
 import com.agnet.leteApp.helpers.DateHelper;
 import com.agnet.leteApp.helpers.FragmentHelper;
@@ -32,7 +26,6 @@ import com.agnet.leteApp.models.Outlet;
 import com.agnet.leteApp.models.ResponseData;
 import com.agnet.leteApp.models.User;
 import com.agnet.leteApp.service.Endpoint;
-import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RetryPolicy;
@@ -43,6 +36,7 @@ import com.google.android.gms.samples.vision.barcodereader.BarcodeGraphic;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.gson.Gson;
 
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -67,6 +61,7 @@ public class OrderBarcodeFragment extends Fragment implements BarcodeRetriever {
     private ProgressBar _progressBar;
     private LinearLayout _transparentLoader;
     private DatabaseHandler _dbHandler;
+    private int _projectId;
 
     @SuppressLint("RestrictedApi")
     @Override
@@ -91,6 +86,7 @@ public class OrderBarcodeFragment extends Fragment implements BarcodeRetriever {
         try {
             _user = _gson.fromJson(_preferences.getString("User", null), User.class);
             Token = _preferences.getString("TOKEN", null);
+            _projectId = _preferences.getInt("PROJECT_ID",0);
 
         } catch (NullPointerException e) {
 
@@ -101,6 +97,7 @@ public class OrderBarcodeFragment extends Fragment implements BarcodeRetriever {
         return view;
 
     }
+
 
     @Override
     public void onRetrieved(Barcode barcode) {
@@ -122,10 +119,13 @@ public class OrderBarcodeFragment extends Fragment implements BarcodeRetriever {
 
     }
 
+
+
     @Override
     public void onBitmapScanned(SparseArray<Barcode> sparseArray) {
 
     }
+
 
     @Override
     public void onRetrievedFailed(String reason) {
@@ -246,7 +246,7 @@ public class OrderBarcodeFragment extends Fragment implements BarcodeRetriever {
                         String errorString = new String(response.data);
                         Log.i("log error", errorString);
                         //TODO: display errors based on the message from the server
-                        Toast.makeText(_c, "Kuna tatizo, angalia mtandao alafu jaribu tena", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(_c, "Kuna tatizo, angalia mtandao alafu jaribu tena", Toast.LENGTH_LONG).show();
                     }
 
 
@@ -271,6 +271,7 @@ public class OrderBarcodeFragment extends Fragment implements BarcodeRetriever {
                 params.put("lng", _preferences.getString("mLONGITUDE", null));
                 params.put("products", _gson.toJson(_dbHandler.getCart()));
                 params.put("outletId", "" + outletId);
+                params.put("projectId", "" + _projectId);
                 return params;
             }
         };

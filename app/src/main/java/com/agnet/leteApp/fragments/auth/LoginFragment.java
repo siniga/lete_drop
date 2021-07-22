@@ -242,7 +242,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                         String errorString = new String(response.data);
                         ResponseData res = _gson.fromJson(errorString, ResponseData.class);
                         if (res.getError().equals("Unauthorised")) {
-                            Toast.makeText(_c, "Umeosea namba ya simu au password!", Toast.LENGTH_LONG).show();
+                            Toast.makeText(_c, "Umekosea namba ya simu au password!", Toast.LENGTH_LONG).show();
                         }else {
                             Toast.makeText(_c, "Kuna tatizo la mtandao, jaribu tena au wasiliana na wataalamu ", Toast.LENGTH_LONG).show();
                         }

@@ -1,9 +1,13 @@
 package com.agnet.leteApp.fragments.main.sales;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,12 +20,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.agnet.leteApp.R;
+import com.agnet.leteApp.activities.MainActivity;
 import com.agnet.leteApp.application.mSingleton;
 import com.agnet.leteApp.fragments.main.adapters.CartAdapter;
 import com.agnet.leteApp.fragments.main.mapping.MappingSuccessFragment;
@@ -87,7 +93,7 @@ public class CartFragment extends Fragment {
         _progressBar = view.findViewById(R.id.progress_bar);
         _transparentLoader = view.findViewById(R.id.transparent_loader);
         _dbHandler = new DatabaseHandler(_c);
-        _formatter =  new DecimalFormat("#,###,##0.00");
+        _formatter = new DecimalFormat("#,###,##0.00");
         _gson = new Gson();
 
         //binding
@@ -117,12 +123,19 @@ public class CartFragment extends Fragment {
         _placeOrderBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(_products.size() > 0){
-                    _progressBar.setVisibility(View.VISIBLE);
-                    _transparentLoader.setVisibility(View.VISIBLE);
-                    new FragmentHelper(_c).replaceWithbackStack(new OrderBarcodeFragment(), "OrderBarcodeFragment", R.id.fragment_placeholder);
-                    _placeOrderBtn.setClickable(false);
-                }else {
+                if (_products.size() > 0) {
+                    // _progressBar.setVisibility(View.VISIBLE);
+                    //  _transparentLoader.setVisibility(View.VISIBLE);
+                  //  _placeOrderBtn.setClickable(false);
+                    if (PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(_c, Manifest.permission.CAMERA)) {
+                        new FragmentHelper(_c).replaceWithbackStack(new OrderBarcodeFragment(), "OrderBarcodeFragment", R.id.fragment_placeholder);
+
+                    } else {
+                        requestWritePermission(_c);
+                    }
+
+
+                } else {
                     Toast.makeText(_c, "Kikapu hakina bidhaa!", Toast.LENGTH_SHORT).show();
 
                 }
@@ -132,10 +145,11 @@ public class CartFragment extends Fragment {
         _placeOrderNoQrCodeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(_products.size() > 0) {
+                if (_products.size() > 0) {
                     saveOrder();
-                    _placeOrderBtn.setClickable(false);
-                }else {
+                    _placeOrderNoQrCodeBtn.setClickable(false);
+
+                } else {
                     Toast.makeText(_c, "Kikapu hakina bidhaa!", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -165,6 +179,19 @@ public class CartFragment extends Fragment {
         _transparentLoader.setVisibility(View.GONE);
     }
 
+    private static void requestWritePermission(final Context context) {
+        if (ActivityCompat.shouldShowRequestPermissionRationale((Activity) context, Manifest.permission.CAMERA)) {
+            new AlertDialog.Builder(context).setMessage("This app needs permission to use The phone Camera in order to activate the Scanner")
+                    .setPositiveButton("Allow", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.CAMERA}, 1);
+                        }
+                    }).show();
+        } else {
+            ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.CAMERA}, 1);
+        }
+    }
 
     public void saveOrder() {
         _transparentLoader.setVisibility(View.VISIBLE);
@@ -229,7 +256,7 @@ public class CartFragment extends Fragment {
                 params.put("lng", _preferences.getString("mLONGITUDE", null));
                 params.put("products", _gson.toJson(_dbHandler.getCart()));
                 params.put("outletId", "1");
-                params.put("projectId", ""+_preferences.getInt("PROJECT_ID",0));
+                params.put("projectId", "" + _preferences.getInt("PROJECT_ID", 0));
                 return params;
             }
         };

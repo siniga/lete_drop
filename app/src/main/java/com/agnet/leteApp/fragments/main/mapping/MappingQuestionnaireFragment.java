@@ -91,7 +91,6 @@ public class MappingQuestionnaireFragment extends Fragment {
         _preferences = _c.getSharedPreferences("SharedData", Context.MODE_PRIVATE);
         _editor = _preferences.edit();
 
-
         _questionnaireWrapper = view.findViewById(R.id.questionnaire_main_wrapper);
         TextView formNameTxt = view.findViewById(R.id.form_name);
         TextView startedAtTxt = view.findViewById(R.id.started_at);
@@ -156,22 +155,22 @@ public class MappingQuestionnaireFragment extends Fragment {
                 case 5:
                     addnumericBox(questions.get(i).getQuestion(), i);
                     break;
-                case 8:
+                case 9:
                     addLongitude(questions.get(i).getQuestion(), i);
                     break;
-                case 9:
+                case 10:
                     addLatitude(questions.get(i).getQuestion(), i);
                     break;
-                case 10:
+                case 11:
                     addStartTime(questions.get(i).getQuestion(), i);
                     break;
-                case 11:
+                case 12:
                     addCompleteTime(questions.get(i).getQuestion(), i);
                     break;
-                case 12:
+                case 13:
                     addLocation(questions.get(i).getQuestion(), i);
                     break;
-                case 13:
+                case 14:
                     addPostedBy(questions.get(i).getQuestion(), i);
                     break;
                 default:
@@ -410,7 +409,6 @@ public class MappingQuestionnaireFragment extends Fragment {
         _answers.get(i).setQuestion(question);
         _answers.get(i).setAnswer(DateHelper.getCurrentDate()+" "+DateHelper.getCurrentTime());
     }
-
 
     private void addLocation(String question, int i) {
 

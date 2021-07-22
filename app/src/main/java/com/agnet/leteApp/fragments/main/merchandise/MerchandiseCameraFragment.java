@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +39,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.agnet.leteApp.R;
 import com.agnet.leteApp.application.mSingleton;
+import com.agnet.leteApp.fragments.main.ProjectFragment;
 import com.agnet.leteApp.fragments.main.SuccessFragment;
 import com.agnet.leteApp.fragments.main.adapters.MerchandiseImagesAdapter;
 import com.agnet.leteApp.helpers.FragmentHelper;
@@ -112,8 +114,6 @@ public class MerchandiseCameraFragment extends Fragment {
 
         try {
             Token = _preferences.getString("TOKEN", null);
-
-
         } catch (NullPointerException e) {
 
         }
@@ -133,7 +133,7 @@ public class MerchandiseCameraFragment extends Fragment {
         CameraView camera = view.findViewById(R.id.camera);
         camera.setLifecycleOwner(getViewLifecycleOwner());
 
-        _imgList = new ArrayList<Bitmap>();
+        _imgList = new ArrayList<>();
         _outletImages = new ArrayList<>();
 
         camera.addCameraListener(new CameraListener() {
@@ -147,23 +147,15 @@ public class MerchandiseCameraFragment extends Fragment {
 
                     @Override
                     public void onBitmapReady(@Nullable Bitmap bitmap) {
+                        Toast.makeText(_c, "Picha imechukuliwa!", Toast.LENGTH_SHORT).show();
 
-                        Toast.makeText(_c, "Picha imechukuliwa", Toast.LENGTH_SHORT).show();
-
-                        _imgList.add(getResizedBitmap(bitmap, 500));
+                        _imgList.add(getResizedBitmap(bitmap, 300));
                         attachImagesToadapter();
 
                         if(_imgList.size() == 5){
-
-                            for (Bitmap bmImgs: _imgList) {
-                                _outletImages.add(new OutletImage(bitmapTObase64(bmImgs), String.valueOf(Calendar.getInstance().getTimeInMillis())));
-
-                                // _progressBar.setVisibility(View.GONE);
-                                new FragmentHelper(_c).replaceWithbackStack(new MerchandiseFormFragment(), "MerchandiseFormFragment", R.id.fragment_placeholder);
-
-
-
-                            }
+                           if(_preferences.getInt("OUTLET_ID", 0) != 0 ){
+                               saveImages(_preferences.getInt("OUTLET_ID", 0) );
+                           };
                         }
 
                     }
@@ -185,6 +177,24 @@ public class MerchandiseCameraFragment extends Fragment {
         captureBtn.setOnClickListener(view1 -> camera.takePicture());
     }
 
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        getView().setFocusableInTouchMode(true);
+        getView().requestFocus();
+
+        getView().setOnKeyListener((v, keyCode, event) -> {
+            if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                if (keyCode == KeyEvent.KEYCODE_BACK) {
+                    Toast.makeText(_c, "Maliza kuchukua picha ili kuendelea!", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+            }
+            return false;
+        });
+    }
 
     protected int sizeOf(Bitmap data) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR1) {
@@ -235,34 +245,34 @@ public class MerchandiseCameraFragment extends Fragment {
         }).check();
     }
 
+    private void saveImages(int outletId) {
 
-    private void saveOutlet(String name, String phone, int outletTypeId) {
-        _progressBar.setVisibility(View.VISIBLE);
+        String name1 = String.valueOf(Calendar.getInstance().getTimeInMillis());
+        String name2 = String.valueOf(Calendar.getInstance().getTimeInMillis());
+        String name3 = String.valueOf(Calendar.getInstance().getTimeInMillis());
+        String name4 = String.valueOf(Calendar.getInstance().getTimeInMillis());
+        String name5 = String.valueOf(Calendar.getInstance().getTimeInMillis());
 
-        Random rand = new Random();
-        int randomQrCode = rand.nextInt((9999 - 100) + 1) + 10;
-
-        // Log.d("CLIENTELE H", "Hey there stranger " + _clientId);
-        String ROOT_URL = "http://letedeve.aggreyapps.com/api/public/index.php/api/outlet";
+        String ROOT_URL = "http://letedeve.aggreyapps.com/api/public/index.php/api/outlet-image";
 
         StringRequest postRequest = new StringRequest(Request.Method.POST, ROOT_URL,
                 response -> {
-                    ResponseData res = _gson.fromJson(response, ResponseData.class);
+                    //Response res = _gson.fromJson(response, Response.class);
 
-                    Log.d("HEREHAPA", response);
+                  //   Log.d("IMAGEOBJECT", _gson.toJson(response));
 
-                   // saveImages(res.getOutlet().getId());
+                      new FragmentHelper(_c).replaceWithbackStack(new SuccessFragment(), "SuccessFragment", R.id.fragment_placeholder);
 
                 },
                 error -> {
 
                     _progressBar.setVisibility(View.GONE);
-
                     Log.d("RESPONSE_ERROR", "here" + error.getMessage());
                     NetworkResponse response = error.networkResponse;
                     if (response != null && response.data != null) {
                         String errorString = new String(response.data);
                         Log.i("log error", errorString);
+
                     }
 
                 }
@@ -277,17 +287,12 @@ public class MerchandiseCameraFragment extends Fragment {
 
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("name", name);
-                params.put("phone", phone);
-                params.put("lat", _preferences.getString("mLATITUDE", null));
-                params.put("lng", _preferences.getString("mLONGITUDE", null));
-                params.put("qr_code", ""+randomQrCode);
-                params.put("vfd_cust_type", "6");
-                params.put("vfd_cust_id", "NILL");
-                params.put("user_id", "6");
-                params.put("outlet_type_id", "" + outletTypeId);
-                params.put("client_id", "" + _clientId);
-                params.put("location", "" + _location);
+                params.put("img1", "" + _gson.toJson(new OutletImage(bitmapTObase64(_imgList.get(0)), name1)));
+                params.put("img2", "" + _gson.toJson(new OutletImage(bitmapTObase64(_imgList.get(1)), name2)));
+                params.put("img3", "" + _gson.toJson(new OutletImage(bitmapTObase64(_imgList.get(2)), name3)));
+                params.put("img4", "" + _gson.toJson(new OutletImage(bitmapTObase64(_imgList.get(3)), name4)));
+                params.put("img5", "" + "" + _gson.toJson(new OutletImage(bitmapTObase64(_imgList.get(4)), name5)));
+                params.put("outlet_id", "" + outletId);
 
                 return params;
             }
@@ -304,57 +309,6 @@ public class MerchandiseCameraFragment extends Fragment {
         return encodedImage;
     }
 
-    private void saveImages(int outletId) {
-
-        String name1 = String.valueOf(Calendar.getInstance().getTimeInMillis());
-        String name2 = String.valueOf(Calendar.getInstance().getTimeInMillis());
-        String name3 = String.valueOf(Calendar.getInstance().getTimeInMillis());
-        String name4 = String.valueOf(Calendar.getInstance().getTimeInMillis());
-        String name5 = String.valueOf(Calendar.getInstance().getTimeInMillis());
-
-        String ROOT_URL = "http://letedeve.aggreyapps.com/api/public/index.php/api/outlet-image";
-
-        StringRequest postRequest = new StringRequest(Request.Method.POST, ROOT_URL,
-                response -> {
-                    //Response res = _gson.fromJson(response, Response.class);
-
-                     Log.d("IMAGEOBJECT", _gson.toJson(response));
-
-                   // _progressBar.setVisibility(View.GONE);
-                    new FragmentHelper(_c).replaceWithbackStack(new SuccessFragment(), "SuccessFragment", R.id.fragment_placeholder);
-
-                },
-                error -> {
-
-                //    _progressBar.setVisibility(View.GONE);
-                    Log.d("RESPONSE_ERROR", "here" + error.getMessage());
-                    NetworkResponse response = error.networkResponse;
-                    if (response != null && response.data != null) {
-                        String errorString = new String(response.data);
-                        Log.i("log error", errorString);
-
-                    }
-
-                }
-        ) {
-
-            @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("Authorization", "Bearer " + "" + Token);
-                return params;
-            }
-
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("img1", "" + _gson.toJson(_outletImages.get(0).getImg()));
-                params.put("outlet_id", "" + outletId);
-
-                return params;
-            }
-        };
-        mSingleton.getInstance(_c).addToRequestQueue(postRequest);
-    }
 }
 
 

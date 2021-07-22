@@ -308,25 +308,19 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <include layout="@layout/placeholder_home_stats" />
+                <include layout="@layout/placeholder_projects_stats" />
 
-                <include layout="@layout/placeholder_home_stats" />
+                <include layout="@layout/placeholder_projects_stats" />
 
-                <include layout="@layout/placeholder_home_stats" />
+                <include layout="@layout/placeholder_projects_stats" />
 
-                <include layout="@layout/placeholder_home_stats" />
+                <include layout="@layout/placeholder_projects_stats" />
 
-                <include layout="@layout/placeholder_home_stats" />
+                <include layout="@layout/placeholder_projects_stats" />
 
-                <include layout="@layout/placeholder_home_stats" />
+                <include layout="@layout/placeholder_projects_stats" />
 
-                <include layout="@layout/placeholder_home_stats" />
-
-                <include layout="@layout/placeholder_home_stats" />
-
-                <include layout="@layout/placeholder_home_stats" />
-
-
+                <include layout="@layout/placeholder_projects_stats" />
 
 
             </LinearLayout>

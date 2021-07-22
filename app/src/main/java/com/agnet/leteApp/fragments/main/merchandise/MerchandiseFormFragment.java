@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,23 +24,29 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.agnet.leteApp.R;
 import com.agnet.leteApp.application.mSingleton;
+import com.agnet.leteApp.fragments.main.HomeFragment;
+import com.agnet.leteApp.fragments.main.ProjectFragment;
 import com.agnet.leteApp.fragments.main.SuccessFragment;
 import com.agnet.leteApp.fragments.main.adapters.MerchandiseImagesAdapter;
 import com.agnet.leteApp.fragments.main.adapters.ProjectTypeAdapter;
 import com.agnet.leteApp.helpers.FragmentHelper;
 import com.agnet.leteApp.models.CustomerType;
 import com.agnet.leteApp.models.MerchandiseImg;
+import com.agnet.leteApp.models.Outlet;
 import com.agnet.leteApp.models.OutletImage;
 import com.agnet.leteApp.models.ResponseData;
 import com.agnet.leteApp.models.User;
@@ -47,6 +54,7 @@ import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.toolbox.StringRequest;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
@@ -82,8 +90,10 @@ public class MerchandiseFormFragment extends Fragment {
     private String Token;
     private int _clientId;
     private String _location;
-    private RecyclerView _merchandiseImg;
-    private String _outletImg;
+    private RecyclerView _merchandiseImgList;
+    private String _outletImgStr;
+    private  Bitmap[] _outletImgArr;
+    private ArrayList<Bitmap> _imgList;
 
 
     @SuppressLint("RestrictedApi")
@@ -98,19 +108,21 @@ public class MerchandiseFormFragment extends Fragment {
 
         EditText nameInput = view.findViewById(R.id.outlet_name_input);
         EditText phoneInput = view.findViewById(R.id.phone_num_input);
+      //  RelativeLayout openCamera = view.findViewById(R.id.open_camera);
 
         _custTypesSpinner = view.findViewById(R.id.cust_types_spinner);
         _continueBtn = view.findViewById(R.id.continue_btn);
         _progressBar = view.findViewById(R.id.progress_bar);
+       // _merchandiseImgList = view.findViewById(R.id.merchandise_img_list);
         TextView username = view.findViewById(R.id.user_name);
 
+        //ImageView img1 = view.findViewById(R.id.image_1);
+
+       /* LinearLayoutManager imgLayoutManager = new LinearLayoutManager(_c, RecyclerView.HORIZONTAL, false);
+        _merchandiseImgList.setLayoutManager(imgLayoutManager);*/
+
         try {
-            User user = _gson.fromJson(_preferences.getString("User", null), User.class);
-            String client = _preferences.getString("CLIENT", null);
-
             Token = _preferences.getString("TOKEN", null);
-            username.setText(client);
-
             _clientId = _preferences.getInt("CLIENT_ID", 0);
 
         } catch (NullPointerException e) {
@@ -129,11 +141,16 @@ public class MerchandiseFormFragment extends Fragment {
             }
         });
 
-
+      /* openCamera.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View view) {
+               new FragmentHelper(_c).replace(new MerchandiseCameraFragment(),"MerchandiseCameraFragment", R.id.fragment_placeholder);
+           }
+       });*/
         _continueBtn.setOnClickListener(view1 -> {
 
-            new FragmentHelper(_c).replace(new MerchandiseCameraFragment(),"MerchandiseCameraFragment", R.id.fragment_placeholder);
-         /*   //Get address base on location
+           //
+            //Get address base on location
             try {
                 Geocoder geo = new Geocoder(_c.getApplicationContext(), Locale.getDefault());
                 List<Address> addresses = geo.getFromLocation(Double.parseDouble(_preferences.getString("mLATITUDE", null)), Double.parseDouble(_preferences.getString("mLONGITUDE", null)), 1);
@@ -146,11 +163,22 @@ public class MerchandiseFormFragment extends Fragment {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-            }*/
+            }
+
+            String name = nameInput.getText().toString();
+            String phone = phoneInput.getText().toString();
+
+            if (name.isEmpty()) {
+                Toast.makeText(_c, "Ingiza jina la duka!", Toast.LENGTH_SHORT).show();
+            } else if (phone.isEmpty()) {
+                Toast.makeText(_c, "Ingiza namba ya simu!", Toast.LENGTH_SHORT).show();
+            } else if (_outletTypeId == 0) {
+                Toast.makeText(_c, "Chagua aina ya duka sahihi!", Toast.LENGTH_SHORT).show();
+            }else{
+
+                saveOutlet(name, phone, _outletTypeId);
+            }
         });
-
-
-
 
         getCustomerType();
         getPermissions();
@@ -199,17 +227,86 @@ public class MerchandiseFormFragment extends Fragment {
         _custTypesSpinner.setAdapter(dataAdapter);
     }
 
-    public Bitmap stringToBitMap(String encodedString){
-        try {
-            byte [] encodeByte=Base64.decode(encodedString,Base64.DEFAULT);
-            Bitmap bitmap= BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
-            return bitmap;
-        } catch(Exception e) {
-            e.getMessage();
-            return null;
-        }
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        getView().setFocusableInTouchMode(true);
+        getView().requestFocus();
+
+        getView().setOnKeyListener((v, keyCode, event) -> {
+            if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                if (keyCode == KeyEvent.KEYCODE_BACK) {
+
+                    new FragmentHelper(_c).replace(new ProjectFragment(),"ProjectFragment", R.id.fragment_placeholder);
+                    return true;
+                }
+            }
+            return false;
+        });
     }
 
+    private void saveOutlet(String name, String phone, int outletTypeId) {
+        _progressBar.setVisibility(View.VISIBLE);
+
+        Random rand = new Random();
+        int randomQrCode = rand.nextInt((9999 - 100) + 1) + 10;
+
+        // Log.d("CLIENTELE H", "Hey there stranger " + _clientId);
+        String ROOT_URL = "http://letedeve.aggreyapps.com/api/public/index.php/api/outlet";
+
+        StringRequest postRequest = new StringRequest(Request.Method.POST, ROOT_URL,
+                response -> {
+                    ResponseData res = _gson.fromJson(response, ResponseData.class);
+                    _editor.putInt("OUTLET_ID",res.getOutlet().getId());
+                    _editor.commit();
+
+                  //  Log.d("HEREHAPA",""+ response);
+
+                    new FragmentHelper(_c).replace(new MerchandiseCameraFragment(),"MerchandiseCameraFragment", R.id.fragment_placeholder);
+
+                },
+                error -> {
+
+                    _progressBar.setVisibility(View.GONE);
+
+                    Log.d("RESPONSE_ERROR", "here" + error.getMessage());
+                    NetworkResponse response = error.networkResponse;
+                    if (response != null && response.data != null) {
+                        String errorString = new String(response.data);
+                        Log.i("log error", errorString);
+                    }
+
+                }
+        ) {
+
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Authorization", "Bearer " + "" + Token);
+                return params;
+            }
+
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("name", name);
+                params.put("phone", phone);
+                params.put("lat", _preferences.getString("mLATITUDE", null));
+                params.put("lng", _preferences.getString("mLONGITUDE", null));
+                params.put("qr_code", ""+randomQrCode);
+                params.put("vfd_cust_type", "6");
+                params.put("vfd_cust_id", "NILL");
+                params.put("user_id", "6");
+                params.put("outlet_type_id", "" + outletTypeId);
+                params.put("client_id", "" + _clientId);
+                params.put("location", "" + _location);
+
+                return params;
+            }
+        };
+
+        mSingleton.getInstance(_c).addToRequestQueue(postRequest);
+    }
 
 }
 

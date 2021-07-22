@@ -24,7 +24,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.request.transition.Transition;
 
 import java.util.Collections;
 import java.util.List;
@@ -75,8 +77,7 @@ public class MerchandiseImagesAdapter extends RecyclerView.Adapter<MerchandiseIm
         //get a position of a current saleItem
         final Bitmap currentImg = merchandiseImg.get(position);
         holder.mImg.setImageBitmap(currentImg);
-
-//        glide(holder.mIcon, currentType.getIcon());
+        //glide(holder.mImg, currentImg);
 
        /* if (selected_position == position) {
             holder.mWrapper.setBackgroundResource(R.drawable.round_corners_blue);
@@ -132,21 +133,14 @@ public class MerchandiseImagesAdapter extends RecyclerView.Adapter<MerchandiseIm
         });
     }
 
-    private void glide(ImageView view, String url) {
-        Glide.with(c).load(displayImg(view, url))
-                .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
-                .error(R.drawable.ic_place_holder)
-                .listener(new RequestListener<Drawable>() {
+    private void glide(ImageView view, Bitmap bm) {
+        Glide.with(view.getContext())
+                .asBitmap()
+                .load(bm)
+                .into(new SimpleTarget<Bitmap>() {
                     @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        return false;
-                    }
-                }).into(view);
+                    public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {}
+                });
     }
 
     private int displayImg(ImageView view, String url) {

@@ -20,6 +20,7 @@ import com.agnet.leteApp.R;
 import com.agnet.leteApp.fragments.main.ProjectFragment;
 import com.agnet.leteApp.fragments.main.mapping.MappingFormListFragment;
 import com.agnet.leteApp.fragments.main.merchandise.MerchandiseFormFragment;
+import com.agnet.leteApp.fragments.main.sales.ProductsFragment;
 import com.agnet.leteApp.helpers.FragmentHelper;
 import com.agnet.leteApp.models.Project;
 import com.agnet.leteApp.models.ProjectType;
@@ -104,32 +105,15 @@ public class ProjectTypeAdapter extends RecyclerView.Adapter<ProjectTypeAdapter.
         holder.mWrapper.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new FragmentHelper(c).replace(new ProjectFragment(),"ProjectFragment", R.id.fragment_placeholder);
-              //  if (holder.getAdapterPosition() == RecyclerView.NO_POSITION) return;
-
-                // Updating old as well as new positions
-             /*   notifyItemChanged(selected_position);
-                selected_position = holder.getAdapterPosition();
-                notifyItemChanged(selected_position);*/
-
-                //set type
-//                fragment.setProjectType(currentType.getName());
-
-             /*   if(position != 3){
-                    //call projects
-                    //convert locally swahili names for types to english
-                    if(currentType.getName() == "Mauzo"){
-                        fragment.getPorjects("Sales");
-                    }else if(currentType.getName() == "Uwepo"){
-                        fragment.getPorjects("Mapping");
-                    }else {
-                        fragment.getPorjects("Merchandise");
-                    }
-
+                if(currentType.getName().equals("Uwepo")){
+                    new FragmentHelper(c).replace(new ProjectFragment(),"ProjectFragment", R.id.fragment_placeholder);
+                }else if(currentType.getName().equals("Vipeperushi")){
+                    new FragmentHelper(c).replace(new ProjectFragment(),"ProjectFragment", R.id.fragment_placeholder);
+                }else if(currentType.getName().equals("Mauzo")){
+                    new FragmentHelper(c).replace(new ProjectFragment(),"ProjectFragment", R.id.fragment_placeholder);
                 }else {
-                    //call outlets
-                    fragment.getUserOutlets();
-                }*/
+                    Toast.makeText(c, "Huna ruhusa ya kuingia hapa!", Toast.LENGTH_SHORT).show();
+                }
 
                 //store type of the project
                 _editor.putString("SELECTED_PROJECT_TYPE",currentType.getName());

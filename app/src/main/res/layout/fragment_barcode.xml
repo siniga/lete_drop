@@ -146,7 +146,6 @@
                 app:gvb_flash="false"
                 app:gvb_rect_colors="@array/rect_color"
                 app:gvb_touch="false" />
-
             <TextView
                 android:layout_marginTop="50dp"
                 android:layout_gravity="center"
@@ -160,7 +159,7 @@
                 android:textColor="@color/white"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:text="Sajili dua jipya"
+                android:text="Sajili duka jipya"
                 android:background="@color/blue"/>
         </LinearLayout>
 

@@ -86,7 +86,7 @@ public class MerchandiseFormFragment_1 extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_merchandise_form, container, false);
+        View view = inflater.inflate(R.layout.fragment_merchandise_form_1, container, false);
         _c = getActivity();
         _gson = new Gson();
         _preferences = _c.getSharedPreferences("SharedData", Context.MODE_PRIVATE);

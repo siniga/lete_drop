@@ -112,7 +112,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
                         new FragmentHelper(c).replaceWithbackStack(new MappingFormListFragment(), "MappingFormListFragment", R.id.fragment_placeholder);
                     }else if(currentProject.getType().equals("Merchandise")){
                         new FragmentHelper(c).replaceWithbackStack(new MerchandiseFormFragment(), "MerchandiseFragment", R.id.fragment_placeholder);
-                    }else{
+                    }else if(currentProject.getType().equals("Sales")){
                         new FragmentHelper(c).replaceWithbackStack(new ProductsFragment(), "ProductsFragment", R.id.fragment_placeholder);
                     }
 
