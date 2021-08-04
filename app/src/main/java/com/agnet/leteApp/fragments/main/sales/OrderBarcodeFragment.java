@@ -153,6 +153,9 @@ public class OrderBarcodeFragment extends Fragment implements BarcodeRetriever {
                        // Log.d("HEREHAPA", response);
                         Outlet outlet = res.getOutlet();
                         saveOrder(outlet.getId());
+
+                        _editor.putString("OUTLET_OBJ", _gson.toJson(outlet));
+                        _editor.commit();
                     } else {
                         Toast.makeText(_c, "Qr code haipo, sajili qr code", Toast.LENGTH_LONG).show();
                     }
@@ -225,10 +228,13 @@ public class OrderBarcodeFragment extends Fragment implements BarcodeRetriever {
                     _progressBar.setVisibility(View.GONE);
                     //Log.d("CARTPRODUCT", response);
                     ResponseData res = _gson.fromJson(response, ResponseData.class);
-
                     if (res.getCode() == 201) {
-                        _dbHandler.deleteCart();
-                        new FragmentHelper(_c).replace(new SalesSuccessFragment(), "SalesSuccessFragment", R.id.fragment_placeholder);
+                       _editor.putInt("ORDER_NO",res.getOrder().getOrderNo());
+                       _editor.commit();
+                        Log.d("CARTPRODUCT", _gson.toJson(res.getOrder().getOrderNo()));
+                       new FragmentHelper(_c).replace(new ReceiptFragment(), "ReceiptFragment", R.id.fragment_placeholder);
+
+//                        new FragmentHelper(_c).replace(new SalesSuccessFragment(), "SalesSuccessFragment", R.id.fragment_placeholder);
                     }
 
 

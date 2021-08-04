@@ -1,22 +1,29 @@
 package com.agnet.leteApp.models;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Order {
 
-    int id,status,driverId,customerId;
-    String  deviceTime, orderNo,pickUpTime;
-    double lat,lng;
+    private int id,status, userId, projectId,outletId;
+    private String  deviceTime, createdDate;
+    private String lat,lng;
+
+    @SerializedName("order_no")
+    private int orderNo;
 
 
-    public Order(int id, String name, String deviceTime, String orderNo,int status, String pickUpTime, int driverId, int customerId, double lat, double lng){
+    public Order(int id, String deviceTime, int orderNo, int status, String lat,
+                 String lng, String createdDate, int userId, int projectId, int outletId){
         this.id = id;
         this.deviceTime = deviceTime;
         this.orderNo = orderNo;
         this.status = status;
-        this.pickUpTime = pickUpTime;
-        this.driverId = driverId;
-        this.customerId = customerId;
+        this.userId = userId;
+        this.createdDate = createdDate;
         this.lat = lat;
         this.lng = lng;
+        this.projectId = projectId;
+        this.outletId = outletId;
     }
 
 
@@ -24,16 +31,16 @@ public class Order {
         return id;
     }
 
-    public String getOrderNo() {
+    public int getOrderNo() {
         return orderNo;
     }
 
-    public int getDriverId() {
-        return driverId;
+    public int getUserId() {
+        return userId;
     }
 
-    public int getCustomerId() {
-        return customerId;
+    public String getCreatedDate() {
+        return createdDate;
     }
 
     public int getStatus() {
@@ -44,16 +51,21 @@ public class Order {
         return deviceTime;
     }
 
-    public String getPickUpTime() {
-        return pickUpTime;
-    }
 
-    public double getLat() {
+    public String getLat() {
         return lat;
     }
 
-    public double getLng() {
+    public String getLng() {
         return lng;
+    }
+
+    public int getOutletId() {
+        return outletId;
+    }
+
+    public int getProjectId() {
+        return projectId;
     }
 }
 

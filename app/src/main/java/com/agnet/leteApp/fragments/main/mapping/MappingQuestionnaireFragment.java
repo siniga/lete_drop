@@ -46,16 +46,24 @@ import com.agnet.leteApp.models.Form;
 import com.agnet.leteApp.models.Option;
 import com.agnet.leteApp.models.Quesionnaire;
 import com.agnet.leteApp.models.ResponseData;
+import com.agnet.leteApp.models.Sms;
 import com.agnet.leteApp.models.User;
 import com.agnet.leteApp.service.Endpoint;
+import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.google.android.gms.vision.text.Line;
 import com.google.gson.Gson;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -63,6 +71,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import static com.android.volley.VolleyLog.TAG;
 
 public class MappingQuestionnaireFragment extends Fragment {
 
@@ -114,12 +124,28 @@ public class MappingQuestionnaireFragment extends Fragment {
 
         _submitBtn.setOnClickListener(view1 -> {
 
-            for (Answer answer : _answers) {
-                if (answer.getAnswer().isEmpty()) {
-                    Toast.makeText(_c, "Ingiza " + answer.getQuestion() + "!", Toast.LENGTH_SHORT).show();
-                    return;
+            try{
+                for (Answer answer : _answers) {
+                    if (answer.getAnswer().isEmpty() || answer.getAnswer().equals(null)) {
+                        Toast.makeText(_c, "Ingiza " + answer.getQuestion() + "!", Toast.LENGTH_SHORT).show();
+                        if(answer.getQuestion().equals("Longitude") ||
+                                answer.getQuestion().equals("Latitude") || answer.getQuestion().equals("location")){
+                            answer.setAnswer("NULL");
+                        }else {
+                            Toast.makeText(_c, "Ingiza " + answer.getQuestion() + "!", Toast.LENGTH_SHORT).show();
+                        }
+                        return;
+                    }
+                }
+            }catch (NullPointerException e){
+                try {
+                    sendSMS(e.getMessage());
+                } catch (JSONException jsonException) {
+                    jsonException.printStackTrace();
                 }
             }
+
+
 
             postFormResults();
 
@@ -394,11 +420,14 @@ public class MappingQuestionnaireFragment extends Fragment {
     private void addLatitude(String question, int i) {
         _answers.get(i).setQuestion(question);
         _answers.get(i).setAnswer(_preferences.getString("mLONGITUDE", null));
+
     }
 
     private void addLongitude(String question, int i) {
+
         _answers.get(i).setQuestion(question);
         _answers.get(i).setAnswer(_preferences.getString("mLATITUDE", null));
+
     }
 
     private void addStartTime(String question, int i) {
@@ -406,6 +435,7 @@ public class MappingQuestionnaireFragment extends Fragment {
         _answers.get(i).setAnswer(DateHelper.getCurrentDate()+" "+_timeStarted);
     }
     private void addCompleteTime(String question, int i) {
+
         _answers.get(i).setQuestion(question);
         _answers.get(i).setAnswer(DateHelper.getCurrentDate()+" "+DateHelper.getCurrentTime());
     }
@@ -627,6 +657,49 @@ public class MappingQuestionnaireFragment extends Fragment {
         });
     }
 
+
+    public void sendSMS(String crush) throws JSONException {
+        String url = "https://messaging-service.co.tz/api/sms/v1/text/single";
+
+        Sms txtMsg = new Sms("NEXTSMS", "0763682987", crush);
+        String smsAuth = getResources().getString(R.string.sms_auth);
+
+        Log.d("HERSTRING", _gson.toJson(txtMsg));
+
+
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
+                url, new JSONObject(_gson.toJson(txtMsg)),
+                new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d(TAG, response.toString());
+
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+            }
+        }) {
+
+            //headers
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Basic Um91dGVQcm86emV5MTIzMzIxUVE=");
+                headers.put("Content-Type", "application/json");
+                headers.put("Accept", "application/json");
+                return headers;
+            }
+
+
+        };
+
+        mSingleton.getInstance(_c).addToRequestQueue(jsonObjReq);
+        jsonObjReq.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS * 2, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+    }
 
 }
 

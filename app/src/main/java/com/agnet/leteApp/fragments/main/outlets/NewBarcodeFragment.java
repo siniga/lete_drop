@@ -67,6 +67,8 @@ public class NewBarcodeFragment extends Fragment implements BarcodeRetriever {
     private BarcodeCapture barcodeCapture;
     private String _lng, _lat;
     private String _location;
+    private int _projectId;
+
 
     @SuppressLint("RestrictedApi")
     @Override
@@ -93,6 +95,7 @@ public class NewBarcodeFragment extends Fragment implements BarcodeRetriever {
             _outletTypeId = _preferences.getInt("OUTLET_TYPE_ID", 0);
             _lng = _preferences.getString("mLONGITUDE", null);
             _lat = _preferences.getString("mLATITUDE", null);
+            _projectId = _preferences.getInt("PROJECT_ID",0);
 
         } catch (NullPointerException e) {
 
@@ -209,6 +212,7 @@ public class NewBarcodeFragment extends Fragment implements BarcodeRetriever {
                 params.put("qr_code", qrcode);
                 params.put("user_id", "" + _user.getId());
                 params.put("location",  _location);
+                params.put("projectId", "" + _projectId);
 
                 return params;
             }

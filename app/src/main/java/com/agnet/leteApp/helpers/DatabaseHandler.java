@@ -15,6 +15,7 @@ import com.agnet.leteApp.models.Cart;
 import com.agnet.leteApp.models.Category;
 import com.agnet.leteApp.models.Customer;
 import com.agnet.leteApp.models.Order;
+import com.agnet.leteApp.models.Outlet;
 import com.agnet.leteApp.models.Street;
 import com.agnet.leteApp.models.User;
 import com.google.gson.Gson;
@@ -29,7 +30,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private Context c;
     // All Static variables
     // Database Version
-    private static final int DATABASE_VERSION = 23;
+    private static final int DATABASE_VERSION = 25;
 
     // Database Name
     private static final String DATABASE_NAME = "lete_app";
@@ -38,25 +39,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     // table names
     private static final String TABLE_USER = "users";
     private static final String TABLE_STREET = "streets";
-    private static final String TABLE_CUSTOMER = "customers";
-    private static final String TABLE_CATEGORY = "categories";
+    private static final String TABLE_OUTLET = "outlets";
     private static final String TABLE_ORDER = "orders";
     private static final String TABLE_CART = "carts";
 
     //user
-    private static final String KEY_PHONE = "phone";
-    private static final String KEY_NUM_PLATE = "num_plate";
-    private static final String KEY_DRIVER_ID = "driver_id";
-
-    //streets table
     private static final String KEY_ID = "id";
+    private static final String KEY_PHONE = "phone";
     private static final String KEY_NAME = "name";
-    private static final String KEY_SERVER_ID = "server_id";
 
     //outlets
     private static final String KEY_IMG_URl = "img_url";
-    private static final String KEY_PRICE = "price";
-    private static final String KEY_STREET_ID = "street_id";
+    private static final String KEY_OUTLET_ID = "outlet_id";
     private static final String KEY_QR_CODE = "qr_code";
 
 
@@ -64,14 +58,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_DEVICE_TIME = "device_order_time";
     private static final String KEY_ORDER_NO = "order_no";
     private static final String KEY_STATUS = "status";
-    private static final String KEY_PICKUP_TIME = "pickup_time";
-    private static final String KEY_OUTLET_ID = "outlet_id";
-    private static final String KEY_CUSTOMER_ID = "customer_id";
-    private static final String KEY_SENT_STATUS = "sent_status";
+    private static final String KEY_PROJECT_ID = "project_id";
     private static final String KEY_LAT = "lat";
     private static final String KEY_LNG = "lng";
-    private static final String KEY_PARTNER_ID = "partner_id";
-    private static final String KEY_SALER_ID = "saler_id";
+    private static final String KEY_CREATED_DATE= "created_date";
+    private static final String KEY_USER_ID = "user_id";
 
     //product
     private static final String KEY_QUANTITY = "qnty";
@@ -93,44 +84,31 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         String CREATE_USER_TABLE = "CREATE TABLE " + TABLE_USER + "("
                 + KEY_ID + " INTEGER PRIMARY KEY,"
                 + KEY_NAME + " TEXT,"
-                + KEY_NUM_PLATE + " INTEGER,"
                 + KEY_PHONE + " TEXT,"
-                + KEY_IMG_URl + " TEXT,"
-                + KEY_SALER_ID + " TEXT,"
-                + KEY_SERVER_ID + " server_id" + ")";
+                + KEY_IMG_URl + " TEXT " + ")";
 
         String CREATE_STREET_TABLE = "CREATE TABLE " + TABLE_STREET + "("
                 + KEY_ID + " INTEGER PRIMARY KEY,"
                 + KEY_NAME + " TEXT " + ")";
 
-        String CREATE_CUSTOMER_TABLE = "CREATE TABLE " + TABLE_CUSTOMER + "("
+        String CREATE_OUTLET_TABLE = "CREATE TABLE " + TABLE_OUTLET + "("
                 + KEY_ID + " INTEGER PRIMARY KEY,"
                 + KEY_NAME + " TEXT,"
                 + KEY_PHONE + " TEXT,"
-                + KEY_QR_CODE + " TEXT,"
-                + KEY_SERVER_ID + " INTEGER,"
-                + KEY_STREET_ID + " INTEGER " + ")";
+                + KEY_QR_CODE + " TEXT " + ")";
 
-        String CREATE_CATEGORY_TABLE = "CREATE TABLE " + TABLE_CATEGORY + "("
-                + KEY_ID + " INTEGER PRIMARY KEY,"
-                + KEY_NAME + " TEXT,"
-                + KEY_SERVER_ID + " INTEGER,"
-                + KEY_IMG_URl + " TEXT " + ")";
 
         String CREATE_ORDER_TABLE = "CREATE TABLE " + TABLE_ORDER + "("
                 + KEY_ID + " INTEGER PRIMARY KEY,"
                 + KEY_DEVICE_TIME + " TEXT,"
                 + KEY_ORDER_NO + " TEXT,"
+                + KEY_CREATED_DATE + " TEXT,"
                 + KEY_STATUS + " INTEGER,"
-                + KEY_PICKUP_TIME + " TEXT,"
-                + KEY_OUTLET_ID + " INTEGER,"
-                + KEY_SENT_STATUS + " INTEGER,"
-                + KEY_SERVER_ID + " INTEGER,"
+                + KEY_USER_ID + " INTEGER,"
                 + KEY_LAT + " TEXT,"
                 + KEY_LNG + " TEXT,"
-                + KEY_PARTNER_ID + " INTEGER,"
-                + KEY_DRIVER_ID + " INTEGER,"
-                + KEY_CUSTOMER_ID + " INTEGER " + ")";
+                + KEY_OUTLET_ID + " INTEGER,"
+                + KEY_PROJECT_ID+ " INTEGER " + ")";
 
         String CREATE_CART_TABLE = "CREATE TABLE " + TABLE_CART + "("
                 + KEY_ID + " INTEGER PRIMARY KEY,"
@@ -140,13 +118,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_QUANTITY + " INTEGER,"
                 + KEY_PRODUCT_ID + " INTEGER " + ")";
 
-        db.execSQL(CREATE_STREET_TABLE);
-        db.execSQL(CREATE_CUSTOMER_TABLE);
-        db.execSQL(CREATE_CATEGORY_TABLE);
+        db.execSQL(CREATE_OUTLET_TABLE);
         db.execSQL(CREATE_ORDER_TABLE);
         db.execSQL(CREATE_CART_TABLE);
         db.execSQL(CREATE_USER_TABLE);
-
 
     }
 
@@ -154,9 +129,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop older table if existed
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_STREET);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CUSTOMER);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CATEGORY);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_OUTLET);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ORDER);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_CART);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USER);
@@ -202,6 +175,67 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         return available;
     }
+
+    /*******************************************
+     Begin outlet crude
+     ********************************************/
+    public void createOutlet(Outlet outlet) {
+
+        //add data to cart the first time addToCart button is clicked
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_NAME, outlet.getName());
+        values.put(KEY_PHONE, outlet.getPhone());
+        values.put(KEY_QR_CODE, outlet.getQrCode());
+        db.insert(TABLE_OUTLET, null, values);
+        db.close(); // Closing database connection
+    }
+
+    /*******************************************
+    Begin order crude
+    ********************************************/
+    public void createOrder(Order order) {
+
+        //add data to cart the first time addToCart button is clicked
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_DEVICE_TIME,order.getDeviceTime());
+        values.put(KEY_ORDER_NO, order.getOrderNo());
+        values.put(KEY_CREATED_DATE, order.getCreatedDate());
+        values.put(KEY_STATUS, order.getStatus());
+        values.put(KEY_USER_ID, order.getUserId());
+        values.put(KEY_LAT, order.getLat());
+        values.put(KEY_LNG, order.getLng());
+        values.put(KEY_PROJECT_ID, order.getProjectId());
+        values.put(KEY_OUTLET_ID, order.getOutletId());
+        values.put(KEY_LNG, order.getLng());
+        db.insert(TABLE_ORDER, null, values);
+        db.close(); // Closing database connection
+
+    }
+/*
+    public String getOrderNumber() {
+        String orderNumber = "";
+
+        SQLiteDatabase database = this.getWritableDatabase();
+        Cursor cursor = database.rawQuery("SELECT order_no FROM " + TABLE_ORDER+" ORDER BY "+KEY_ID+" DESC limit 1", null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                orderNumber = cursor.getString(cursor.getColumnIndex(KEY_ORDER_NO));
+
+            } while (cursor.moveToNext());
+        }
+
+        database.close();
+
+
+        return orderNumber;
+    }*/
 
     /*******************************************
      Begin cart crude
@@ -274,23 +308,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return quantity;
     }
 
-    public int getCartItemPrice(int productId) {
-        int price = 0;
-
-        SQLiteDatabase database = this.getWritableDatabase();
-        Cursor cursor = database.rawQuery("SELECT * FROM " + TABLE_CART + " WHERE " + KEY_SERVER_ID + " =?", new String[]{String.valueOf(productId)});
-
-        if (cursor.moveToFirst()) {
-            do {
-                price = cursor.getInt(cursor.getColumnIndex(KEY_TOTAL_PRICE));
-
-            } while (cursor.moveToNext());
-        }
-        database.close();
-
-        return price;
-    }
-
     public int getTotalPrice() {
 
         int total = 0;
@@ -340,8 +357,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.delete(TABLE_CART, null,null);
         db.close();
     }
-
-
 
 
 

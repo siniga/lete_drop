@@ -86,7 +86,7 @@ public class MappingFormListFragment extends Fragment {
 
         _formLayoutManager = new LinearLayoutManager(_c, RecyclerView.VERTICAL, false);
         _formList.setLayoutManager(_formLayoutManager);
-
+        _formList.setHasFixedSize(true);
 
         getForms();
 
@@ -133,7 +133,6 @@ public class MappingFormListFragment extends Fragment {
 
                     ResponseData res = _gson.fromJson(response, ResponseData.class);
                     if (res.getCode() == 200) {
-                        //Log.d("HERERESPONSE", _gson.toJson(res.getForms()));
                         FormAdapter formAdapter = new FormAdapter(_c, res.getForms());
                         _formList.setAdapter(formAdapter);
 

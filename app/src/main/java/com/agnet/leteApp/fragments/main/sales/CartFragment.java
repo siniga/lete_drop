@@ -27,11 +27,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.agnet.leteApp.R;
-import com.agnet.leteApp.activities.MainActivity;
 import com.agnet.leteApp.application.mSingleton;
 import com.agnet.leteApp.fragments.main.adapters.CartAdapter;
-import com.agnet.leteApp.fragments.main.mapping.MappingSuccessFragment;
-import com.agnet.leteApp.helpers.CustomDivider;
 import com.agnet.leteApp.helpers.DatabaseHandler;
 import com.agnet.leteApp.helpers.DateHelper;
 import com.agnet.leteApp.helpers.FragmentHelper;
@@ -77,7 +74,7 @@ public class CartFragment extends Fragment {
     private Gson _gson;
     private ProgressBar _progressBar;
     private LinearLayout _transparentLoader;
-    private TextView _placeOrderNoQrCodeBtn;
+    private Button _placeOrderNoQrCodeBtn;
 
 
     @SuppressLint("RestrictedApi")
@@ -120,38 +117,35 @@ public class CartFragment extends Fragment {
         CartAdapter adapter = new CartAdapter(_c, _products, this);
         _cartlist.setAdapter(adapter);
 
-        _placeOrderBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (_products.size() > 0) {
-                    // _progressBar.setVisibility(View.VISIBLE);
-                    //  _transparentLoader.setVisibility(View.VISIBLE);
-                  //  _placeOrderBtn.setClickable(false);
-                    if (PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(_c, Manifest.permission.CAMERA)) {
-                        new FragmentHelper(_c).replaceWithbackStack(new OrderBarcodeFragment(), "OrderBarcodeFragment", R.id.fragment_placeholder);
-
-                    } else {
-                        requestWritePermission(_c);
-                    }
-
+        _placeOrderBtn.setOnClickListener(view12 -> {
+            if (_products.size() > 0) {
+                // _progressBar.setVisibility(View.VISIBLE);
+                //  _transparentLoader.setVisibility(View.VISIBLE);
+              //  _placeOrderBtn.setClickable(false);
+                if (PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(_c, Manifest.permission.CAMERA)) {
+                    new FragmentHelper(_c).replaceWithbackStack(new OrderBarcodeFragment(), "OrderBarcodeFragment", R.id.fragment_placeholder);
 
                 } else {
-                    Toast.makeText(_c, "Kikapu hakina bidhaa!", Toast.LENGTH_SHORT).show();
-
+                    requestWritePermission(_c);
                 }
+
+
+            } else {
+                Toast.makeText(_c, "Kikapu hakina bidhaa!", Toast.LENGTH_SHORT).show();
+
             }
         });
 
-        _placeOrderNoQrCodeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (_products.size() > 0) {
-                    saveOrder();
-                    _placeOrderNoQrCodeBtn.setClickable(false);
+        _placeOrderNoQrCodeBtn.setOnClickListener(view1 -> {
+            if (_products.size() > 0) {
+                _placeOrderNoQrCodeBtn.setClickable(false);
 
-                } else {
-                    Toast.makeText(_c, "Kikapu hakina bidhaa!", Toast.LENGTH_SHORT).show();
-                }
+
+                new FragmentHelper(_c).replace(new OutletPhoneNumberFragment(), "OutletNumberFragment", R.id.fragment_placeholder);
+
+
+            } else {
+                Toast.makeText(_c, "Kikapu hakina bidhaa!", Toast.LENGTH_SHORT).show();
             }
         });
         return view;
@@ -205,15 +199,14 @@ public class CartFragment extends Fragment {
 
         StringRequest postRequest = new StringRequest(Request.Method.POST, url,
                 response -> {
-
                     _transparentLoader.setVisibility(View.GONE);
                     _progressBar.setVisibility(View.GONE);
 
                     ResponseData res = _gson.fromJson(response, ResponseData.class);
+                    Log.d("HEREALSOE", _gson.toJson(res));
 
                     if (res.getCode() == 201) {
-                        _dbHandler.deleteCart();
-                        new FragmentHelper(_c).replace(new SalesSuccessFragment(), "SalesSuccessFragment", R.id.fragment_placeholder);
+                       // _dbHandler.deleteCart();
                     }
 
                     _placeOrderBtn.setClickable(true);

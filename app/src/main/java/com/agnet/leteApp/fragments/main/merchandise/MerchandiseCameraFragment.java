@@ -23,6 +23,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -79,26 +80,16 @@ public class MerchandiseCameraFragment extends Fragment {
 
     private FragmentActivity _c;
     private Gson _gson;
-    private List<CustomerType> _customerTypes;
-    private Spinner _custTypesSpinner;
-    private static final int pic_id = 1;
-    private ImageView _img;
-    private Button _continueBtn;
-    private String _outletType;
-    private int _outletTypeId;
-    private Bitmap _photo;
-    private String _token;
     private SharedPreferences _preferences;
     private SharedPreferences.Editor _editor;
     private ProgressBar _progressBar;
+    private LinearLayout _transparentLoader;
     private String Token;
-    private int _clientId;
-    private String _location;
     private RecyclerView _merchandiseImg;
     private List<MerchandiseImg> _list;
     private MerchandiseImagesAdapter _imgAdapter;
     private ArrayList<Bitmap> _imgList;
-    private List<OutletImage> _outletImages;
+
 
 
     @SuppressLint("RestrictedApi")
@@ -111,6 +102,8 @@ public class MerchandiseCameraFragment extends Fragment {
         _preferences = _c.getSharedPreferences("SharedData", Context.MODE_PRIVATE);
         _editor = _preferences.edit();
         _merchandiseImg = view.findViewById(R.id.merchandise_img_list);
+        _transparentLoader = view.findViewById(R.id.transparent_loader);
+        _progressBar = view.findViewById(R.id.progress_bar);
 
         try {
             Token = _preferences.getString("TOKEN", null);
@@ -134,7 +127,6 @@ public class MerchandiseCameraFragment extends Fragment {
         camera.setLifecycleOwner(getViewLifecycleOwner());
 
         _imgList = new ArrayList<>();
-        _outletImages = new ArrayList<>();
 
         camera.addCameraListener(new CameraListener() {
             @Override
@@ -152,7 +144,10 @@ public class MerchandiseCameraFragment extends Fragment {
                         _imgList.add(getResizedBitmap(bitmap, 300));
                         attachImagesToadapter();
 
-                        if(_imgList.size() == 5){
+                        if(_imgList.size() >= 3){
+                            _transparentLoader.setVisibility(View.VISIBLE);
+                            _progressBar.setVisibility(View.VISIBLE);
+
                            if(_preferences.getInt("OUTLET_ID", 0) != 0 ){
                                saveImages(_preferences.getInt("OUTLET_ID", 0) );
                            };
@@ -250,23 +245,22 @@ public class MerchandiseCameraFragment extends Fragment {
         String name1 = String.valueOf(Calendar.getInstance().getTimeInMillis());
         String name2 = String.valueOf(Calendar.getInstance().getTimeInMillis());
         String name3 = String.valueOf(Calendar.getInstance().getTimeInMillis());
-        String name4 = String.valueOf(Calendar.getInstance().getTimeInMillis());
-        String name5 = String.valueOf(Calendar.getInstance().getTimeInMillis());
 
         String ROOT_URL = "http://letedeve.aggreyapps.com/api/public/index.php/api/outlet-image";
 
         StringRequest postRequest = new StringRequest(Request.Method.POST, ROOT_URL,
                 response -> {
-                    //Response res = _gson.fromJson(response, Response.class);
+                    _transparentLoader.setVisibility(View.GONE);
+                    _progressBar.setVisibility(View.GONE);
 
-                  //   Log.d("IMAGEOBJECT", _gson.toJson(response));
-
-                      new FragmentHelper(_c).replaceWithbackStack(new SuccessFragment(), "SuccessFragment", R.id.fragment_placeholder);
+                    new FragmentHelper(_c).replaceWithbackStack(new SuccessFragment(), "SuccessFragment", R.id.fragment_placeholder);
 
                 },
                 error -> {
 
+                    _transparentLoader.setVisibility(View.GONE);
                     _progressBar.setVisibility(View.GONE);
+
                     Log.d("RESPONSE_ERROR", "here" + error.getMessage());
                     NetworkResponse response = error.networkResponse;
                     if (response != null && response.data != null) {
@@ -290,8 +284,6 @@ public class MerchandiseCameraFragment extends Fragment {
                 params.put("img1", "" + _gson.toJson(new OutletImage(bitmapTObase64(_imgList.get(0)), name1)));
                 params.put("img2", "" + _gson.toJson(new OutletImage(bitmapTObase64(_imgList.get(1)), name2)));
                 params.put("img3", "" + _gson.toJson(new OutletImage(bitmapTObase64(_imgList.get(2)), name3)));
-                params.put("img4", "" + _gson.toJson(new OutletImage(bitmapTObase64(_imgList.get(3)), name4)));
-                params.put("img5", "" + "" + _gson.toJson(new OutletImage(bitmapTObase64(_imgList.get(4)), name5)));
                 params.put("outlet_id", "" + outletId);
 
                 return params;

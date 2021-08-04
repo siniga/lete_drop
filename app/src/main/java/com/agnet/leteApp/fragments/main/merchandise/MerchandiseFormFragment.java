@@ -23,6 +23,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -94,6 +95,8 @@ public class MerchandiseFormFragment extends Fragment {
     private String _outletImgStr;
     private  Bitmap[] _outletImgArr;
     private ArrayList<Bitmap> _imgList;
+    private LinearLayout _continueBtnWrapper;
+    private int _projectId;
 
 
     @SuppressLint("RestrictedApi")
@@ -108,22 +111,18 @@ public class MerchandiseFormFragment extends Fragment {
 
         EditText nameInput = view.findViewById(R.id.outlet_name_input);
         EditText phoneInput = view.findViewById(R.id.phone_num_input);
-      //  RelativeLayout openCamera = view.findViewById(R.id.open_camera);
+        RelativeLayout openCamera = view.findViewById(R.id.open_camera);
 
         _custTypesSpinner = view.findViewById(R.id.cust_types_spinner);
+        _continueBtnWrapper = view.findViewById(R.id.continue_btn_wrapper);
         _continueBtn = view.findViewById(R.id.continue_btn);
         _progressBar = view.findViewById(R.id.progress_bar);
-       // _merchandiseImgList = view.findViewById(R.id.merchandise_img_list);
         TextView username = view.findViewById(R.id.user_name);
-
-        //ImageView img1 = view.findViewById(R.id.image_1);
-
-       /* LinearLayoutManager imgLayoutManager = new LinearLayoutManager(_c, RecyclerView.HORIZONTAL, false);
-        _merchandiseImgList.setLayoutManager(imgLayoutManager);*/
 
         try {
             Token = _preferences.getString("TOKEN", null);
             _clientId = _preferences.getInt("CLIENT_ID", 0);
+            _projectId = _preferences.getInt("PROJECT_ID",0);
 
         } catch (NullPointerException e) {
 
@@ -141,15 +140,8 @@ public class MerchandiseFormFragment extends Fragment {
             }
         });
 
-      /* openCamera.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View view) {
-               new FragmentHelper(_c).replace(new MerchandiseCameraFragment(),"MerchandiseCameraFragment", R.id.fragment_placeholder);
-           }
-       });*/
-        _continueBtn.setOnClickListener(view1 -> {
+       openCamera.setOnClickListener(view1 -> {
 
-           //
             //Get address base on location
             try {
                 Geocoder geo = new Geocoder(_c.getApplicationContext(), Locale.getDefault());
@@ -258,8 +250,17 @@ public class MerchandiseFormFragment extends Fragment {
         StringRequest postRequest = new StringRequest(Request.Method.POST, ROOT_URL,
                 response -> {
                     ResponseData res = _gson.fromJson(response, ResponseData.class);
-                    _editor.putInt("OUTLET_ID",res.getOutlet().getId());
-                    _editor.commit();
+                    try {
+
+                        if(res.getOutlet() == null){
+                            Toast.makeText(_c, "Duka halijasajiliwa, jaribu tena!", Toast.LENGTH_SHORT).show();
+                        }
+                        _editor.putInt("OUTLET_ID",res.getOutlet().getId());
+                        _editor.commit();
+                    }catch (NullPointerException e){
+
+                    }
+
 
                   //  Log.d("HEREHAPA",""+ response);
 
@@ -300,6 +301,7 @@ public class MerchandiseFormFragment extends Fragment {
                 params.put("outlet_type_id", "" + outletTypeId);
                 params.put("client_id", "" + _clientId);
                 params.put("location", "" + _location);
+                params.put("projectId", "" + _projectId);
 
                 return params;
             }

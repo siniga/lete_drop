@@ -179,8 +179,7 @@ public class BottomSheetDialog extends BottomSheetDialogFragment {
         double mLong = Double.parseDouble(_preferences.getString("mLONGITUDE", null));
 
 
-        List<Order> orders = new ArrayList<>();
-        orders.add(new Order(0, "", deviceDateTime, orderNum, 1, "", 0, 1,mLat,mLong));
+
 
         //create order
 

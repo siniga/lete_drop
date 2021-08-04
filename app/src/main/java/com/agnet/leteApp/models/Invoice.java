@@ -4,11 +4,11 @@ import java.util.List;
 
 public class Invoice {
 
-    private  String idate, itime, custinvoiceno, custidtype, custid, custname, mobilenum, username;
+    private  String idate, itime, custinvoiceno, custid, custname, mobilenum, username;
     private List<InvoiceDetail> invoiceDetails;
+   private  int custidtype;
 
-
-    public  Invoice(String idate, String itime, String custinvoiceno, String custidtype, String custid, String custname, String mobilenum, String username, List<InvoiceDetail> invoiceDetails){
+    public  Invoice(String idate, String itime, String custinvoiceno, int custidtype, String custid, String custname, String mobilenum, String username, List<InvoiceDetail> invoiceDetails){
         this.idate = idate;
         this.itime = itime;
         this.custinvoiceno = custinvoiceno;
@@ -28,8 +28,8 @@ public class Invoice {
         return custid;
     }
 
-    public String getCustidtype() {
-        return custidtype;
+    public List<InvoiceDetail> getInvoiceDetails() {
+        return invoiceDetails;
     }
 
     public String getCustinvoiceno() {

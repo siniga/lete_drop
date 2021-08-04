@@ -20,6 +20,8 @@ public class ResponseData {
 
     List<History> orders;
 
+    Order order;
+
     List<Partner> partners;
 
     List<Outlet> outlets;
@@ -48,9 +50,10 @@ public class ResponseData {
 
 
     public ResponseData(List streets, List products, List categories, List skus, List<History> orders,
-                        List<Partner> partners, User user, Customer customer,
+                        List<Partner> partners, User user, Customer customer,Order order,
                         int code, String flag, Outlet outlet, String token, Success success, List<Project> projects,
-                        List<Form> forms, Form form, List<Quesionnaire> questions, List<Outlet> outlets, String error, Stat stats) {
+                        List<Form> forms, Form form, List<Quesionnaire> questions, List<Outlet> outlets,
+                        String error, Stat stats) {
         this.streets = streets;
         this.products = products;
         this.categories = categories;
@@ -70,6 +73,7 @@ public class ResponseData {
         this.outlets = outlets;
         this.error = error;
         this.stats = stats;
+        this.order = order;
 
     }
 
@@ -154,5 +158,9 @@ public class ResponseData {
 
     public Stat getStats() {
         return stats;
+    }
+
+    public Order getOrder() {
+        return order;
     }
 }

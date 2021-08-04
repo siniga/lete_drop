@@ -30,6 +30,7 @@ import com.agnet.leteApp.fragments.auth.LoginFragment;
 import com.agnet.leteApp.fragments.main.adapters.OutletAdapter;
 import com.agnet.leteApp.fragments.main.adapters.ProjectAdapter;
 import com.agnet.leteApp.fragments.main.adapters.ProjectTypeAdapter;
+import com.agnet.leteApp.fragments.main.dialogs.QrcodeBtmSheet;
 import com.agnet.leteApp.fragments.main.outlets.NewOutletFragment;
 import com.agnet.leteApp.helpers.AndroidDatabaseManager;
 import com.agnet.leteApp.helpers.FragmentHelper;
@@ -70,6 +71,7 @@ public class ProjectFragment extends Fragment {
     private TextView _searchProjectInput;
     private String _projectType;
     private Button _typeName;
+    private  QrcodeBtmSheet _bottomSheet;
 
 
     @SuppressLint("RestrictedApi")
@@ -108,6 +110,8 @@ public class ProjectFragment extends Fragment {
 
         _projectLayoutManager = new LinearLayoutManager(_c, RecyclerView.VERTICAL, false);
         _projectList.setLayoutManager(_projectLayoutManager);
+
+
 
 
        /* _outletLayoutManager = new LinearLayoutManager(_c, RecyclerView.VERTICAL, false);
@@ -163,6 +167,13 @@ public class ProjectFragment extends Fragment {
         super.onPause();
         _shimmerLoader.setVisibility(View.GONE);
         _shimmerLoader.stopShimmerAnimation();
+
+        try{
+            _bottomSheet.dismiss();
+        }catch (NullPointerException e){
+
+        }
+
     }
 
     @Override
@@ -226,9 +237,14 @@ public class ProjectFragment extends Fragment {
         return list;
     }
 
-/*    public void setProjectType(String type){
-         _infoMsgTxt.setText("Huna mradi wa "+type+ " kwa sasa.");
-    }*/
+    public void showDIalog(){
+
+        _bottomSheet = new QrcodeBtmSheet();
+        _bottomSheet.show(_c.getSupportFragmentManager(),
+                "QrcodeBtmSheet");
+        _bottomSheet.setCancelable(false);
+
+    }
     public void getPorjects(String type) {
 
         _shimmerLoader.setVisibility(View.VISIBLE);

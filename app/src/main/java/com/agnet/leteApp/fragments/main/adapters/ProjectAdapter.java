@@ -106,6 +106,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
                     _editor.putString("CLIENT", currentProject.getClient());
                     _editor.putInt("PROJECT_ID", currentProject.getId());
                     _editor.putString("PROJECT_NAME", currentProject.getName());
+                    _editor.putString("PROJECT_TYPE", currentProject.getType());
                     _editor.commit();
 
                     if(currentProject.getType().equals("Mapping")){
@@ -113,7 +114,8 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
                     }else if(currentProject.getType().equals("Merchandise")){
                         new FragmentHelper(c).replaceWithbackStack(new MerchandiseFormFragment(), "MerchandiseFragment", R.id.fragment_placeholder);
                     }else if(currentProject.getType().equals("Sales")){
-                        new FragmentHelper(c).replaceWithbackStack(new ProductsFragment(), "ProductsFragment", R.id.fragment_placeholder);
+                        fragment.showDIalog();
+                       // new FragmentHelper(c).replaceWithbackStack(new ProductsFragment(), "ProductsFragment", R.id.fragment_placeholder);
                     }
 
                 }

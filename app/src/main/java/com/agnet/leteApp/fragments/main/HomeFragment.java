@@ -3,6 +3,7 @@ package com.agnet.leteApp.fragments.main;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -29,6 +30,7 @@ import com.agnet.leteApp.R;
 import com.agnet.leteApp.application.mSingleton;
 import com.agnet.leteApp.fragments.main.adapters.ProjectAdapter;
 import com.agnet.leteApp.fragments.main.adapters.ProjectTypeAdapter;
+import com.agnet.leteApp.helpers.AndroidDatabaseManager;
 import com.agnet.leteApp.helpers.DateHelper;
 import com.agnet.leteApp.helpers.FragmentHelper;
 import com.agnet.leteApp.models.CustomerType;
@@ -117,6 +119,15 @@ public class HomeFragment extends Fragment {
         _projectTypeList.setAdapter(typeAdapter);
 
 
+        username.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                Intent intent = new Intent(_c, AndroidDatabaseManager.class);
+                _c.startActivity(intent);
+
+                return false;
+            }
+        });
         getAgentStats();
 
         return view;

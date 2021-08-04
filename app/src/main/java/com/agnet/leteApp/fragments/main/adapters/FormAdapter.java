@@ -3,6 +3,7 @@ package com.agnet.leteApp.fragments.main.adapters;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,7 +46,6 @@ public class FormAdapter extends RecyclerView.Adapter<FormAdapter.ViewHolder> {
     private SharedPreferences _preferences;
     private SharedPreferences.Editor _editor;
 
-
     // Provide a suitable constructor (depends on the kind of dataset)
     public FormAdapter(Context c, List<Form> forms) {
         this.forms = forms;
@@ -75,9 +75,20 @@ public class FormAdapter extends RecyclerView.Adapter<FormAdapter.ViewHolder> {
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         //get a position of a current saleItem
         final Form currentForm = forms.get(position);
+
+
         holder.mName.setText(currentForm.getName());
         holder.mCreatedAt.setText(currentForm.getCreated_at());
         holder.mCreatedBy.setText(currentForm.getCreated_by());
+      /*
+        if(currentForm.getStatus() != 0){
+            holder.mName.setText(currentForm.getName());
+            holder.mCreatedAt.setText(currentForm.getCreated_at());
+            holder.mCreatedBy.setText(currentForm.getCreated_by());
+        }else {
+            holder.mWrapper.setVisibility(View.GONE);
+        }*/
+       // Log.d("HERERESPONSE", ""+currentForm.getStatus());
 
         holder.mWrapper.setOnClickListener(new View.OnClickListener() {
             @Override

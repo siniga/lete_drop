@@ -31,9 +31,11 @@ import com.agnet.leteApp.fragments.main.adapters.CategoryAdapter;
 import com.agnet.leteApp.fragments.main.adapters.ProductsAdapter;
 import com.agnet.leteApp.helpers.AndroidDatabaseManager;
 import com.agnet.leteApp.helpers.DatabaseHandler;
+import com.agnet.leteApp.helpers.DateHelper;
 import com.agnet.leteApp.helpers.FragmentHelper;
 import com.agnet.leteApp.models.Cart;
 import com.agnet.leteApp.models.Category;
+import com.agnet.leteApp.models.Order;
 import com.agnet.leteApp.models.Product;
 import com.agnet.leteApp.models.ResponseData;
 import com.agnet.leteApp.models.User;
@@ -55,6 +57,7 @@ import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class AddCartFragment extends Fragment {
 
@@ -148,10 +151,29 @@ public class AddCartFragment extends Fragment {
         });
 
         addToCartBtn.setOnClickListener(view1 -> {
+            //store order locally
+            Random rand = new Random();
+            int orderNo = rand.nextInt((9999 - 100) + 1) + 10;
+
+            String dateTime = DateHelper.getCurrentDate() + " " + DateHelper.getCurrentTime();
+            String date = DateHelper.getCurrentDate();
+
+            String lat =  _preferences.getString("mLATITUDE", null);
+            String lng = _preferences.getString("mLONGITUDE", null);
+            int projectId = _preferences.getInt("PROJECT_ID", 0);
+
+            _dbHandler.createOrder(new Order(
+                    0,dateTime,orderNo,2,
+                    lat,lng,date,_user.getId(),projectId,
+                    0
+
+            ));
+
+            Log.d("LASTID",_gson.toJson(_dbHandler.getLastId("orders")));
+
+            //store cart locally
             int Qnty =Integer.parseInt(quantity.getText().toString());
             Double amount  = Qnty * _product.getPrice();
-
-            Log.d("HEHEHu", ""+amount);
 
             if(_dbHandler.isColumnAvailable("carts","product_id",""+_product.getId())){
                 _dbHandler.updateCart(new Cart(0,_product.getName(), amount,_product.getId(),Qnty,_product.getPrice()));
