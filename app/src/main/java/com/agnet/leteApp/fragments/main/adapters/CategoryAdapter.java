@@ -87,18 +87,15 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
             holder.mName.setTextColor(Color.parseColor("#666666"));
         }
 
-        holder.mWrapper.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (holder.getAdapterPosition() == RecyclerView.NO_POSITION) return;
+        holder.mWrapper.setOnClickListener(view -> {
+            if (holder.getAdapterPosition() == RecyclerView.NO_POSITION) return;
 
-                // Updating old as well as new positions
-                notifyItemChanged(selected_position);
-                selected_position = holder.getAdapterPosition();
-                notifyItemChanged(selected_position);
-                fragment.getProducts(currentCategory.getId());
+            // Updating old as well as new positions
+            notifyItemChanged(selected_position);
+            selected_position = holder.getAdapterPosition();
+            notifyItemChanged(selected_position);
+            fragment.getProducts(currentCategory.getId());
 
-            }
         });
 
 

@@ -161,27 +161,30 @@ public class AddCartFragment extends Fragment {
             String lat =  _preferences.getString("mLATITUDE", null);
             String lng = _preferences.getString("mLONGITUDE", null);
             int projectId = _preferences.getInt("PROJECT_ID", 0);
+            int outletId = _dbHandler.getLastId("outlets");
 
             _dbHandler.createOrder(new Order(
                     0,dateTime,orderNo,2,
                     lat,lng,date,_user.getId(),projectId,
-                    0
+                    outletId
 
             ));
 
-            Log.d("LASTID",_gson.toJson(_dbHandler.getLastId("orders")));
+//            Log.d("LASTID",_gson.toJson(_dbHandler.getLastId("outlets")));
 
             //store cart locally
             int Qnty =Integer.parseInt(quantity.getText().toString());
             Double amount  = Qnty * _product.getPrice();
 
+            int orderId = _dbHandler.getLastId("orders");
+
+            //_dbHandler.createCart(new Cart(0,_product.getName(), amount,_product.getId(), Qnty,_product.getPrice()),orderId);
+
             if(_dbHandler.isColumnAvailable("carts","product_id",""+_product.getId())){
                 _dbHandler.updateCart(new Cart(0,_product.getName(), amount,_product.getId(),Qnty,_product.getPrice()));
             }else {
-                _dbHandler.createCart(new Cart(0,_product.getName(), amount,_product.getId(), Qnty,_product.getPrice()));
+                _dbHandler.createCart(new Cart(0,_product.getName(), amount,_product.getId(), Qnty,_product.getPrice()),orderId);
             }
-
-
 
             new FragmentHelper(_c).replace(new ProductsFragment(),"ProductsFragment", R.id.fragment_placeholder);
         });

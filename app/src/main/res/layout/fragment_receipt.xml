@@ -6,7 +6,6 @@
     android:orientation="vertical"
     >
 
-
     <androidx.core.widget.NestedScrollView
         android:id="@+id/receipt_wrapper"
         android:layout_width="match_parent"
@@ -158,7 +157,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="1dp"
-                            android:text="Janet Kiloko"
+                            android:text="-"
                             android:textColor="@android:color/black" />
 
 
@@ -195,18 +194,40 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Jumla ya bidhaa:"
+                            android:text="Muda wa muzo:"
                             android:textColor="@android:color/black"
                             android:textStyle="bold" />
 
                         <TextView
-                            android:id="@+id/total_qnty"
+                            android:id="@+id/time"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="1dp"
                             android:text=""
                             android:textColor="@android:color/black" />
                     </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="TRA website:"
+                            android:textColor="@android:color/black"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tra_url"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="1dp"
+                            android:text=""
+                            android:textColor="@android:color/black" />
+                    </LinearLayout>
+
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -327,7 +348,7 @@
                     android:layout_weight="1.5"
                     android:backgroundTint="@android:color/white"
                     android:text="Katisha"
-                    android:textColor="@color/colorPrimary" />
+                    android:textColor="@color/blue" />
 
                 <Button
                     android:id="@+id/button_confirm_order"
@@ -336,7 +357,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_weight="2"
                     android:backgroundTint="@color/colorPrimary"
-                    android:text="Endelea"
+                    android:text="Tuma risiti"
                     android:textColor="@android:color/black" />
 
             </LinearLayout>

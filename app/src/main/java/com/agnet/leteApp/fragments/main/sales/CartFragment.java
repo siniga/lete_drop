@@ -33,23 +33,40 @@ import com.agnet.leteApp.helpers.DatabaseHandler;
 import com.agnet.leteApp.helpers.DateHelper;
 import com.agnet.leteApp.helpers.FragmentHelper;
 import com.agnet.leteApp.models.Cart;
+import com.agnet.leteApp.models.Invoice;
+import com.agnet.leteApp.models.InvoiceDetail;
 import com.agnet.leteApp.models.Order;
+import com.agnet.leteApp.models.Outlet;
+import com.agnet.leteApp.models.Receipt;
 import com.agnet.leteApp.models.ResponseData;
 import com.agnet.leteApp.models.User;
+import com.agnet.leteApp.models.Vfd;
 import com.agnet.leteApp.service.Endpoint;
+import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
+import com.android.volley.Response;
 import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+
+import static com.android.volley.VolleyLog.TAG;
 
 
 public class CartFragment extends Fragment {
@@ -75,6 +92,8 @@ public class CartFragment extends Fragment {
     private ProgressBar _progressBar;
     private LinearLayout _transparentLoader;
     private Button _placeOrderNoQrCodeBtn;
+    private List<Order> _orders;
+    private List<Outlet> _outlet;
 
 
     @SuppressLint("RestrictedApi")
@@ -110,6 +129,9 @@ public class CartFragment extends Fragment {
             _user = _gson.fromJson(_preferences.getString("User", null), User.class);
             Token = _preferences.getString("TOKEN", null);
 
+            _outlet = _dbHandler.getOutlets();
+            _orders =_dbHandler.getOrders();
+
         } catch (NullPointerException e) {
 
         }
@@ -122,12 +144,14 @@ public class CartFragment extends Fragment {
                 // _progressBar.setVisibility(View.VISIBLE);
                 //  _transparentLoader.setVisibility(View.VISIBLE);
               //  _placeOrderBtn.setClickable(false);
-                if (PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(_c, Manifest.permission.CAMERA)) {
+            /*    if (PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(_c, Manifest.permission.CAMERA)) {
                     new FragmentHelper(_c).replaceWithbackStack(new OrderBarcodeFragment(), "OrderBarcodeFragment", R.id.fragment_placeholder);
 
                 } else {
                     requestWritePermission(_c);
-                }
+                }*/
+
+                saveOrder();
 
 
             } else {
@@ -191,9 +215,6 @@ public class CartFragment extends Fragment {
         _transparentLoader.setVisibility(View.VISIBLE);
         _progressBar.setVisibility(View.VISIBLE);
 
-        Random rand = new Random();
-        int orderNoRandom = rand.nextInt((9999 - 100) + 1) + 10;
-
         Endpoint.setUrl("order");
         String url = Endpoint.getUrl();
 
@@ -203,10 +224,14 @@ public class CartFragment extends Fragment {
                     _progressBar.setVisibility(View.GONE);
 
                     ResponseData res = _gson.fromJson(response, ResponseData.class);
-                    Log.d("HEREALSOE", _gson.toJson(res));
+                      Toast.makeText(_c, "App inapakua Subiri...", Toast.LENGTH_SHORT).show();
 
                     if (res.getCode() == 201) {
-                       // _dbHandler.deleteCart();
+                        try {
+                            sendVfd();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
 
                     _placeOrderBtn.setClickable(true);
@@ -227,7 +252,6 @@ public class CartFragment extends Fragment {
                         Toast.makeText(_c, "Kuna tatizo, angalia mtandao alafu jaribu tena", Toast.LENGTH_SHORT).show();
                     }
 
-
                 }
         ) {
 
@@ -243,13 +267,13 @@ public class CartFragment extends Fragment {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("createdDate", DateHelper.getCurrentDate());
                 params.put("deviceTime", DateHelper.getCurrentDate() + " " + DateHelper.getCurrentTime());
-                params.put("userId", "" + _user.getId());
-                params.put("orderNo", "" + orderNoRandom);
-                params.put("lat", _preferences.getString("mLATITUDE", null));
-                params.put("lng", _preferences.getString("mLONGITUDE", null));
+                params.put("userId", "" + _orders.get(0).getUserId());
+                params.put("orderNo", "" + _orders.get(0).getOrderNo());
+                params.put("lat",""+_orders.get(0).getLat());
+                params.put("lng", ""+_orders.get(0).getLng());
                 params.put("products", _gson.toJson(_dbHandler.getCart()));
                 params.put("outletId", "1");
-                params.put("projectId", "" + _preferences.getInt("PROJECT_ID", 0));
+                params.put("projectId", "" + _orders.get(0).getProjectId());
                 return params;
             }
         };
@@ -272,6 +296,82 @@ public class CartFragment extends Fragment {
             }
         });
     }
+
+    public void sendVfd() throws JSONException {
+
+        String url = "http://tra.aggreyapps.com/apis/receive.php";// testing
+//        String url = "http://vfd.aggreyapps.com/maxvfd-api/apis/receive.php";//live
+
+        List<InvoiceDetail> invoiceDetails = new ArrayList<>();
+
+        for (Cart cart : _products) {
+            //tax code 1 is equal to taxable 18%, 3 is equal to none taxable
+            invoiceDetails.add(new InvoiceDetail(cart.getName(), "" + cart.getQuantity(), "3", "" + cart.getAmount()));
+
+        }
+//        _preferences.getString("NEW_ORDER_NO", null)
+        List<Invoice> invoiceList = new ArrayList<>();
+        invoiceList.add(
+                new Invoice(
+                        DateHelper.getCurrentDate(),
+                        DateHelper.getCurrentTime(),
+                        ""+ _orders.get(0).getOrderNo(),
+                        6,
+                        null,
+                        _outlet.get(0).getName(),
+                        _outlet.get(0).getPhone(),
+                        "RoutePro",
+                        invoiceDetails
+                )
+        );
+
+        Log.d("HERERECEIPT", _gson.toJson(invoiceList));
+
+        Vfd vfd = new Vfd(invoiceList);
+        Gson gson = new GsonBuilder().create();
+
+        // Log.d("CUSTOMEROBJECT", _gson.toJson(vfd));
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
+                url, new JSONObject(gson.toJson(vfd)),
+                response -> {
+                    // Log.d(TAG, response.toString());
+
+                    Receipt res = _gson.fromJson(String.valueOf(response), Receipt.class);
+
+                    _editor.putString("VFD_RECEIPT",_gson.toJson(res));
+                    _editor.putString("OUTLET_NAME", _outlet.get(0).getName());
+                    _editor.commit();
+
+                    Log.d("LOGHAPAPOAVFD", "" + _gson.toJson(res));
+
+                    new FragmentHelper(_c).replace(new ReceiptFragment(),"ReceiptFragment",R.id.fragment_placeholder);
+
+
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+                _progressBar.setVisibility(View.GONE);
+                Toast.makeText(_c, "Kuna tatizo, kama linaendelea wasiliana na IT!", Toast.LENGTH_LONG).show();
+            }
+        }) {
+
+            //headers
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+
+
+        };
+
+        mSingleton.getInstance(_c).addToRequestQueue(jsonObjReq);
+        jsonObjReq.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS * 2, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+    }
+
 
 
 }

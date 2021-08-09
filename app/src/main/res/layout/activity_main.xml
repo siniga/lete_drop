@@ -37,6 +37,24 @@
 
     <include layout="@layout/content_main" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        android:orientation="vertical"
+        app:behavior_hideable="true"
+        app:behavior_peekHeight="0dp"
+        android:id="@+id/bottom_sheet"
+        android:background="@color/black_transparent"
+        app:layout_behavior="@string/bottom_sheet_behavior"
+        android:paddingTop="200dp">
+
+
+        <include layout="@layout/qr_code_btm_sheet" />
+
+
+    </LinearLayout>
+
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

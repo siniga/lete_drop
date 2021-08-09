@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingTop="10dp"
+    android:background="@drawable/rounded_dialog"
+  >
+
+    <!--With qrcode layout-->
+
+    <!--End-->
+
+    <!--With phone number layout-->
+    <LinearLayout
+        android:padding="25dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:visibility="gone"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:padding="20dp">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_baseline_storefront_24" />
+        </LinearLayout>
+
+        <TextView
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/mryad_pro_semibold"
+            android:gravity="center"
+            android:maxWidth="250dp"
+            android:text="Sajili Duka"
+            android:textColor="@android:color/black"
+            android:textSize="22sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="5dp" />
+
+        <TextView
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/mryad_pro_regular"
+            android:text="Chagua kati ya vifuatavyo"
+            android:textColor="#9E9D9D"
+            android:textSize="16sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="30dp" />
+
+        <TextView
+            android:id="@+id/name_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/phone_input"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="2dp"
+            android:text="Jina la duka"
+            android:textColor="@color/blue"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/name_input"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_below="@+id/name_header"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/round_corners_with_stroke_grey"
+            android:hint="Ingiza jina la duka"
+            android:paddingLeft="@dimen/padding_10" />
+
+        <TextView
+            android:id="@+id/phone_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="30dp"
+            android:text="Namba ya simu"
+            android:textColor="@color/blue"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/round_corners_with_stroke_grey"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingRight="@dimen/padding_10">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_below="@id/phone_header"
+                android:layout_marginTop="0dp"
+                android:layout_weight="0.9"
+                android:enabled="false"
+                android:gravity="center"
+                android:inputType="number"
+                android:padding="5dp"
+                android:paddingLeft="2dp"
+                android:text="255"
+                android:textColor="@android:color/black" />
+
+            <EditText
+                android:id="@+id/phone_input"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_below="@id/phone_header"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="1dp"
+                android:layout_weight="5"
+                android:background="@color/white"
+                android:hint="mfano: 783453028"
+                android:inputType="number"
+                android:padding="5dp" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/register_byPhone_btn"
+            android:layout_marginTop="45dp"
+            android:text="Sajili Duka"
+            android:textColor="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/round_corners_blue"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="30dp" />
+
+        <LinearLayout
+            android:id="@+id/cancel_phone_layout_btn"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:gravity="center">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_baseline_keyboard_arrow_left_blue_24"/>
+            <TextView
+                android:id="@+id/back_btn_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/mryad_pro_regular"
+                android:text="Rudi nyuma"
+                android:textColor="@color/blue"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+    </LinearLayout>
+    <!--End-->
+
+    <!--select options layout-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:padding="20dp">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_baseline_storefront_24" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/mryad_pro_semibold"
+            android:gravity="center"
+            android:maxWidth="250dp"
+            android:text="Sajili Duka"
+            android:textColor="@android:color/black"
+            android:textSize="22sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="5dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/mryad_pro_regular"
+            android:text="Chagua kati ya vifuatavyo"
+            android:textColor="#9E9D9D"
+            android:textSize="16sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="30dp" />
+
+        <Button
+            android:id="@+id/with_qrcode_btn"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/round_corners_white_30"
+            android:text="Sajili kwa qrcode"
+            android:textColor="@color/grey_aeacac" />
+
+        <!--    <View
+                android:layout_width="match_parent"
+                android:layout_height="10dp"/>-->
+
+        <Button
+            android:id="@+id/with_phone_btn"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/round_corners_blue_30"
+            android:text="Sajili kwa namba ya simu"
+            android:textColor="@color/white" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp" />
+
+        <TextView
+            android:id="@+id/cancel_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/mryad_pro_regular"
+            android:text="Katisha"
+            android:textColor="@color/blue"
+            android:textSize="16sp" />
+    </LinearLayout>
+    <!--End-->
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:minWidth="60dp"
+        android:minHeight="60dp"
+        android:theme="@style/AppTheme.WhiteAccent"
+        android:visibility="gone" />
+
+</RelativeLayout>

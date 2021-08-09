@@ -87,14 +87,14 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="200dp"
             android:layout_alignParentBottom="true"
             android:orientation="vertical"
-            android:paddingLeft="15dp"
-            android:paddingTop="15dp"
-            android:paddingRight="15dp">
+            >
 
             <RelativeLayout
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -137,20 +137,32 @@
                 android:id="@+id/place_order_btn"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="50dp"
                 android:background="@drawable/round_corners_blue"
-                android:text="Uza na qr code"
+                android:text="Endelea kuuza"
                 android:textColor="@android:color/white" />
 
-            <TextView
+
+            <Button
+                android:visibility="gone"
                 android:id="@+id/place_order_no_qrcode"
-                android:textColor="@color/blue"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
                 android:textSize="18dp"
+                android:layout_marginTop="20dp"
+                android:background="@color/white"
+                android:text="Bila qr code"
+                android:textColor="@color/blue"/>
+
+            <TextView
+
+
+
                 android:layout_marginTop="13dp"
                 android:layout_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Bila qr code"/>
+          />
         </LinearLayout>
 
 

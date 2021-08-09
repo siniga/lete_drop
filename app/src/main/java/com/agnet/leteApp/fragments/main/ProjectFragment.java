@@ -71,7 +71,7 @@ public class ProjectFragment extends Fragment {
     private TextView _searchProjectInput;
     private String _projectType;
     private Button _typeName;
-    private  QrcodeBtmSheet _bottomSheet;
+
 
 
     @SuppressLint("RestrictedApi")
@@ -103,6 +103,7 @@ public class ProjectFragment extends Fragment {
 
             _typeName.setText("Miradi yako ya "+_projectType);
 //            username.setText(_user.getName());
+
 
         } catch (NullPointerException e) {
 
@@ -162,17 +163,13 @@ public class ProjectFragment extends Fragment {
         return view;
     }
 
+
     @Override
     public void onPause() {
         super.onPause();
         _shimmerLoader.setVisibility(View.GONE);
         _shimmerLoader.stopShimmerAnimation();
 
-        try{
-            _bottomSheet.dismiss();
-        }catch (NullPointerException e){
-
-        }
 
     }
 
@@ -237,14 +234,6 @@ public class ProjectFragment extends Fragment {
         return list;
     }
 
-    public void showDIalog(){
-
-        _bottomSheet = new QrcodeBtmSheet();
-        _bottomSheet.show(_c.getSupportFragmentManager(),
-                "QrcodeBtmSheet");
-        _bottomSheet.setCancelable(false);
-
-    }
     public void getPorjects(String type) {
 
         _shimmerLoader.setVisibility(View.VISIBLE);

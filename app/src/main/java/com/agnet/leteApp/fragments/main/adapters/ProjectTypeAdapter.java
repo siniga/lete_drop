@@ -14,9 +14,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.agnet.leteApp.R;
+import com.agnet.leteApp.fragments.main.HomeFragment;
 import com.agnet.leteApp.fragments.main.ProjectFragment;
 import com.agnet.leteApp.fragments.main.mapping.MappingFormListFragment;
 import com.agnet.leteApp.fragments.main.merchandise.MerchandiseFormFragment;
@@ -49,14 +51,16 @@ public class ProjectTypeAdapter extends RecyclerView.Adapter<ProjectTypeAdapter.
     private SharedPreferences _preferences;
     private SharedPreferences.Editor _editor;
     private int selected_position = 0;
+    private HomeFragment fragment;
 
 
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public ProjectTypeAdapter(Context c, List<ProjectType> types) {
+    public ProjectTypeAdapter(Context c, List<ProjectType> types, HomeFragment fragment) {
         this.types = types;
         this.inflator = LayoutInflater.from(c);
         this.c = c;
+        this.fragment = fragment;
 
         _preferences = c.getSharedPreferences("SharedData", Context.MODE_PRIVATE);
         _editor = _preferences.edit();
@@ -110,7 +114,8 @@ public class ProjectTypeAdapter extends RecyclerView.Adapter<ProjectTypeAdapter.
                 }else if(currentType.getName().equals("Vipeperushi")){
                     new FragmentHelper(c).replace(new ProjectFragment(),"ProjectFragment", R.id.fragment_placeholder);
                 }else if(currentType.getName().equals("Mauzo")){
-                    new FragmentHelper(c).replace(new ProjectFragment(),"ProjectFragment", R.id.fragment_placeholder);
+                       fragment.showDIalog();
+
                 }else {
                     Toast.makeText(c, "Huna ruhusa ya kuingia hapa!", Toast.LENGTH_SHORT).show();
                 }

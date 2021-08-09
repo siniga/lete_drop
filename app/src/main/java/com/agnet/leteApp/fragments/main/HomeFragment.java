@@ -1,12 +1,14 @@
-package com.agnet.leteApp.fragments.main;
+ package com.agnet.leteApp.fragments.main;
 
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -14,11 +16,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -30,10 +34,13 @@ import com.agnet.leteApp.R;
 import com.agnet.leteApp.application.mSingleton;
 import com.agnet.leteApp.fragments.main.adapters.ProjectAdapter;
 import com.agnet.leteApp.fragments.main.adapters.ProjectTypeAdapter;
+import com.agnet.leteApp.fragments.main.dialogs.QrcodeBtmSheet;
 import com.agnet.leteApp.helpers.AndroidDatabaseManager;
+import com.agnet.leteApp.helpers.DatabaseHandler;
 import com.agnet.leteApp.helpers.DateHelper;
 import com.agnet.leteApp.helpers.FragmentHelper;
 import com.agnet.leteApp.models.CustomerType;
+import com.agnet.leteApp.models.Outlet;
 import com.agnet.leteApp.models.Project;
 import com.agnet.leteApp.models.ProjectType;
 import com.agnet.leteApp.models.ResponseData;
@@ -46,6 +53,7 @@ import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.gson.Gson;
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
@@ -66,9 +74,12 @@ public class HomeFragment extends Fragment {
     private User _user;
     private Spinner _projectTypesSpinner;
     private List<ProjectType> _projectTypesData;
-    private TextView _revenue, _revenueTarget,_mappingCount,_mappingTarget,_merchandiseCount,_merchandiseTarget,_outletCount,_outletTarget;
+    private TextView _revenue, _revenueTarget, _mappingCount, _mappingTarget, _merchandiseCount, _merchandiseTarget, _outletCount, _outletTarget;
     private ShimmerFrameLayout _shimmer;
-    private  CircularProgressBar _circularSales,_circularMapping,_circularMerchandise,_circularOutlets;
+    private CircularProgressBar _circularSales, _circularMapping, _circularMerchandise, _circularOutlets;
+    private BottomSheetBehavior behavior;
+    private DatabaseHandler _dbHandler;
+
 
 
     @SuppressLint("RestrictedApi")
@@ -81,15 +92,16 @@ public class HomeFragment extends Fragment {
         _preferences = getActivity().getSharedPreferences("SharedData", Context.MODE_PRIVATE);
         _editor = _preferences.edit();
         _gson = new Gson();
+        _dbHandler = new DatabaseHandler(_c);
 
-
+        //binding
         TextView username = view.findViewById(R.id.user_name);
         _projectTypeList = view.findViewById(R.id.project_type_list);
         _projectList = view.findViewById(R.id.project_list);
         _outletList = view.findViewById(R.id.outlet_list);
         _revenue = view.findViewById(R.id.revenue);
         _revenueTarget = view.findViewById(R.id.revenue_target);
-        _mappingCount =view.findViewById(R.id.mapping_count);
+        _mappingCount = view.findViewById(R.id.mapping_count);
         _mappingTarget = view.findViewById(R.id.mapping_target);
         _merchandiseCount = view.findViewById(R.id.merchandise_count);
         _merchandiseTarget = view.findViewById(R.id.merchandise_target);
@@ -97,9 +109,14 @@ public class HomeFragment extends Fragment {
         _outletTarget = view.findViewById(R.id.outlet_target);
         _shimmer = view.findViewById(R.id.shimmer_view_container);
         _circularSales = view.findViewById(R.id.circular_bar_sales);
-      _circularMapping = view.findViewById(R.id.circular_bar_mapping);
-       _circularMerchandise = view.findViewById(R.id.circular_bar_merchandise);
-       _circularOutlets  = view.findViewById(R.id.circular_bar_outlets);
+        _circularMapping = view.findViewById(R.id.circular_bar_mapping);
+        _circularMerchandise = view.findViewById(R.id.circular_bar_merchandise);
+        _circularOutlets = view.findViewById(R.id.circular_bar_outlets);
+
+        //register shop dialog
+        Button regByPhoneBtn = _c.findViewById(R.id.register_byPhone_btn);
+        EditText phoneTxt = _c.findViewById(R.id.phone_input);
+        EditText nameTxt = _c.findViewById(R.id.name_input);
 
         try {
             _user = _gson.fromJson(_preferences.getString("User", null), User.class);
@@ -115,7 +132,7 @@ public class HomeFragment extends Fragment {
         _projectTypeLayoutManager = new GridLayoutManager(_c, 3);
         _projectTypeList.setLayoutManager(_projectTypeLayoutManager);
 
-        ProjectTypeAdapter typeAdapter = new ProjectTypeAdapter(_c, getProjectTypes());
+        ProjectTypeAdapter typeAdapter = new ProjectTypeAdapter(_c, getProjectTypes(), this);
         _projectTypeList.setAdapter(typeAdapter);
 
 
@@ -128,8 +145,59 @@ public class HomeFragment extends Fragment {
                 return false;
             }
         });
-        getAgentStats();
 
+        View bottomSheet = _c.findViewById(R.id.bottom_sheet);
+        behavior = BottomSheetBehavior.from(bottomSheet);
+        behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                // React to state change
+
+                if (newState == BottomSheetBehavior.STATE_SETTLING) {
+                   phoneTxt.setText("");
+                   nameTxt.setText("");
+
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+                // React to dragging events
+            }
+        });
+
+        regByPhoneBtn.setOnClickListener(view1 -> {
+            String phone = phoneTxt.getText().toString();
+            String name = nameTxt.getText().toString();
+
+            if(name.isEmpty()){
+                Toast.makeText(getContext(), "Ingiza jina la mteja!", Toast.LENGTH_LONG).show();
+            }else if(phone.isEmpty()){
+                Toast.makeText(getContext(), "Ingiza namba ya simu!", Toast.LENGTH_LONG).show();
+            }else {
+
+                _dbHandler.createOutlet(new Outlet(
+                        0,name,"255"+phone,
+                        "",""
+                ));
+
+                Toast.makeText(_c, "App Inapakua subiri....", Toast.LENGTH_LONG).show();
+
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Do something after 5s = 5000ms
+
+                        behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                        new FragmentHelper(getActivity()).replace(new ProjectFragment(),"ProjectFragment", R.id.fragment_placeholder);
+                    }
+                }, 5000);
+
+            }
+        });
+
+        getAgentStats();
         return view;
     }
 
@@ -171,24 +239,11 @@ public class HomeFragment extends Fragment {
         return list;
     }
 
-    /* private void getSpinnerProjectType() {
-         _projectTypesData = new ArrayList<>();
-         _projectTypesData.add(new ProjectType(0, "Data za Mauzo","",0));
-         _projectTypesData.add(new ProjectType(1, "Data za Uwepo","",0));
-         _projectTypesData.add(new ProjectType(2, "Data za Maduka","",0));
-         _projectTypesData.add(new ProjectType(3, "Data za Vipeperushi","",0));
+    public void showDIalog() {
+        behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+    }
 
 
-         // Creating adapter for spinner
-         ArrayAdapter<ProjectType> dataAdapter = new ArrayAdapter<ProjectType>(_c, android.R.layout.simple_spinner_item, _projectTypesData);
-
-         // Drop down layout style - list view with radio button
-         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-         // attaching data adapter to spinner
-         _projectTypesSpinner.setAdapter(dataAdapter);
-     }
- */
     private void setupCircularBar(CircularProgressBar bar, float progress, float max, String progressColor, String bgColor) {
 
 // Set Progress
@@ -223,16 +278,17 @@ public class HomeFragment extends Fragment {
         bar.setProgressDirection(CircularProgressBar.ProgressDirection.TO_RIGHT);
     }
 
-    private void getAgentStats(){
-        String start  = DateHelper.getCurrentDate();
+    private void getAgentStats() {
+        String start = DateHelper.getCurrentDate();
         String end = DateHelper.getCurrentDate();
 
-        Endpoint.setUrl("agent/"+_user.getId()+"/stats?start="+start+"&end="+end);
+        Endpoint.setUrl("agent/" + _user.getId() + "/stats?start=" + start + "&end=" + end);
         String url = Endpoint.getUrl();
 
 
         _shimmer.setVisibility(View.VISIBLE);
-        _shimmer.startShimmerAnimation();;
+        _shimmer.startShimmerAnimation();
+        ;
 
         StringRequest postRequest = new StringRequest(Request.Method.GET, url,
                 response -> {
@@ -240,27 +296,25 @@ public class HomeFragment extends Fragment {
                     ResponseData res = _gson.fromJson(response, ResponseData.class);
 //                     Log.d("HEREHERESANA", _gson.toJson(res));
 
-                     if(res.getCode() == 200){
-                         Stat stat =  res.getStats();
-                         _revenue.setText(stat.getRevenueFormatted());
-                         _revenueTarget.setText(stat.getRevenueTargetFormatted());
-                         _mappingCount.setText(""+stat.getMappingCount());
-                         _mappingTarget.setText(""+stat.getMappingTarget());
-                         _merchandiseCount.setText(""+stat.getMerchandiseCount());
-                         _merchandiseTarget.setText(""+stat.getMerchandiseTarget());
-                         _outletCount.setText(""+stat.getOutletCount());
-                         _outletTarget.setText(""+stat.getOutletTarget());
+                    if (res.getCode() == 200) {
+                        Stat stat = res.getStats();
+                        _revenue.setText(stat.getRevenueFormatted());
+                        _revenueTarget.setText(stat.getRevenueTargetFormatted());
+                        _mappingCount.setText("" + stat.getMappingCount());
+                        _mappingTarget.setText("" + stat.getMappingTarget());
+                        _merchandiseCount.setText("" + stat.getMerchandiseCount());
+                        _merchandiseTarget.setText("" + stat.getMerchandiseTarget());
+                        _outletCount.setText("" + stat.getOutletCount());
+                        _outletTarget.setText("" + stat.getOutletTarget());
 
-                         setupCircularBar(_circularSales, stat.getRevenue(), stat.getRevenueTarget(), "#001689", "#ffffff");
-                         setupCircularBar(_circularMapping, stat.getMappingCount(), stat.getMappingTarget(), "#ffb400", "#ffffff");
-                         setupCircularBar(_circularMerchandise, +stat.getMerchandiseCount(), stat.getMerchandiseTarget(),"#34b0c3","#ffffff");
-                         setupCircularBar(_circularOutlets, stat.getOutletCount(), stat.getOutletTarget(),"#ed1c24","#ffffff");
+                        setupCircularBar(_circularSales, stat.getRevenue(), stat.getRevenueTarget(), "#001689", "#ffffff");
+                        setupCircularBar(_circularMapping, stat.getMappingCount(), stat.getMappingTarget(), "#ffb400", "#ffffff");
+                        setupCircularBar(_circularMerchandise, +stat.getMerchandiseCount(), stat.getMerchandiseTarget(), "#34b0c3", "#ffffff");
+                        setupCircularBar(_circularOutlets, stat.getOutletCount(), stat.getOutletTarget(), "#ed1c24", "#ffffff");
 
-                         _editor.putString("STAT",_gson.toJson(stat));
-                         _editor.commit();
-                     }
-
-
+                        _editor.putString("STAT", _gson.toJson(stat));
+                        _editor.commit();
+                    }
 
 
                     _shimmer.setVisibility(View.GONE);

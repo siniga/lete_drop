@@ -99,12 +99,55 @@
                 android:inputType="number"
                 android:padding="15dp" />
 
+
+            <TextView
+                android:layout_marginTop="15dp"
+                android:fontFamily="@font/mryad_pro_regular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bonyeza hapa chini kupiga picha"/>
+
+            <RelativeLayout
+                android:id="@+id/open_camera"
+                android:layout_marginTop="15dp"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:background="@drawable/dotted_background">
+
+                <ImageView
+                    android:id="@+id/img_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true" />
+
+                <ImageView
+                    android:id="@+id/camera_ic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:scaleType="center"
+                    android:src="@drawable/ic_merchandise_camera" />
+
+                <TextView
+                    android:layout_centerInParent="true"
+                    android:layout_below="@+id/camera_ic"
+                    android:layout_marginTop="5dp"
+                    android:fontFamily="@font/mryad_pro_regular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Piga picha"/>
+
+            </RelativeLayout>
+
         </LinearLayout>
+
     </androidx.core.widget.NestedScrollView>
 
 
 
     <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/continue_btn_wrapper"
         android:layout_alignParentBottom="true"
         android:layout_marginTop="40dp"
         android:layout_marginLeft="20dp"

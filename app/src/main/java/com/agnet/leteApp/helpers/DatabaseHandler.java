@@ -30,7 +30,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private Context c;
     // All Static variables
     // Database Version
-    private static final int DATABASE_VERSION = 25;
+    private static final int DATABASE_VERSION = 27;
 
     // Database Name
     private static final String DATABASE_NAME = "lete_app";
@@ -52,6 +52,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_IMG_URl = "img_url";
     private static final String KEY_OUTLET_ID = "outlet_id";
     private static final String KEY_QR_CODE = "qr_code";
+    private static final String KEY_LOCATION = "location";
 
 
     //order
@@ -95,6 +96,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_ID + " INTEGER PRIMARY KEY,"
                 + KEY_NAME + " TEXT,"
                 + KEY_PHONE + " TEXT,"
+                + KEY_LOCATION+ " TEXT,"
                 + KEY_QR_CODE + " TEXT " + ")";
 
 
@@ -116,6 +118,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_ITEM_PRICE + " TEXT,"
                 + KEY_TOTAL_PRICE + " TEXT,"
                 + KEY_QUANTITY + " INTEGER,"
+                + KEY_ORDER_ID + " INTEGER,"
                 + KEY_PRODUCT_ID + " INTEGER " + ")";
 
         db.execSQL(CREATE_OUTLET_TABLE);
@@ -193,6 +196,38 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close(); // Closing database connection
     }
 
+    public List<Outlet> getOutlets() {
+        List<Outlet> outlets = new ArrayList<>();
+
+        SQLiteDatabase database = this.getWritableDatabase();
+        Cursor cursor = database.rawQuery("SELECT * FROM " + TABLE_OUTLET, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                outlets.add(new Outlet(
+                        cursor.getInt(cursor.getColumnIndex(KEY_ID)),
+                        cursor.getString(cursor.getColumnIndex(KEY_NAME)),
+                        cursor.getString(cursor.getColumnIndex(KEY_PHONE)),
+                        cursor.getString(cursor.getColumnIndex(KEY_LOCATION)),
+                        cursor.getString(cursor.getColumnIndex(KEY_QR_CODE))
+                ));
+            } while (cursor.moveToNext());
+        }
+        database.close();
+        return outlets;
+    }
+
+    public void deleteOutlet(){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // on below line we are calling a method to delete our
+        // course and we are comparing it with our course name.
+        db.delete(TABLE_OUTLET, null,null);
+        db.close();
+    }
+
+
+
     /*******************************************
     Begin order crude
     ********************************************/
@@ -217,30 +252,49 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close(); // Closing database connection
 
     }
-/*
-    public String getOrderNumber() {
-        String orderNumber = "";
+
+    public List<Order> getOrders() {
+        List<Order> order = new ArrayList<>();
 
         SQLiteDatabase database = this.getWritableDatabase();
-        Cursor cursor = database.rawQuery("SELECT order_no FROM " + TABLE_ORDER+" ORDER BY "+KEY_ID+" DESC limit 1", null);
+        Cursor cursor = database.rawQuery("SELECT * FROM " + TABLE_ORDER, null);
 
         if (cursor.moveToFirst()) {
             do {
-                orderNumber = cursor.getString(cursor.getColumnIndex(KEY_ORDER_NO));
+                order.add(new Order(
+                        cursor.getInt(cursor.getColumnIndex(KEY_ID)),
+                        cursor.getString(cursor.getColumnIndex(KEY_DEVICE_TIME)),
+                        cursor.getInt(cursor.getColumnIndex(KEY_ORDER_NO)),
+                        cursor.getInt(cursor.getColumnIndex(KEY_STATUS)),
+                        cursor.getString(cursor.getColumnIndex(KEY_LAT)),
+                        cursor.getString(cursor.getColumnIndex(KEY_LNG)),
+                        cursor.getString(cursor.getColumnIndex(KEY_CREATED_DATE)),
+                        cursor.getInt(cursor.getColumnIndex(KEY_USER_ID)),
+                        cursor.getInt(cursor.getColumnIndex(KEY_PROJECT_ID)),
+                        cursor.getInt(cursor.getColumnIndex(KEY_OUTLET_ID))
 
+
+                ));
             } while (cursor.moveToNext());
         }
-
         database.close();
+        return order;
+    }
 
+    public void deleteOrder(){
+        SQLiteDatabase db = this.getWritableDatabase();
 
-        return orderNumber;
-    }*/
+        // on below line we are calling a method to delete our
+        // course and we are comparing it with our course name.
+        db.delete(TABLE_ORDER, null,null);
+        db.close();
+    }
+
 
     /*******************************************
      Begin cart crude
      ********************************************/
-    public void createCart(Cart cart) {
+    public void createCart(Cart cart,int orderId) {
 
         //add data to cart the first time addToCart button is clicked
 
@@ -252,6 +306,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_TOTAL_PRICE, cart.getAmount());
         values.put(KEY_QUANTITY, cart.getQuantity());
         values.put(KEY_PRODUCT_ID, cart.getProductId());
+        values.put(KEY_ORDER_ID, orderId);
         db.insert(TABLE_CART, null, values);
         db.close(); // Closing database connection
     }
